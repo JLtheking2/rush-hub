@@ -36,10 +36,10 @@
 
 | | |
 |---|---|
-| **Phase** | Phase 1 done (pending deploy confirmation, see §6) → **Phase 2 next** |
+| **Phase** | Phase 1 ✅ done and deployed → **Phase 2 next** |
 | **Repo** | `D:\GitRepos\rush-hub` → `JLtheking2/rush-hub` (canonical copy of this file lives here) |
 | **Last completed** | Phase 1: building empty shell (typecheck, lint, build clean; `/creator` blank 421:614 card, export = 421×614; `/sets` empty) (2026-09-26) |
-| **Next action** | Finish Phase 1 (commit, `gh repo create`, Pages, confirm deploy — §6), then Phase 2: `templates.ts`, per-template defaults, real `RushCard` JSON validation (a minimal store already exists, see §F) |
+| **Next action** | Phase 2: `templates.ts` table, per-template defaults, real `RushCard` JSON validation (a minimal store already exists, see §F) |
 | **Blockers / questions for user** | None. Favicon/logo is a placeholder "R" monogram — replace whenever. |
 
 ---
@@ -324,9 +324,9 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 - [x] Rename the package, site title, SEO and favicon to rush-hub, and fix the `create:data`/`prestart`/`prebuild` scripts
 - [x] Get to a **building empty shell**: `/creator` renders a blank 421:614 card, `/sets` renders empty, and typecheck, lint and `npm run build` all pass
 - [x] Rewrite `CLAUDE.md` to a minimal rush-hub core, pointing to `PLAN.md` as the handover doc, so no future agent follows pokeoh instructions
-- [ ] First commit → `gh repo create JLtheking2/rush-hub --public --source . --remote origin --push`
-- [ ] `deploy.yml`: base path `/rush-hub` + typecheck/lint gates. Enable Pages from Actions.
-- [ ] Confirm the deploy succeeded and `https://jltheking2.github.io/rush-hub/creator` loads (screenshot check)
+- [x] First commit → `gh repo create JLtheking2/rush-hub --public --source . --remote origin --push`
+- [x] `deploy.yml`: base path `/rush-hub` + typecheck/lint gates. Enable Pages from Actions.
+- [x] Confirm the deploy succeeded and `https://jltheking2.github.io/rush-hub/creator` loads (screenshot check)
 
 ### Phase 2: Card model and state (≈ 1 day)
 - [ ] `RushCard` type, `templates.ts` table, attribute and Spell/Trap icon enums
@@ -412,4 +412,4 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 ## G. Session log  ← append one entry per session (newest last)
 
 - **2026-09-26 (session 1, in pokeoh-hub):** Researched ygopro.org's card maker (NCM). Downloaded Rush frames, attributes, stars, icons, brackets, foils and fonts to `site/` (54/57 fetched; 3 expected 404s). Captured 9 reference renders with `tools/capture-refs.js`. Mapped pokeoh-hub keep/delete targets (§4.1). User made every design decision (§0). No code or repo changes yet. **Next:** Phase 1.
-- **2026-09-26 (session 2, Phase 1):** Bootstrapped `D:\GitRepos\rush-hub` from a shallow local clone (fresh history), moved this file into the repo (Desktop copy is now a stub), moved the keepers into `cardEditor/editor/`, added the minimal `RushCard` model/store, rewired ImportExport/CardDownloader/ImagesForm/SetCardLoader, shrank cardStyles, deleted all pokeoh code/assets/fonts/docs/skill (~300 MB), rebranded (Rush Hub, placeholder favicon), rewrote README + CLAUDE.md, updated `deploy.yml` (base path `/rush-hub`, typecheck + lint gates). Verified: `npm run typecheck`, `npm run lint`, `npm run build` (with base path) all clean; `/creator` and `/sets` screenshots viewed; export PNG is 421×614. **Left for the end of Phase 1:** first commit, `gh repo create`, enable Pages, confirm the live deploy (see §6 unticked boxes).
+- **2026-09-26 (session 2, Phase 1):** Bootstrapped `D:\GitRepos\rush-hub` from a shallow local clone (fresh history), moved this file into the repo (Desktop copy is now a stub), moved the keepers into `cardEditor/editor/`, added the minimal `RushCard` model/store, rewired ImportExport/CardDownloader/ImagesForm/SetCardLoader, shrank cardStyles, deleted all pokeoh code/assets/fonts/docs/skill (~300 MB), rebranded (Rush Hub, placeholder favicon), rewrote README + CLAUDE.md, updated `deploy.yml` (base path `/rush-hub`, typecheck + lint gates). Verified: `npm run typecheck`, `npm run lint`, `npm run build` (with base path) all clean; `/creator` and `/sets` screenshots viewed; export PNG is 421×614. Then committed, created public `JLtheking2/rush-hub`, enabled Pages via `gh api`, and the first deploy run went green; the live `/creator` (https://jltheking2.github.io/rush-hub/creator) was screenshotted with no 4xx responses. Nothing half-done.
