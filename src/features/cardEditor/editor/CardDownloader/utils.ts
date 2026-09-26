@@ -30,6 +30,9 @@ export const makeCanvas = async (
     return undefined;
   }
 
+  // Don't snapshot fallback glyphs
+  if ('fonts' in document) await document.fonts.ready;
+
   const div = originalDiv.cloneNode(true) as HTMLCanvasElement;
   // Add the cloned div to the DOM in an invisible div
   tempDiv.append(div);

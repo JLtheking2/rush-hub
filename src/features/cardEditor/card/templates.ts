@@ -156,6 +156,25 @@ export const spellTrapIcons: SpellTrapIconInfo[] = spellTrapIconIds.map(id => ({
   appliesTo: iconInfo[id].appliesTo,
 }));
 
+/** Root-relative; wrap in `withBasePath` when used */
+export const starIcons: Record<'normal' | 'xyz', string> = {
+  normal: '/assets/rush/stars/normal.png',
+  xyz: '/assets/rush/stars/xyz.png',
+};
+
+/** Forced attribute icon for Spell/Trap cards */
+export const spellTrapAttributeIcons: Record<'spell' | 'trap', string> = {
+  spell: '/assets/rush/attributes/Spell.png',
+  trap: '/assets/rush/attributes/Trap.png',
+};
+
+export const bracketIcons = {
+  left: '/assets/rush/icons/leftbracket.png',
+  right: '/assets/rush/icons/rightbracket.png',
+  leftWhite: '/assets/rush/icons/leftbracketwhite.png',
+  rightWhite: '/assets/rush/icons/rightbracketwhite.png',
+};
+
 export const isIconValidFor = (
   icon: SpellTrapIcon,
   template: Template,

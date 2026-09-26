@@ -15,6 +15,11 @@ export default class MyDocument extends Document {
             rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap"
           />
+          {/* Fallbacks for the Yu-Gi-Oh! card fonts (see utils/fonts.ts) */}
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Amiri:ital@0;1&family=Crimson+Text:wght@400;600&family=Spectral+SC:wght@400;600&family=Spectral:ital@0;1&display=swap"
+          />
           <Favicon />
           <GlobalStyles styles={fontFaces} />
         </Head>

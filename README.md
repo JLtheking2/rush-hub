@@ -2,7 +2,7 @@
 
 A web tool for making custom **Yu-Gi-Oh! Rush Duel** style cards, with a Set Browser and printable card sheets. Live at <https://jltheking2.github.io/rush-hub/>.
 
-> **Status:** early port. The repo is a stripped shell (blank 421:614 card, save/load, image upload). The Rush card renderer and editor form are being built — see [`PLAN.md`](PLAN.md) for the roadmap and current status.
+> **Status:** early port. The repo is a stripped shell (blank 421:614 card, save/load, image upload) with the Rush frames, icons and fonts in place. The Rush card renderer and editor form are being built — see [`PLAN.md`](PLAN.md) for the roadmap and current status.
 
 ## Features (target)
 
@@ -34,6 +34,7 @@ Pushes to `master` run `.github/workflows/deploy.yml`, which typechecks, lints, 
 
 - Descends from [pokecardmaker.net](https://github.com/karl/pokecardmaker.net) via [pokeoh-hub](https://github.com/JLtheking2/pokeoh-hub).
 - Rush Duel card frames by **AlixSep**, via the Neo New Card Maker at ygopro.org. The "MADE BY ALIXSEP" credit on the frames is intentionally left intact.
+- Card fonts: Matrix, ITC Stone Serif and Eurostile Candy (shipped in `public/fonts/`), with Google Fonts fallbacks (Spectral, Spectral SC, Amiri, Crimson Text).
 - Layout measurements were taken with reference to the Neo New Card Maker; no code from it is used.
 
 ## Legal

@@ -23,7 +23,7 @@
 **At the end of a session, or before context runs low:**
 1. Update §B: phase, last completed step, **exact next action**, any blockers or open questions for the user.
 2. Append a dated entry to §G (Session log) with what you did, what you verified and what's left half-done.
-3. If the repo exists, commit the plan file along with the code (see "File location" below).
+3. If the repo exists, commit the plan file along with the code (see "File location" below). **Commit locally only. Never `git push`**: the user publishes all changes themselves.
 
 **File location:**
 - Until the rush-hub repo exists: `C:\Users\jlthe\Desktop\yugioh-rush-port\PLAN.md` is canonical.
@@ -36,10 +36,10 @@
 
 | | |
 |---|---|
-| **Phase** | Phases 1–2 ✅ → **Phase 3 next** |
+| **Phase** | Phases 1–3 ✅ → **Phase 4 next** |
 | **Repo** | `D:\GitRepos\rush-hub` → `JLtheking2/rush-hub` (canonical copy of this file lives here) |
-| **Last completed** | Phase 2: `templates.ts`, `switchTemplate`, `parseRushCard`, store rewired; typecheck + lint clean, logic smoke test and in-app load check passed (2026-09-26) |
-| **Next action** | Phase 3: copy assets from `C:\Users\jlthe\Desktop\yugioh-rush-port\site\res\tcg\ygo\` and fonts into `public/assets/rush/…` / `public/fonts/` using the paths already referenced in `templates.ts` |
+| **Last completed** | Phase 3: 31 assets + 6 fonts in `public/`, `fonts.ts` wired, fonts-ready waits, credits; typecheck + lint clean, all asset URLs 200 and all fonts load in headless Chromium (2026-09-26). Committed locally, **not pushed** (user publishes) |
+| **Next action** | Phase 4: container at 421:614 with the ephemeral unit, the `<Box at={[l,t,w,h]}>` helper, then the layers in §6 Phase 4. Use `templates.ts` (`frame`, `starIcons`, `spellTrapAttributeIcons`, `bracketIcons`), `fontStacks` from `utils/fonts.ts` and `useFontsReady` |
 | **Blockers / questions for user** | None. Favicon/logo now uses the same icon set as pokeoh-hub (see §F, 2026-09-26). |
 
 ---
@@ -65,6 +65,8 @@
 
 **Commit attribution:** end commit messages with the co-author line your harness gives you. The user pushes straight to `master` (no PRs).
 
+**Don't push (from 2026-09-26):** agents commit locally but **never run `git push`** (or trigger deploys). The user pushes and publishes. Deploy checks (`gh run …`) are the user's job unless they ask.
+
 **Claude memory:** pokeoh-hub memory lives at `C:\Users\jlthe\.claude\projects\D--GitRepos-pokeoh-hub\memory\`. rush-hub will get its own memory dir (`…\D--GitRepos-rush-hub\memory\`). Carry over the "keep README in sync" feedback memory in Phase 7.
 
 ---
@@ -86,6 +88,7 @@
 | Repo | **`JLtheking2/rush-hub`**, public, a **fresh repo with new history** (not a GitHub fork). |
 | Workflow | **Single contributor, pushes straight to `master`.** No PR workflow, no PR CI and no branch protection. The deploy workflow runs the typecheck and lint gates itself. |
 | Set Browser + Print | **Keep both**, adapted to Rush cards and 59 × 86 mm. |
+| Publishing | Agents commit locally but **never push**; the user pushes and publishes (2026-09-26). |
 
 ---
 
@@ -335,13 +338,13 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 - [x] Rewire ImportExport (save/load/save-as/new/load-directory) to `RushCard` schema v1, and reject foreign JSON cleanly
 
 ### Phase 3: Assets (≈ 0.5 day)
-- [ ] 9 frames (`border/<T>.rush.png`) → `public/assets/rush/frames/<template>.png`
-- [ ] Attribute icons (7 attributes + Void + Spell + Trap) → `public/assets/rush/attributes/`
-- [ ] Star badges (Normal, Xyz) → `public/assets/rush/stars/`
-- [ ] Spell/Trap property icons (6) and brackets (4) → `public/assets/rush/icons/`
-- [ ] 6 fonts → `public/fonts/` (web-safe names), `utils/fonts.ts` entries with Google fallbacks (§3a)
-- [ ] Wait on `document.fonts.ready` before export and before fit measurement
-- [ ] Credits: AlixSep and upstream projects in the README + site footer
+- [x] 9 frames (`border/<T>.rush.png`) → `public/assets/rush/frames/<template>.png`
+- [x] Attribute icons (7 attributes + Void + Spell + Trap) → `public/assets/rush/attributes/`
+- [x] Star badges (Normal, Xyz) → `public/assets/rush/stars/`
+- [x] Spell/Trap property icons (6) and brackets (4) → `public/assets/rush/icons/`
+- [x] 6 fonts → `public/fonts/` (web-safe names), `utils/fonts.ts` entries with Google fallbacks (§3a)
+- [x] Wait on `document.fonts.ready` before export (`makeCanvas`) and before fit measurement (`useFontsReady` hook exists; **Phase 4's `FitText` must use it**, nothing measures yet)
+- [x] Credits: AlixSep and upstream projects in the README + site footer
 
 ### Phase 4: Renderer, `CardDisplay` rewrite (≈ 2–3 days)
 - [ ] Container at 421:614 with the ephemeral unit, and `cardImgWidth/Height = 421/614`
@@ -415,9 +418,15 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 - **2026-09-26 (Phase 2):** `switchTemplate` rules: name/effect/setId/serial/image always kept; attribute/level/ATK/DEF kept only monster→monster (reset when entering/leaving Spell/Trap); type line follows the new template unless the user edited it; Spell/Trap icon kept only if valid for the new template (Counter = Trap only; Equip/Field/Quick-Play/Ritual = Spell only; Continuous = both).
 - **2026-09-26 (Phase 2):** `parseRushCard` rejects non-JSON, non-objects, missing `schemaVersion` (pokeoh JSON lands here), other versions, unknown `template`, and wrong-typed fields (naming the field; `level` must be an integer 0–12). Missing fields take the template's defaults; unknown keys are dropped; output key order is canonical. **`applyCardJson` now returns `{ ok: true } | { ok: false; error }`** (was boolean); ImportButton and SetCardLoader show the reason. `setTemplate` doesn't touch `savedJson`, so switching counts as an unsaved edit. Lint gotcha: airbnb config forbids `for…of` and global `isFinite`.
 
+- **2026-09-26 (Phase 3):** Asset map: `border/<T>.rush.png` → `frames/<lowercase>.png`; `attribute/<A>.rush.png` → `attributes/<A>.png` (Dark…Wind, Void, Spell, Trap); `star/{Normal,Xyz}.rush.png` → `stars/{normal,xyz}.png`; `icon/*` and `text/*bracket*.png` → `icons/` with original names (Quick-play keeps its hyphen). Rainbow/Splice/foil art was skipped. `templates.ts` gained `starIcons`, `spellTrapAttributeIcons`, `bracketIcons` (root-relative; wrap in `withBasePath`).
+- **2026-09-26 (Phase 3):** Fonts are shipped as-is (30–64 KB, no woff2) as `public/fonts/{MatrixRegularSmallCaps,MatrixBook,StoneSerifSmallCapsBold,EurostileCandyRegular,EurostileCandyBold}.ttf` + `StoneSerif.otf`. `FontFace` in `utils/fonts.ts` now takes `format: 'ttf'|'otf'` + optional `weight`/`style` (the old `ttfOnly` flag is gone); Eurostile registers 400 and 700 under one family. `fontStacks` exports the per-role `font-family` strings with their Google fallbacks; `_document.page.tsx` loads Spectral, Spectral SC, Amiri and Crimson Text from Google.
+- **2026-09-26 (Phase 3):** `makeCanvas` now awaits `document.fonts.ready` before cloning. `src/hooks/useFontsReady.ts` is ready for Phase 4's `FitText` to re-measure on font load. Footer got a credit caption (AlixSep, Neo New Card Maker, pokecardmaker.net via pokeoh-hub) that wraps cleanly at 400 px.
+- **2026-09-26:** User rule: agents commit locally but never push (see §A, §C, §0).
+
 ## G. Session log  ← append one entry per session (newest last)
 
 - **2026-09-26 (session 1, in pokeoh-hub):** Researched ygopro.org's card maker (NCM). Downloaded Rush frames, attributes, stars, icons, brackets, foils and fonts to `site/` (54/57 fetched; 3 expected 404s). Captured 9 reference renders with `tools/capture-refs.js`. Mapped pokeoh-hub keep/delete targets (§4.1). User made every design decision (§0). No code or repo changes yet. **Next:** Phase 1.
 - **2026-09-26 (session 2, Phase 1):** Bootstrapped `D:\GitRepos\rush-hub` from a shallow local clone (fresh history), moved this file into the repo (Desktop copy is now a stub), moved the keepers into `cardEditor/editor/`, added the minimal `RushCard` model/store, rewired ImportExport/CardDownloader/ImagesForm/SetCardLoader, shrank cardStyles, deleted all pokeoh code/assets/fonts/docs/skill (~300 MB), rebranded (Rush Hub, placeholder favicon), rewrote README + CLAUDE.md, updated `deploy.yml` (base path `/rush-hub`, typecheck + lint gates). Verified: `npm run typecheck`, `npm run lint`, `npm run build` (with base path) all clean; `/creator` and `/sets` screenshots viewed; export PNG is 421×614. Then committed, created public `JLtheking2/rush-hub`, enabled Pages via `gh api`, and the first deploy run went green; the live `/creator` (https://jltheking2.github.io/rush-hub/creator) was screenshotted with no 4xx responses. Nothing half-done.
 - **2026-09-26 (session 3, favicon):** Swapped the placeholder favicon set for pokeoh-hub's (image files only; hashes verified identical). Updated §B and §F. No code changes. Not pushed, so the live site still shows the old icon until the next deploy.
 - **2026-09-26 (session 4, Phase 2):** Finished the card model: enum id arrays, `templates.ts` flags table, `getDefaultCard`/`switchTemplate`, `parseRushCard` validation, store `setTemplate` + new `applyCardJson` result type; rewired ImportButton and SetCardLoader to show the failure reason. Verified: typecheck + lint clean; a Node smoke test of defaults/switching/validation passed; in the running app (file-input fallback) a pokeoh-style JSON shows "Card not loaded — This isn't a rush-hub card." and a valid card loads with no dialog (the dialog screenshot was caught mid-fade, DOM text confirmed). No form UI yet (Phase 5). Nothing half-done.
+- **2026-09-26 (session 5, Phase 3):** Added the no-push rule to PLAN.md. Copied 31 assets and 6 fonts into `public/`, wired `fonts.ts` (+ Google fallbacks), added `useFontsReady` and the export fonts wait, asset path helpers in `templates.ts`, footer + README credits. Verified: typecheck + lint clean; headless Chromium: every asset URL 200, all 6 font faces `loaded`, footer credit screenshot checked at 400 px. Not re-checked after the `makeCanvas` change: the Download PNG size (still expected 421×614). Committed locally, not pushed. **Next:** Phase 4.
