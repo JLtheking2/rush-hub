@@ -33,20 +33,40 @@ const Print: FC = () => {
     return sets.find(set => set.id === querySetId);
   }, [router.query.set]);
 
+  // Custom sheet: ?cards=<SetId>/<cardId>*<copies>,... (copies defaults to 1).
+  const customCards = useMemo<SetCard[] | undefined>(() => {
+    const raw = Array.isArray(router.query.cards)
+      ? router.query.cards[0]
+      : router.query.cards;
+    if (!raw) return undefined;
+    const list: SetCard[] = [];
+    raw.split(',').forEach(entry => {
+      const [ref, copies = '1'] = entry.split('*');
+      const [setId, cardId] = ref.split('/');
+      const card = sets
+        .find(set => set.id === setId)
+        ?.cards.find(c => c.id === cardId);
+      if (!card) return;
+      for (let i = 0; i < Number(copies); i += 1) list.push(card);
+    });
+    return list;
+  }, [router.query.cards]);
+
   const sheets = useMemo<SetCard[][]>(() => {
-    if (!selectedSet) return [];
+    const source = customCards ?? selectedSet?.cards;
+    if (!source) return [];
     const chunks: SetCard[][] = [];
-    for (let i = 0; i < selectedSet.cards.length; i += cardsPerSheet) {
-      chunks.push(selectedSet.cards.slice(i, i + cardsPerSheet));
+    for (let i = 0; i < source.length; i += cardsPerSheet) {
+      chunks.push(source.slice(i, i + cardsPerSheet));
     }
     return chunks;
-  }, [selectedSet]);
+  }, [customCards, selectedSet]);
 
   // router.query is empty until the router is ready on a statically exported
   // page, so an unknown set can only be reported once it is.
   if (!router.isReady) return null;
 
-  if (!selectedSet) {
+  if (!selectedSet && !customCards?.length) {
     return (
       <>
         <SEO title="Print sheets" description={description} />
@@ -66,7 +86,10 @@ const Print: FC = () => {
       <GlobalStyles styles={printGlobalStyles} />
       <PrintToolbar>
         <NextLink
-          href={{ pathname: Routes.Sets, query: { set: selectedSet.id } }}
+          href={{
+            pathname: Routes.Sets,
+            query: selectedSet ? { set: selectedSet.id } : {},
+          }}
           passHref
         >
           <Button
@@ -89,14 +112,17 @@ const Print: FC = () => {
           Print
         </Button>
         <Typography variant="caption" color="text.secondary">
-          {selectedSet.displayName} · {selectedSet.cards.length} cards ·{' '}
+          {customCards ? 'Custom sheet' : selectedSet?.displayName} ·{' '}
+          {customCards?.length ?? selectedSet?.cards.length} cards ·{' '}
           {sheets.length} {sheets.length === 1 ? 'sheet' : 'sheets'}
         </Typography>
       </PrintToolbar>
-      {sheets.map(sheetCards => (
-        <Sheet key={sheetCards[0].id}>
-          {sheetCards.map(card => (
-            <CardCell key={card.id}>
+      {sheets.map((sheetCards, sheetIndex) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <Sheet key={sheetIndex}>
+          {sheetCards.map((card, cardIndex) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <CardCell key={`${card.id}-${cardIndex}`}>
               <CardPrintImage src={card.full} alt={card.name} />
             </CardCell>
           ))}
