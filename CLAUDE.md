@@ -17,7 +17,7 @@ This file holds only the always-relevant core. Feature-deep detail lives in `doc
 - **[`docs/renderer.md`](docs/renderer.md)** — card geometry (`layout.ts`), layers, per-template flags, fonts, assets, and calibrating against the reference renders (`compare:ref`).
 - **[`docs/text-fitting.md`](docs/text-fitting.md)** — `FitText` / measurer: shrink, squash, justify, waiting for fonts; read when text overflows or preview and export differ.
 - **[`docs/save-load.md`](docs/save-load.md)** — the `RushCard` schema, validation, Save/Load/Save As/New, PNG export, `render:cards`.
-- **[`docs/set-browser.md`](docs/set-browser.md)** — `cards/sets/` → `public/sets/` → `setsData.ts` pipeline, sample set, `/sets`, the creator deep link, `/sets/print`.
+- **[`docs/set-browser.md`](docs/set-browser.md)** — `cards/sets/` → `public/sets/` → `setsData.ts` pipeline, `/sets`, the creator deep link, `/sets/print`.
 - **[`docs/decisions.md`](docs/decisions.md)** — the user's design decisions, out-of-scope list, licensing notes.
 
 ## Environment (Windows + PowerShell)
@@ -36,7 +36,6 @@ npm run dev | build | lint | lint:fix | typecheck
 npm run create:sets   # cards/sets/ -> public/sets/ + regenerate src/utils/setsData.ts (generated, never hand-edit)
 npm run verify -- creator
 npm run render:cards -- <folder-or-json...>   # re-render the .png next to card .json; fails on invalid cards / non-421x614 output
-npm run create:sample-set                     # rebuild the tracked Sample Set (dev server running)
 npm run compare:ref -- <referenceDir>         # visual diff of the 9 sample cards vs reference renders (dev server running)
 ```
 

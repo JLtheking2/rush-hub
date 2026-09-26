@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "create:sets": "node ./scripts/createSetsData.js",
-    "create:sample-set": "node ./scripts/createSampleSet.js",
     "prestart": "npm run create:sets",
     "start": "next dev",
     "dev": "npm run start",

@@ -21,7 +21,6 @@ These are the **user's** decisions from the port (2026-09-26). Don't re-open the
 | Set Browser + Print | Kept and adapted to Rush cards and 59 × 86 mm. |
 | Publishing | Agents commit locally but **never `git push`** or trigger deploys; the user publishes. |
 | Rounded corners | **Deferred.** Corners stay square in preview, Set Browser and print (real cards are ~2.5 mm). |
-| Sample set | Folder `SAMPLE`, "Sample Set", the nine sample cards numbered `RD/SMP-EN001`–`009` in template order. |
 
 ## Out of scope (don't build)
 

@@ -11,7 +11,6 @@ A web tool for making custom **Yu-Gi-Oh! Rush Duel** style cards, with a Set Bro
 - Save / load cards as `.json` + `.png` pairs in a working directory (File System Access API, Chromium)
 - **Set Browser** (`/sets`): published sets, a card grid, a full-size viewer and an "Edit in Creator" deep link
 - **Print sheets** (`/sets/print?set=<SetId>`): 3×3 cards per A4 page at 59 × 86 mm, with cut marks
-- A tracked **Sample Set** of the nine templates, so the Set Browser is never empty
 
 Not supported, by design: rarity/foils, LEGEND/MAXIMUM, non-English text. See [`docs/decisions.md`](docs/decisions.md).
 
@@ -26,7 +25,6 @@ npm run build        # static export into out/
 npm run create:sets  # promote cards/sets/ into public/sets/ and regenerate src/utils/setsData.ts
 npm run verify -- creator   # headless screenshot (dev server must be running)
 npm run render:cards -- <folder-or-json...>   # batch re-render saved cards, checked to be 421x614 (dev server must be running)
-npm run create:sample-set                       # rebuild the tracked "Sample Set" (9 cards) in public/sets/SAMPLE (dev server must be running)
 npm run compare:ref -- <referenceDir>           # export the 9 sample cards and diff them against reference renders (dev server must be running)
 ```
 
@@ -39,7 +37,7 @@ Feature-level notes for contributors (and coding agents) live in [`docs/`](docs/
 - [`renderer.md`](docs/renderer.md) — card geometry, layers, templates, fonts, calibration against reference renders
 - [`text-fitting.md`](docs/text-fitting.md) — how text is shrunk, squashed and justified to fit
 - [`save-load.md`](docs/save-load.md) — the card JSON schema, Save/Load, PNG export, batch rendering
-- [`set-browser.md`](docs/set-browser.md) — the sets pipeline, sample set, Set Browser and print sheets
+- [`set-browser.md`](docs/set-browser.md) — the sets pipeline, Set Browser and print sheets
 - [`decisions.md`](docs/decisions.md) — scope decisions and licensing notes
 
 [`CLAUDE.md`](CLAUDE.md) is the agent-facing entry point.

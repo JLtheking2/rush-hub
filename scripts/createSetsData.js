@@ -18,9 +18,7 @@ const WEBP_QUALITY = 82;
  * Pretty names for set folders. Folders without an entry fall back to their
  * folder name.
  */
-const SET_DISPLAY_NAMES = {
-  SAMPLE: 'Sample Set',
-};
+const SET_DISPLAY_NAMES = {};
 
 // sharp is a native module. If it failed to install we still want the site to
 // build - fall back to using the full-size image as its own thumbnail.

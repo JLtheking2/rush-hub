@@ -92,9 +92,9 @@ function printUsage() {
       '  <path...>  One or more folders and/or .json card files.',
       '',
       'Examples:',
-      '  npm run render:cards -- cards/sets/SAMPLE',
-      '  npm run render:cards -- "public/sets/SAMPLE/cards/rd-smp-en001-sample-normal.json"',
-      '  npm run render:cards -- public/sets/SAMPLE/cards --dry-run',
+      '  npm run render:cards -- cards/sets/PRS1',
+      '  npm run render:cards -- "public/sets/PRS1/cards/001-smile-world.json"',
+      '  npm run render:cards -- public/sets/PRS1/cards --dry-run',
       '',
     ].join('\n'),
   );
