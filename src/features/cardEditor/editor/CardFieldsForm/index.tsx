@@ -27,16 +27,6 @@ const CardFieldsForm: FC = () => {
         />
         {info.isMonster && <AttributeSelector />}
       </AccordionForm>
-      <AccordionForm slug="textForm" header="Text">
-        <TextAreaInput
-          label="Effect"
-          slug="effect"
-          minRows={4}
-          helperText="A new line starts a new paragraph"
-          value={card.effect}
-          onChange={effect => setCard({ effect })}
-        />
-      </AccordionForm>
       <AccordionForm slug="statsForm" header="Stats">
         {info.hasLevel && (
           <NumberInput
@@ -72,18 +62,28 @@ const CardFieldsForm: FC = () => {
         />
         <SpellTrapIconSelector />
       </AccordionForm>
-      <AccordionForm slug="infoForm" header="Info">
-        <TextInput
-          label="Set ID"
-          slug="setId"
-          value={card.setId}
-          onChange={setId => setCard({ setId })}
+      <AccordionForm slug="textForm" header="Text">
+        <TextAreaInput
+          label="Effect"
+          slug="effect"
+          minRows={4}
+          helperText="A new line starts a new paragraph"
+          value={card.effect}
+          onChange={effect => setCard({ effect })}
         />
+      </AccordionForm>
+      <AccordionForm slug="infoForm" header="Info">
         <TextInput
           label="Set Name"
           slug="serial"
           value={card.serial}
           onChange={serial => setCard({ serial })}
+        />
+        <TextInput
+          label="Set ID"
+          slug="setId"
+          value={card.setId}
+          onChange={setId => setCard({ setId })}
         />
       </AccordionForm>
     </>
