@@ -1,0 +1,51 @@
+# Set Browser and print sheets
+
+Read this when working on `/sets`, `/sets/print`, the `cards/sets/` → `public/sets/` pipeline, the sample set, or the `?set=&card=` creator deep link.
+
+## Pipeline
+
+```
+cards/sets/<SetId>/*.png + *.json + cover.png   ← local staging (gitignored, except cover.png)
+        │  npm run create:sets   (also runs as prestart / prebuild)
+        ▼
+public/sets/<SetId>/cards/<slug>.png + <slug>.json   ← TRACKED source of truth
+public/sets/<SetId>/thumb/<slug>.webp                 ← 320 px wide, regenerated when stale
+public/sets/<SetId>/cover.webp                        ← 400 px wide, from cover.png
+        ▼
+src/utils/setsData.ts   ← GENERATED; never hand-edit. Read via src/utils/sets.ts
+```
+
+`scripts/createSetsData.js` has two phases:
+
+- **A — promote:** for each staging folder that has PNGs, copy `.png` + `.json` verbatim into `public/sets/<SetId>/cards/` (only when the staged file is newer, so a card edited in place in `public/sets` is never clobbered), build `cover.webp`, and prune files no longer staged. A staging folder with **no** PNGs is left alone, so a fresh clone (empty staging) keeps the tracked `public/sets` untouched.
+- **B — derive:** for every folder in `public/sets`, refresh stale thumbnails, read each card's `.json` for its number and name, and write `setsData.ts`.
+
+Rules:
+
+- Any non-`cover.png` `.png` in staging is a card. Its **slug** is the whole basename, ASCII-folded and lower-cased with hyphen runs collapsed (`RD-SMP-EN001 - Sample Normal` → `rd-smp-en001-sample-normal`); duplicate slugs are skipped with a warning.
+- The grid **number is `setId`** and the **name is `name`**, both read from the `.json` — the filename is only an identifier. A card with no `.json` gets number `''` and name = slug, and no "Edit in Creator" button (`json: null`). An empty Set ID is fine; a missing name falls back to the slug with a warning.
+- Sort: number prefix, then the number numerically (so `EN10` after `EN2`), then name.
+- Set display names come from `SET_DISPLAY_NAMES` at the top of the script (default: the folder name). Add an entry for a new set.
+- `.gitignore` keeps `cards/sets/*/*.png` and `*.json` out of git but negates `cover.png`. `cards/sets/<Set>/cover.png` is hand-supplied and must be tracked. Don't remove those rules.
+- The card `.png` + `.json` side by side means **`public/sets/<SetId>/cards/` is itself a valid creator working directory**: open it with Load Directory, edit, Save in place, then re-run `npm run create:sets` — the thumbnail and grid entry refresh.
+- Re-runs are idempotent. Without `sharp` the script degrades to full-size images as thumbnails.
+
+## Sample set
+
+`npm run create:sample-set` (dev server running; `-- --url` to override) writes the nine sample cards (`scripts/sampleCards.js` → `sampleSetCards()`, Set IDs `RD/SMP-EN001`–`009` in template order) as JSON into `cards/sets/SAMPLE/`, renders them through `renderCards.js`, uses the Sample Effect render as `cover.png`, and runs `createSetsData.js`. Folder `SAMPLE`, display name "Sample Set". It exists so `/sets` and `/sets/print` aren't empty on the first deploy. The sample renders have a transparent art window: grid thumbs show the card backdrop grey there, print/viewer on white show white; real art fills it.
+
+## `/sets` page (`src/pages/sets/`)
+
+`index.page.tsx` → `SetGrid` (set covers) → `CardGrid` (thumbnails at 421:614, name + Set ID caption) → `CardViewer` (full-size, prev/next arrows, "Edit in Creator"). `?set=<SetId>` selects a set. Styles in `styles.ts`. Corners stay square (rounded corners are deferred — see [`decisions.md`](decisions.md)). Verified: no horizontal scroll at 400 px.
+
+## Deep link to the creator
+
+"Edit in Creator" opens `/creator?set=<SetId>&card=<slug>` in a new tab. `pages/creator/atoms/SetCardLoader` resolves the two **lookup keys** through `setsData` (never a raw path/URL), fetches the card's `json`, and calls `applyCardJson`; failures show "Card not loaded". It guards against re-applying on later renders (the query stays in the URL so the link is shareable) and asks before replacing unsaved work on in-tab navigation. No file handle is set, so the first Save acts as Save As.
+
+## `/sets/print?set=<SetId>` (`print.page.tsx`, `printStyles.ts`)
+
+- Sheets of **9 cards, 3 × 3 on A4 portrait**; cells are **59 × 86 mm** (Yu-Gi-Oh! size). 177 × 258 mm leaves 16.5 mm side and 19.5 mm top/bottom margins, inside every consumer printer's unprintable area.
+- Each cell is the card's full PNG with `object-fit: fill` (421:614 = 0.6857 vs 0.6860 — invisible, whereas `contain` would leave white slivers). Cut marks are a 0.25 mm `outline` on each cell (an outline takes no layout space, so seams line up and each cut is one line).
+- `@page { size: A4 portrait; margin: 0 }`; header/footer are hidden in print; a `break-after: page` per sheet, none after the last, and the background wrapper's gradient/min-height is neutralised so there's no trailing blank page. `-webkit-print-color-adjust: exact` keeps the colours.
+- A native 421 px image at 59 mm prints at ≈ 181 DPI — slightly soft. That follows from the native-export decision.
+- Verified: cells measure 59 × 86 mm at 96 dpi (222.98 × 325.03 px), an A4 PDF of the 9-card sample set is one page. An unknown `?set=` shows "Set not found".

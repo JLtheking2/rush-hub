@@ -2,15 +2,17 @@
 
 A web tool for making custom **Yu-Gi-Oh! Rush Duel** style cards, with a Set Browser and printable card sheets. Live at <https://jltheking2.github.io/rush-hub/>.
 
-> **Status:** early port. The Rush card renderer and the editor form work (all nine templates, art upload + crop, save/load, PNG export). The Set Browser, print sheets and sample set are still being adapted — see [`PLAN.md`](PLAN.md) for the roadmap and current status.
+## Features
 
-## Features (target)
+- **Card creator** (`/creator`) with all nine Rush Duel templates: Normal, Effect, Ritual, Fusion, Synchro, Xyz, Token, Spell, Trap
+- Editor form: template picker, name, attribute, level/rank, type line, Spell/Trap property icon, effect text, ATK/DEF, set ID, serial (with randomise), and art upload / web search with a 376:380 crop
+- Native **421 × 614 px** PNG export (the 59 × 86 mm card ratio)
+- Save / load cards as `.json` + `.png` pairs in a working directory (File System Access API, Chromium)
+- **Set Browser** (`/sets`): published sets, a card grid, a full-size viewer and an "Edit in Creator" deep link
+- **Print sheets** (`/sets/print?set=<SetId>`): 3×3 cards per A4 page at 59 × 86 mm, with cut marks
+- A tracked **Sample Set** of the nine templates, so the Set Browser is never empty
 
-- Rush Duel templates: Normal, Effect, Ritual, Fusion, Synchro, Xyz, Token, Spell, Trap
-- Editor form: template picker, name, attribute, level/rank, type line, Spell/Trap property icon, effect text, ATK/DEF, set ID, serial, and art upload with a 376:380 crop
-- Native 421 × 614 px PNG export (59 × 86 mm card ratio)
-- Save / load cards as `.json` + `.png` pairs (File System Access API)
-- `/sets` Set Browser and `/sets/print` 3×3-per-A4 print sheets
+Not supported, by design: rarity/foils, LEGEND/MAXIMUM, non-English text. See [`docs/decisions.md`](docs/decisions.md).
 
 ## Development
 
@@ -29,9 +31,21 @@ npm run compare:ref -- <referenceDir>           # export the 9 sample cards and 
 
 `start-dev.bat` / `stop-dev.bat` start and stop the dev server on Windows.
 
+## Docs
+
+Feature-level notes for contributors (and coding agents) live in [`docs/`](docs/):
+
+- [`renderer.md`](docs/renderer.md) — card geometry, layers, templates, fonts, calibration against reference renders
+- [`text-fitting.md`](docs/text-fitting.md) — how text is shrunk, squashed and justified to fit
+- [`save-load.md`](docs/save-load.md) — the card JSON schema, Save/Load, PNG export, batch rendering
+- [`set-browser.md`](docs/set-browser.md) — the sets pipeline, sample set, Set Browser and print sheets
+- [`decisions.md`](docs/decisions.md) — scope decisions and licensing notes
+
+[`CLAUDE.md`](CLAUDE.md) is the agent-facing entry point.
+
 ## Deploy
 
-Pushes to `master` run `.github/workflows/deploy.yml`, which typechecks, lints, builds the static export and publishes it to GitHub Pages under the `/rush-hub` base path.
+Pushes to `master` run `.github/workflows/deploy.yml`, which typechecks, lints, builds the static export and publishes it to GitHub Pages under the `/rush-hub` base path. Pages must be set to deploy from **GitHub Actions** (`gh api -X POST repos/JLtheking2/rush-hub/pages -f build_type=workflow`, or `-X PUT` if Pages already exists). No secrets are needed.
 
 ## Credits
 

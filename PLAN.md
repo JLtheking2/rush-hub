@@ -1,4 +1,4 @@
-# rush-hub — Rush Duel Card Maker: Plan, Checklist & Session Handover
+﻿# rush-hub — Rush Duel Card Maker: Plan, Checklist & Session Handover
 
 > **This file is the single source of truth for the rush-hub port *and* the context handover between sessions.**
 > A fresh agent should be able to read only this file and carry on. Read §A (how to use this file) and §B (current
@@ -36,10 +36,10 @@
 
 | | |
 |---|---|
-| **Phase** | Phases 1–6 ✅ → **Phase 7 next** |
+| **Phase** | Phases 1–7 ✅ (port complete) |
 | **Repo** | `D:\GitRepos\rush-hub` → `JLtheking2/rush-hub` (canonical copy of this file lives here) |
 | **Last completed** | Phase 6: `render:cards` hardened (fail-fast invalid JSON, 421×614 assert), `createSetsData.js` reads `name`/`setId`, `/sets` + `/sets/print` at 421:614 / 59×86 mm, tracked Sample Set (`npm run create:sample-set`). typecheck + lint + build clean, verified in headless Chromium (2026-09-26). Committed locally, **not pushed** |
-| **Next action** | Phase 7: full `CLAUDE.md` + `docs/*.md`, README polish, home page rewrite, rush-hub Claude memory, ask the user about `PLAN.md` |
+| **Next action** | None: `PLAN.md` is retired (next commit); see `CLAUDE.md` + `docs/` |
 | **Blockers / questions for user** | None. Favicon/logo now uses the same icon set as pokeoh-hub (see §F, 2026-09-26). |
 
 ---
@@ -379,11 +379,11 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 - [x] A sample set built from the 9 §2 sample cards, so the Set Browser and print page aren't empty on first deploy
 
 ### Phase 7: Docs and polish (≈ 0.5 day)
-- [ ] Full rush-hub `CLAUDE.md` (core only) + `docs/` for: renderer & geometry, text fitting, save/load schema, set browser & print
-- [ ] README: purpose, credits and takedown contact, scripts, deploy
-- [ ] Home page rewrite
-- [ ] Claude memory for rush-hub (carry over "keep README in sync")
-- [ ] Ask the user whether to delete `PLAN.md` or trim it to a history, per §A
+- [x] Full rush-hub `CLAUDE.md` (core only) + `docs/` for: renderer & geometry, text fitting, save/load schema, set browser & print
+- [x] README: purpose, credits and takedown contact, scripts, deploy
+- [x] Home page rewrite
+- [x] Claude memory for rush-hub (carry over "keep README in sync")
+- [x] Ask the user whether to delete (answer: delete; done in the next commit) `PLAN.md` or trim it to a history, per §A
 
 **Rough total: 6–8 working days.** Most of the risk is in Phase 4 (getting the text fitting to match the reference renders).
 
@@ -459,3 +459,4 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 - **2026-09-26 (alignment fix):** User reported the type line sitting too high in its `[ ]` and ATK/DEF too high in the grey bar. Measured on the Effect export (421-space rows): bracket images 447–461 (centre 454) vs our type-line text centre ≈452 (NCM's own text centre is 453, and our DOM baseline landed a further ~1 unit higher with no `dy`); grey bar rows 410–439 (centre 424.5) vs ATK/DEF fill 417–429 (centre 423), which had been tuned to match NCM pixel-for-pixel — NCM centres digits on the baked-in ATK/DEF label boxes (414–433), not on the bar. So this was calibration inherited from the reference, not a font or loading bug. Fix in `layout.ts`: type line `dy: 2` (both monster and backrow), ATK/DEF `dy: 3 → 4.5`; verified by zoomed crops (type line centred in brackets, digits centred in the bar; ATK/DEF fill now rows 419–431). This is a **deliberate departure from the reference**, so `compare:ref` rose to 0.71–1.82 % (Normal 1.25, Effect 1.51, Ritual 1.54, Fusion 1.58, Synchro 1.82, Xyz 1.60, Token 0.71, Spell 0.72, Trap 1.22); the remaining monster difference is those two strips.
 - **2026-09-26 (type-line follow-up):** User asked to raise the whole type line (text + brackets) to sit centred in the frame's type strip. Probed the frames (effect/spell/xyz, x=200 and 380): the strip runs from the dark top line at row 441 to the bottom bevel at 464–465, centre ≈453. Brackets (447–461) and capitals (449–459) were centred on 454, and small caps are visually bottom-heavy, so the whole line moved up 1.5 units: brackets `top` 447 → 445.5 (`monsterBracket`/`backrowBracket`), type-line `dy` 2 → 0.5 (both specs), giving a line centre of ≈452.5. The Spell/Trap property icon (`backrowIcon`, rows 443–463, centre 453) was already centred and is unchanged. Verified with zoomed crops of Effect/Spell/Xyz. `compare:ref` went *down* again (Normal 1.19, Effect 1.40, Ritual 1.42, Fusion 1.46, Synchro 1.70, Xyz 1.48, Token 0.65, Spell 0.64, Trap 1.13 %) since NCM's own text centre is 453.
 - **2026-09-26 (session 8, Phase 6):** Extracted shared sample cards, hardened `renderCards.js`, adapted `createSetsData.js`, switched `/sets` styles to 421:614 and print cells to 59 × 86 mm, added `create:sample-set` and generated the tracked Sample Set (`public/sets/SAMPLE`, 9 cards). Recorded the corners/sample-set decisions in §0. Verified: typecheck + lint clean; `compare:ref` unchanged; bad-JSON negative test fails fast; headless checks of `/sets`, viewer, deep link, download name, print geometry and 1-page PDF (screenshots viewed); production build passes. README + CLAUDE.md updated. Committed locally, not pushed. **Next:** Phase 7.
+- **2026-09-26 (session 9, Phase 7):** Wrote docs/{renderer,text-fitting,save-load,set-browser,decisions}.md from the code, rewrote CLAUDE.md (core + docs index + never-push rule) and README.md (no longer 'early port'), polished the home-page copy (kept layout + thumbnails), created rush-hub Claude memory (keep-readme-in-sync, never-push). User chose to delete PLAN.md. Verified: typecheck + lint clean; home page screenshots at 1280 px and 400 px (no horizontal scroll). Not pushed.
