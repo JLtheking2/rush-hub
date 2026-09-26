@@ -22,6 +22,10 @@ const Routes = {
       ).replace(/%20/g, '+')}`,
   },
   Yugipedia: {
+    Card: (cardName: string) =>
+      `https://yugipedia.com/wiki/${encodeURIComponent(
+        normalizeLookupName(cardName).replace(/\s+/g, '_'),
+      )}`,
     CardArtworks: (cardName: string) =>
       `https://yugipedia.com/wiki/Card_Artworks:${encodeURIComponent(
         normalizeLookupName(cardName).replace(/\s+/g, '_'),

@@ -34,6 +34,10 @@ State is one Zustand store, `useRushCardStore` (`store.ts`): `card`, `savedJson`
 
 `parseRushCard(text)` → `{ ok: true, card } | { ok: false, error }`. It rejects: non-JSON ("The file isn't valid JSON."), non-objects and a missing `schemaVersion` ("This isn't a rush-hub card." — pokeoh-hub JSON lands here), other versions, unknown/missing `template`, and wrong-typed fields (naming the field, e.g. `Invalid "level": expected a whole number from 0 to 12.`). Missing fields take the template's defaults; unknown keys are dropped. There is **no migration** from pokeoh-hub JSON. `applyCardJson` returns `{ ok: true } | { ok: false; error }` and leaves the card untouched on failure; `ImportButton` and `SetCardLoader` show the error in a "Card not loaded" dialog.
 
+## Yugipedia autofill (`editor/CardFieldsForm/fields/YugipediaLookup/`)
+
+The Autofill button fetches the card's **main (Master Rules) page** wikitext (never the `(Rush Duel)` page — user decision) via `utils/fetchYugipediaWikitext.ts`, and `card/fromYugipedia.ts` (`parseYugipediaCard`) maps `CardTable2` params onto template, attribute, level/rank, ATK/DEF, type line, Spell/Trap icon and effect. Name, set info and art are left alone. It runs in the browser: never add MediaWiki's `origin=*` (duplicate CORS header). Yugipedia intermittently returns `internal_api_error_*`; the fetch retries those up to 4 times. Master Rules text isn't converted to the Rush `[REQUIREMENT]/[EFFECT]` format.
+
 ## Save / Load (`editor/ImportExport/`)
 
 Buttons: Load Directory, Load, Save, Save As, New. Uses the **File System Access API** (Chromium):

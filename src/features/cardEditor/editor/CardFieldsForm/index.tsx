@@ -10,6 +10,7 @@ import ImagesForm from '../ImagesForm';
 import AttributeSelector from './fields/AttributeSelector';
 import SpellTrapIconSelector from './fields/SpellTrapIconSelector';
 import TemplatePicker from './fields/TemplatePicker';
+import YugipediaLookup from './fields/YugipediaLookup';
 
 const CardFieldsForm: FC = () => {
   const card = useRushCardStore(state => state.card);
@@ -25,6 +26,7 @@ const CardFieldsForm: FC = () => {
           value={card.name}
           onChange={name => setCard({ name })}
         />
+        <YugipediaLookup />
         <TemplatePicker />
         {info.isMonster && <AttributeSelector />}
       </AccordionForm>
