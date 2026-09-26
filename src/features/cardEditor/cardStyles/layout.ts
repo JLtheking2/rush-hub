@@ -47,18 +47,22 @@ export const monsterTypeLine: TextSpec = {
   at: [36, 443, 350, 30],
   size: 16,
   family: fontStacks.typeLine,
-  // Centres the capitals on the bracket images (rows 447–461)
-  dy: 2,
+  // Centres the capitals on the bracket images (rows 445.5–460.5)
+  dy: 0.5,
 };
 export const backrowTypeLine: TextSpec = {
   at: [38, 443, 330, 20],
   size: 16,
   family: fontStacks.typeLine,
-  dy: 2,
+  dy: 0.5,
 };
-/** Bracket images (left, top, width, height) */
-export const monsterBracket = { left: 30, top: 447, w: 5, h: 15 };
-export const backrowBracket = { left: 30, top: 447, w: 5, h: 15 };
+/**
+ * Bracket images (left, top, width, height). The frame's type strip spans
+ * rows 441–465 (centre 453); the small-caps text is visually bottom-heavy, so
+ * the line is centred at 452.5.
+ */
+export const monsterBracket = { left: 30, top: 445.5, w: 5, h: 15 };
+export const backrowBracket = { left: 30, top: 445.5, w: 5, h: 15 };
 export const backrowIcon = { top: 443, size: 20 };
 
 export const effect: TextSpec = {
