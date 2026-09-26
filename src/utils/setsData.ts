@@ -39,20 +39,20 @@ const sets: CardSet[] = [
     cover: '/sets/PRS1/cover.webp',
     cards: [
       {
+        id: '001-smile-world',
+        number: '001',
+        name: 'Smile World',
+        thumb: '/sets/PRS1/thumb/001-smile-world.webp',
+        full: '/sets/PRS1/cards/001-smile-world.png',
+        json: '/sets/PRS1/cards/001-smile-world.json',
+      },
+      {
         id: '002-assault-on-ghq',
         number: '002',
         name: 'Assault on GHQ',
         thumb: '/sets/PRS1/thumb/002-assault-on-ghq.webp',
         full: '/sets/PRS1/cards/002-assault-on-ghq.png',
         json: '/sets/PRS1/cards/002-assault-on-ghq.json',
-      },
-      {
-        id: '001-smile-world',
-        number: '002',
-        name: 'Smile World',
-        thumb: '/sets/PRS1/thumb/001-smile-world.webp',
-        full: '/sets/PRS1/cards/001-smile-world.png',
-        json: '/sets/PRS1/cards/001-smile-world.json',
       },
       {
         id: '003-goblins-secret-remedy',
@@ -191,14 +191,6 @@ const sets: CardSet[] = [
         json: '/sets/PRS1/cards/019-change-slime.json',
       },
       {
-        id: '019-curtain-of-the-dark-ones',
-        number: '019',
-        name: 'Curtain of the Dark Ones',
-        thumb: '/sets/PRS1/thumb/019-curtain-of-the-dark-ones.webp',
-        full: '/sets/PRS1/cards/019-curtain-of-the-dark-ones.png',
-        json: '/sets/PRS1/cards/019-curtain-of-the-dark-ones.json',
-      },
-      {
         id: '020-dark-energy',
         number: '020',
         name: 'Dark Energy',
@@ -221,14 +213,6 @@ const sets: CardSet[] = [
         thumb: '/sets/PRS1/thumb/022-doron.webp',
         full: '/sets/PRS1/cards/022-doron.png',
         json: '/sets/PRS1/cards/022-doron.json',
-      },
-      {
-        id: '022-eatgaboon',
-        number: '022',
-        name: 'Eatgaboon',
-        thumb: '/sets/PRS1/thumb/022-eatgaboon.webp',
-        full: '/sets/PRS1/cards/022-eatgaboon.png',
-        json: '/sets/PRS1/cards/022-eatgaboon.json',
       },
       {
         id: '023-embryonic-beast',
@@ -495,6 +479,14 @@ const sets: CardSet[] = [
         json: '/sets/PRS1/cards/055-violet-crystal.json',
       },
       {
+        id: '056-curtain-of-the-dark-ones',
+        number: '056',
+        name: 'Curtain of the Dark Ones',
+        thumb: '/sets/PRS1/thumb/056-curtain-of-the-dark-ones.webp',
+        full: '/sets/PRS1/cards/056-curtain-of-the-dark-ones.png',
+        json: '/sets/PRS1/cards/056-curtain-of-the-dark-ones.json',
+      },
+      {
         id: '057-wretched-ghost-of-the-attic',
         number: '057',
         name: 'Wretched Ghost of the Attic',
@@ -621,6 +613,14 @@ const sets: CardSet[] = [
         thumb: '/sets/PRS1/thumb/072-pot-the-trick.webp',
         full: '/sets/PRS1/cards/072-pot-the-trick.png',
         json: '/sets/PRS1/cards/072-pot-the-trick.json',
+      },
+      {
+        id: '073-eatgaboon',
+        number: '073',
+        name: 'Eatgaboon',
+        thumb: '/sets/PRS1/thumb/073-eatgaboon.webp',
+        full: '/sets/PRS1/cards/073-eatgaboon.png',
+        json: '/sets/PRS1/cards/073-eatgaboon.json',
       },
     ],
   },
