@@ -8,6 +8,7 @@ import { Box } from '@mui/system';
 import { FC } from 'react';
 import ImagesForm from '../ImagesForm';
 import AttributeSelector from './fields/AttributeSelector';
+import EffectSymbols from './fields/EffectSymbols';
 import SpellTrapIconSelector from './fields/SpellTrapIconSelector';
 import TemplatePicker from './fields/TemplatePicker';
 import YugipediaLookup from './fields/YugipediaLookup';
@@ -75,6 +76,7 @@ const CardFieldsForm: FC = () => {
           value={card.effect}
           onChange={effect => setCard({ effect })}
         />
+        <EffectSymbols />
       </AccordionForm>
       <AccordionForm slug="infoForm" header="Info">
         <TextInput
