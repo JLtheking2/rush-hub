@@ -383,6 +383,7 @@ const readPublicSets = async () => {
 
 /**
  * Serialises to TS source matching the repo's prettier config (single quotes,
+ * or double quotes when the string has more apostrophes than double quotes,
  * unquoted keys, trailing commas), so the generated file passes `npm run lint`.
  * @param {unknown} value
  * @param {number} depth
@@ -395,8 +396,14 @@ const serialize = (value, depth = 0) => {
   if (value === null) return 'null';
   if (typeof value === 'number' || typeof value === 'boolean')
     return String(value);
-  if (typeof value === 'string')
-    return `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
+  if (typeof value === 'string') {
+    const escaped = value.replace(/\\/g, '\\\\');
+    const singles = (value.match(/'/g) || []).length;
+    const doubles = (value.match(/"/g) || []).length;
+    return singles > doubles
+      ? `"${escaped.replace(/"/g, '\\"')}"`
+      : `'${escaped.replace(/'/g, "\\'")}'`;
+  }
 
   if (Array.isArray(value)) {
     if (!value.length) return '[]';
