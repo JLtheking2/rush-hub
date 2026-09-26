@@ -1,34 +1,40 @@
 import { Area } from 'react-easy-crop';
 
-export type Template =
-  | 'normal'
-  | 'effect'
-  | 'ritual'
-  | 'fusion'
-  | 'synchro'
-  | 'xyz'
-  | 'token'
-  | 'spell'
-  | 'trap';
+export const templateIds = [
+  'normal',
+  'effect',
+  'ritual',
+  'fusion',
+  'synchro',
+  'xyz',
+  'token',
+  'spell',
+  'trap',
+] as const;
+export type Template = typeof templateIds[number];
 
-export type Attribute =
-  | 'dark'
-  | 'divine'
-  | 'earth'
-  | 'fire'
-  | 'light'
-  | 'water'
-  | 'wind'
-  | 'none';
+export const attributeIds = [
+  'dark',
+  'divine',
+  'earth',
+  'fire',
+  'light',
+  'water',
+  'wind',
+  'none',
+] as const;
+export type Attribute = typeof attributeIds[number];
 
-export type SpellTrapIcon =
-  | 'none'
-  | 'continuous'
-  | 'counter'
-  | 'equip'
-  | 'field'
-  | 'quickPlay'
-  | 'ritual';
+export const spellTrapIconIds = [
+  'none',
+  'continuous',
+  'counter',
+  'equip',
+  'field',
+  'quickPlay',
+  'ritual',
+] as const;
+export type SpellTrapIcon = typeof spellTrapIconIds[number];
 
 export type CropArea = Area;
 

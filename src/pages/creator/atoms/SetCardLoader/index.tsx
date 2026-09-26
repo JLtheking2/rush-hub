@@ -58,8 +58,11 @@ const SetCardLoader: FC = () => {
       try {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        if (!applyCardJson(await response.text())) {
-          setErrorMessage(`"${label}" isn't a valid card file.`);
+        const result = applyCardJson(await response.text());
+        if (!result.ok) {
+          setErrorMessage(
+            `"${label}" isn't a valid card file: ${result.error}`,
+          );
         }
       } catch {
         setErrorMessage(`Could not load "${label}" from the set.`);

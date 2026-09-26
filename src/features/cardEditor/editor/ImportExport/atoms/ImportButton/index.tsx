@@ -38,14 +38,15 @@ const ImportButton: FC<Props> = ({
   const isDirty = useIsCardDirty();
   const inputRef = useRef<HTMLInputElement>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [invalidDialogOpen, setInvalidDialogOpen] = useState(false);
+  const [invalidError, setInvalidError] = useState<string | null>(null);
   const [outsideDialogOpen, setOutsideDialogOpen] = useState(false);
   const [missingJsonDialogOpen, setMissingJsonDialogOpen] = useState(false);
   const [missingJsonFileName, setMissingJsonFileName] = useState('');
 
   const applyCard = useCallback(
     (text: string) => {
-      if (!applyCardJson(text)) setInvalidDialogOpen(true);
+      const result = applyCardJson(text);
+      if (!result.ok) setInvalidError(result.error);
     },
     [applyCardJson],
   );
@@ -181,8 +182,8 @@ const ImportButton: FC<Props> = ({
         onCancel={() => setDialogOpen(false)}
       />
       <Dialog
-        open={invalidDialogOpen}
-        onClose={() => setInvalidDialogOpen(false)}
+        open={invalidError !== null}
+        onClose={() => setInvalidError(null)}
         PaperProps={{
           sx: {
             backgroundImage: 'none',
@@ -193,11 +194,11 @@ const ImportButton: FC<Props> = ({
         <DialogTitle>Card not loaded</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            That file isn&apos;t a valid rush-hub card (schema version 1).
+            That file couldn&apos;t be loaded as a rush-hub card. {invalidError}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setInvalidDialogOpen(false)}>OK</Button>
+          <Button onClick={() => setInvalidError(null)}>OK</Button>
         </DialogActions>
       </Dialog>
       <OutsideWorkingDirectoryDialog

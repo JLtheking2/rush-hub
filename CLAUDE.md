@@ -35,7 +35,7 @@ Next.js 12 + React 17 + TypeScript, Zustand, MUI v5 + Emotion, React Hook Form, 
 
 ## Architecture
 
-- `src/features/cardEditor/card/` — `RushCard` type (schema v1), defaults, and `useRushCardStore` (card, save state, `applyCardJson`).
+- `src/features/cardEditor/card/` — `RushCard` type (schema v1) + enum id arrays, `templates.ts` (per-template flags/frame/defaults, attribute and Spell/Trap icon tables — the form and renderer read these), `defaults.ts` (`getDefaultCard`, `switchTemplate`), `validate.ts` (`parseRushCard`), and `useRushCardStore` (card, save state, `setTemplate`, `applyCardJson` → `{ ok } | { ok:false, error }`). Data files import siblings directly, never via the `index.ts` barrel.
 - `src/features/cardEditor/cardStyles/` — `constants.ts` (421×614 canvas, `baseEmphemeralUnit`), the ephemeral-unit store, and `components/CardDisplay` (the card preview; export clones `#card`).
 - `src/features/cardEditor/editor/` — the form: `ImportExport` (save/load/save-as/new, File System Access API), `CardDownloader` (PNG export via `html-to-image`), `ImagesForm` (art upload + crop), `CardOptionsForm`.
 - `src/pages/` — `creator` (also `?set=<SetId>&card=<slug>` deep link via `SetCardLoader`), `sets` (Set Browser), `sets/print`.

@@ -36,10 +36,10 @@
 
 | | |
 |---|---|
-| **Phase** | Phase 1 ✅ done and deployed → **Phase 2 next** |
+| **Phase** | Phases 1–2 ✅ → **Phase 3 next** |
 | **Repo** | `D:\GitRepos\rush-hub` → `JLtheking2/rush-hub` (canonical copy of this file lives here) |
-| **Last completed** | Phase 1: building empty shell (typecheck, lint, build clean; `/creator` blank 421:614 card, export = 421×614; `/sets` empty) (2026-09-26) |
-| **Next action** | Phase 2: `templates.ts` table, per-template defaults, real `RushCard` JSON validation (a minimal store already exists, see §F) |
+| **Last completed** | Phase 2: `templates.ts`, `switchTemplate`, `parseRushCard`, store rewired; typecheck + lint clean, logic smoke test and in-app load check passed (2026-09-26) |
+| **Next action** | Phase 3: copy assets from `C:\Users\jlthe\Desktop\yugioh-rush-port\site\res\tcg\ygo\` and fonts into `public/assets/rush/…` / `public/fonts/` using the paths already referenced in `templates.ts` |
 | **Blockers / questions for user** | None. Favicon/logo now uses the same icon set as pokeoh-hub (see §F, 2026-09-26). |
 
 ---
@@ -329,10 +329,10 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 - [x] Confirm the deploy succeeded and `https://jltheking2.github.io/rush-hub/creator` loads (screenshot check)
 
 ### Phase 2: Card model and state (≈ 1 day)
-- [ ] `RushCard` type, `templates.ts` table, attribute and Spell/Trap icon enums
-- [ ] One Zustand store `useRushCardStore` in place of the options/logic/styles triple
-- [ ] Default card per template (switching template keeps the shared fields and resets the irrelevant ones)
-- [ ] Rewire ImportExport (save/load/save-as/new/load-directory) to `RushCard` schema v1, and reject foreign JSON cleanly
+- [x] `RushCard` type, `templates.ts` table, attribute and Spell/Trap icon enums
+- [x] One Zustand store `useRushCardStore` in place of the options/logic/styles triple
+- [x] Default card per template (switching template keeps the shared fields and resets the irrelevant ones)
+- [x] Rewire ImportExport (save/load/save-as/new/load-directory) to `RushCard` schema v1, and reject foreign JSON cleanly
 
 ### Phase 3: Assets (≈ 0.5 day)
 - [ ] 9 frames (`border/<T>.rush.png`) → `public/assets/rush/frames/<template>.png`
@@ -411,8 +411,13 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 
 - **2026-09-26 (post-Phase 1):** Favicon set replaced with pokeoh-hub's: the 9 image files in `public/favicon/` (`android-chrome-{48x48,192x192,512x512}.png`, `apple-touch-icon.png`, `favicon-{16x16,32x32}.png`, `favicon.ico`, `mstile-150x150.png`, `safari-pinned-tab.svg`) are byte-identical copies. `manifest.json` / `site.webmanifest` were deliberately **not** copied, so they keep the "Rush Hub" name; `browserconfig.xml` and the theme colour `#d35337` already matched. The header logo (`Header/index.tsx`) uses `android-chrome-192x192.png`, so it changed too. This supersedes the placeholder "R" monogram entry above.
 
+- **2026-09-26 (Phase 2):** `templates.ts` exposes `templates` (Record), `templateList`, `attributes`, `spellTrapIcons`, `isIconValidFor`. Asset paths it references (must be created in Phase 3, wrapped in `withBasePath` by consumers): `/assets/rush/frames/<template>.png`, `/assets/rush/attributes/{Dark,Divine,Earth,Fire,Light,Water,Wind,Void}.png` (`none` → Void; Spell/Trap icons are chosen by the renderer from `spellTrap`), `/assets/rush/icons/{Continuous,Counter,Equip,Field,Quick-play,Ritual}.png`.
+- **2026-09-26 (Phase 2):** `switchTemplate` rules: name/effect/setId/serial/image always kept; attribute/level/ATK/DEF kept only monster→monster (reset when entering/leaving Spell/Trap); type line follows the new template unless the user edited it; Spell/Trap icon kept only if valid for the new template (Counter = Trap only; Equip/Field/Quick-Play/Ritual = Spell only; Continuous = both).
+- **2026-09-26 (Phase 2):** `parseRushCard` rejects non-JSON, non-objects, missing `schemaVersion` (pokeoh JSON lands here), other versions, unknown `template`, and wrong-typed fields (naming the field; `level` must be an integer 0–12). Missing fields take the template's defaults; unknown keys are dropped; output key order is canonical. **`applyCardJson` now returns `{ ok: true } | { ok: false; error }`** (was boolean); ImportButton and SetCardLoader show the reason. `setTemplate` doesn't touch `savedJson`, so switching counts as an unsaved edit. Lint gotcha: airbnb config forbids `for…of` and global `isFinite`.
+
 ## G. Session log  ← append one entry per session (newest last)
 
 - **2026-09-26 (session 1, in pokeoh-hub):** Researched ygopro.org's card maker (NCM). Downloaded Rush frames, attributes, stars, icons, brackets, foils and fonts to `site/` (54/57 fetched; 3 expected 404s). Captured 9 reference renders with `tools/capture-refs.js`. Mapped pokeoh-hub keep/delete targets (§4.1). User made every design decision (§0). No code or repo changes yet. **Next:** Phase 1.
 - **2026-09-26 (session 2, Phase 1):** Bootstrapped `D:\GitRepos\rush-hub` from a shallow local clone (fresh history), moved this file into the repo (Desktop copy is now a stub), moved the keepers into `cardEditor/editor/`, added the minimal `RushCard` model/store, rewired ImportExport/CardDownloader/ImagesForm/SetCardLoader, shrank cardStyles, deleted all pokeoh code/assets/fonts/docs/skill (~300 MB), rebranded (Rush Hub, placeholder favicon), rewrote README + CLAUDE.md, updated `deploy.yml` (base path `/rush-hub`, typecheck + lint gates). Verified: `npm run typecheck`, `npm run lint`, `npm run build` (with base path) all clean; `/creator` and `/sets` screenshots viewed; export PNG is 421×614. Then committed, created public `JLtheking2/rush-hub`, enabled Pages via `gh api`, and the first deploy run went green; the live `/creator` (https://jltheking2.github.io/rush-hub/creator) was screenshotted with no 4xx responses. Nothing half-done.
 - **2026-09-26 (session 3, favicon):** Swapped the placeholder favicon set for pokeoh-hub's (image files only; hashes verified identical). Updated §B and §F. No code changes. Not pushed, so the live site still shows the old icon until the next deploy.
+- **2026-09-26 (session 4, Phase 2):** Finished the card model: enum id arrays, `templates.ts` flags table, `getDefaultCard`/`switchTemplate`, `parseRushCard` validation, store `setTemplate` + new `applyCardJson` result type; rewired ImportButton and SetCardLoader to show the failure reason. Verified: typecheck + lint clean; a Node smoke test of defaults/switching/validation passed; in the running app (file-input fallback) a pokeoh-style JSON shows "Card not loaded — This isn't a rush-hub card." and a valid card loads with no dialog (the dialog screenshot was caught mid-fade, DOM text confirmed). No form UI yet (Phase 5). Nothing half-done.
