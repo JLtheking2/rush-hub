@@ -7,6 +7,7 @@ import { useRushCardStore } from '@cardEditor/card/store';
 import Label from '@components/inputs/Label';
 import Routes from '@routes';
 import fetchYugipediaWikitext from '@utils/fetchYugipediaWikitext';
+import toTitleCase from '@utils/toTitleCase';
 
 const YugipediaLookup: FC = () => {
   const name = useRushCardStore(state => state.card.name);
@@ -15,20 +16,27 @@ const YugipediaLookup: FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const trimmedName = useMemo(() => name?.trim() || '', [name]);
-  const href = useMemo(() => Routes.Yugipedia.Card(trimmedName), [trimmedName]);
+  const titledName = useMemo(() => toTitleCase(trimmedName), [trimmedName]);
+  const href = useMemo(() => Routes.Yugipedia.Card(titledName), [titledName]);
+
+  // Yugipedia titles are title-cased, so fix the Name field before any lookup
+  const applyTitleCase = useCallback(() => {
+    if (titledName !== name) setCard({ name: titledName });
+  }, [titledName, name, setCard]);
 
   const handleAutofill = useCallback(async () => {
     setError(null);
     setIsLoading(true);
+    applyTitleCase();
     try {
       // Covers every content field; name, set info and art are untouched
-      setCard(parseYugipediaCard(await fetchYugipediaWikitext(trimmedName)));
+      setCard(parseYugipediaCard(await fetchYugipediaWikitext(titledName)));
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not fetch card');
     } finally {
       setIsLoading(false);
     }
-  }, [trimmedName, setCard]);
+  }, [titledName, applyTitleCase, setCard]);
 
   const buttonSx = (theme: {
     custom: { inputBorderColor: string };
@@ -50,6 +58,7 @@ const YugipediaLookup: FC = () => {
           endIcon={<OpenInNewIcon />}
           disabled={!trimmedName}
           href={href}
+          onClick={applyTitleCase}
           target="_blank"
           rel="noopener noreferrer"
         >
