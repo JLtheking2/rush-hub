@@ -6,6 +6,7 @@ import TextAreaInput from '@components/inputs/TextAreaInput';
 import TextInput from '@components/inputs/TextInput';
 import { Box } from '@mui/system';
 import { FC } from 'react';
+import ImagesForm from '../ImagesForm';
 import AttributeSelector from './fields/AttributeSelector';
 import SpellTrapIconSelector from './fields/SpellTrapIconSelector';
 import TemplatePicker from './fields/TemplatePicker';
@@ -18,15 +19,16 @@ const CardFieldsForm: FC = () => {
   return (
     <>
       <AccordionForm slug="cardForm" header="Card">
-        <TemplatePicker />
         <TextInput
           label="Name"
           slug="cardName"
           value={card.name}
           onChange={name => setCard({ name })}
         />
+        <TemplatePicker />
         {info.isMonster && <AttributeSelector />}
       </AccordionForm>
+      <ImagesForm />
       <AccordionForm slug="statsForm" header="Stats">
         {info.hasLevel && (
           <NumberInput
