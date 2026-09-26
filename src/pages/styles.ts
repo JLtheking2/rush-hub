@@ -70,6 +70,6 @@ export const HomeNavThumbnail = styled('img')`
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: contain;
-  border-radius: ${({ theme }) => theme.shape.borderRadius}px;
-  box-shadow: ${({ theme }) => theme.shadows[3]};
+  /* drop-shadow follows the image, not the (letterboxed) box */
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
 `;

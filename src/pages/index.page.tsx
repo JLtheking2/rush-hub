@@ -4,7 +4,13 @@ import { Box, Link, Typography } from '@mui/material';
 import NextLink from 'next/link';
 import Routes from '@routes';
 import { siteDescription } from 'src/constants';
-import { HomeNavButton, HomeNavGrid, PaperBox } from './styles';
+import withBasePath from '@utils/withBasePath';
+import {
+  HomeNavButton,
+  HomeNavGrid,
+  HomeNavThumbnail,
+  PaperBox,
+} from './styles';
 
 const Home: FC = () => (
   <>
@@ -14,6 +20,10 @@ const Home: FC = () => (
         <HomeNavGrid>
           <NextLink href={Routes.Creator} passHref>
             <HomeNavButton>
+              <HomeNavThumbnail
+                src={withBasePath('/assets/home/creator.webp')}
+                alt=""
+              />
               <Typography variant="h4" component="span">
                 Card Creator
               </Typography>
@@ -21,6 +31,10 @@ const Home: FC = () => (
           </NextLink>
           <NextLink href={Routes.Sets} passHref>
             <HomeNavButton>
+              <HomeNavThumbnail
+                src={withBasePath('/assets/home/sets.webp')}
+                alt=""
+              />
               <Typography variant="h4" component="span">
                 Browse Completed Sets
               </Typography>
