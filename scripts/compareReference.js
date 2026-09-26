@@ -4,7 +4,7 @@
  * Visual diff of our renderer against the reference renders of the live
  * ygopro.org card maker (Rush style, one PNG per template, 421 × 614).
  *
- * Builds the 9 sample cards from PLAN.md §2, loads each into the running
+ * Builds the 9 sample cards from sampleCards.js, loads each into the running
  * /creator page (hidden JSON file input), exports it through the real Download
  * button, then writes per template into the output dir:
  *   <T>.ours.png     our export

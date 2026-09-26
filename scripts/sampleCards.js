@@ -1,7 +1,7 @@
 /**
  * sampleCards.js
  *
- * The nine sample cards from PLAN.md §2 (one per template). Shared by
+ * The nine sample cards used for the reference renders (one per template). Shared by
  * `compareReference.js` (which needs the exact reference-render data) and
  * `createSampleSet.js` (which numbers them RD/SMP-EN001..009).
  *
