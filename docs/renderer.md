@@ -86,4 +86,4 @@ Measured DOM-vs-canvas `dy` offsets are already baked into `layout.ts`; re-measu
 
 ## Verifying visually
 
-`npm run verify -- creator --wait "text=DOWNLOAD" --screenshot <winpath>` with the dev server running; the card preview appears ~1 s after `DOWNLOAD` (the height starts at 0 and fills after the debounce). Anchor on the `DOWNLOAD` button's bounding box to clip the card. Always look at the screenshot before interpreting DOM values.
+`npm run verify -- creator --wait "text=Save As" --screenshot <winpath>` with the dev server running; the card preview appears ~1 s after `Save As` (the height starts at 0 and fills after the debounce). Anchor on the `Save As` button's bounding box to clip the card. Always look at the screenshot before interpreting DOM values.

@@ -21,7 +21,7 @@
  *
  * Options:
  *   --wait <selector>     CSS or text selector to waitForSelector on before
- *                         screenshotting. Defaults to "text=DOWNLOAD".
+ *                         screenshotting. Defaults to "text=Save As".
  *                         Pass "" to skip the wait.
  *   --screenshot <file>   Output path for the PNG. Defaults to
  *                         <os.tmpdir()>/rush-hub-verify.png.
@@ -52,7 +52,7 @@ const args = process.argv.slice(2);
 const BASE_URL = 'http://localhost:3000';
 
 let targetArg = 'creator';
-let waitSelector = 'text=DOWNLOAD';
+let waitSelector = 'text=Save As';
 let screenshotFile = path.join(os.tmpdir(), 'rush-hub-verify.png');
 let fullPage = false;
 let timeout = 30000;

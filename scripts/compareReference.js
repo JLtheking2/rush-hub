@@ -5,8 +5,8 @@
  * ygopro.org card maker (Rush style, one PNG per template, 421 × 614).
  *
  * Builds the 9 sample cards from sampleCards.js, loads each into the running
- * /creator page (hidden JSON file input), exports it through the real Download
- * button, then writes per template into the output dir:
+ * /creator page (hidden JSON file input), exports it through the page's
+ * `window.rushhubExportPng` hook (same pipeline as Save), then writes per template into the output dir:
  *   <T>.ours.png     our export
  *   <T>.overlay.png  50 % blend of ours and the reference
  *   <T>.diff.png     absolute-difference heat map
@@ -50,21 +50,6 @@ if (!referenceDir || !fs.existsSync(referenceDir)) {
 
 const samples = require('./sampleCards').referenceSamples();
 
-const INTERCEPTOR = `
-  (() => {
-    if (window.__rushhubInterceptorInstalled) return;
-    window.__rushhubInterceptorInstalled = true;
-    window.__rushhubLastPng = null;
-    document.addEventListener('click', event => {
-      const a = event.target && event.target.closest ? event.target.closest('a[download]') : null;
-      if (!a || !a.href.startsWith('data:image/png')) return;
-      event.preventDefault();
-      event.stopPropagation();
-      window.__rushhubLastPng = a.href;
-    }, true);
-  })();
-`;
-
 const timeout = 60000;
 
 async function exportCard(page, file, card) {
@@ -83,17 +68,7 @@ async function exportCard(page, file, card) {
   await page.evaluate(() => document.fonts.ready);
   // debounce (250 ms) + text-fit layout effects
   await page.waitForTimeout(800);
-  await page.evaluate(() => {
-    window.__rushhubLastPng = null;
-  });
-  await page
-    .locator('button:visible', { hasText: 'Download' })
-    .first()
-    .click({ timeout });
-  await page.waitForFunction(() => !!window.__rushhubLastPng, undefined, {
-    timeout,
-  });
-  const dataUrl = await page.evaluate(() => window.__rushhubLastPng);
+  const dataUrl = await page.evaluate(() => window.rushhubExportPng());
   await page.evaluate(() => {
     const el = document.querySelector('input[type="file"][accept*=".json"]');
     if (el) el.value = '';
@@ -152,8 +127,7 @@ async function main() {
     viewport: { width: 1600, height: 1200 },
     deviceScaleFactor: 1,
   });
-  await context.addInitScript(INTERCEPTOR);
-  const page = await context.newPage();
+    const page = await context.newPage();
   const failures = [];
 
   try {
@@ -161,8 +135,7 @@ async function main() {
       timeout,
       waitUntil: 'domcontentloaded',
     });
-    await page.waitForSelector('text=DOWNLOAD', { timeout });
-    await page.evaluate(INTERCEPTOR);
+    await page.waitForSelector('text=Save As', { timeout });
     // let hydration finish so the file input's change handler is attached
     await page.waitForTimeout(2000);
 

@@ -16,10 +16,8 @@
  *              file picker and dirty-state dialog. A file that fails validation
  *              opens the "Card not loaded" dialog, which we detect and report
  *              instead of waiting for a timeout.
- *   2. Render — the Download button runs `makeCanvas(...)` then dispatches a
- *              synthetic `<a download href="data:image/png;...">` click. We install
- *              a capture-phase click listener that intercepts that anchor, cancels
- *              the navigation, and stashes the data URL on window for us to read.
+ *   2. Render — the creator page exposes `window.rushhubExportPng()`, which runs
+ *              the same `makeCanvas` pipeline as Save and returns a PNG data URL.
  *              Every render is checked to be exactly 421 × 614 px.
  *
  * Usage:
@@ -163,32 +161,6 @@ function resolveCardFiles(paths) {
 
 const cardFiles = resolveCardFiles(inputPaths);
 
-// --- In-page helpers (stringified, run inside the browser) ---
-
-// Capture-phase interceptor for the synthetic `<a download>` click that
-// DownloadButton dispatches. Cancels it and stashes the data URL on window.
-const INSTALL_INTERCEPTOR = `
-  (() => {
-    if (window.__rushhubInterceptorInstalled) return;
-    window.__rushhubInterceptorInstalled = true;
-    window.__rushhubLastPng = null;
-    document.addEventListener(
-      'click',
-      event => {
-        const anchor =
-          event.target && event.target.closest
-            ? event.target.closest('a[download]')
-            : null;
-        if (!anchor || !anchor.href.startsWith('data:image/png')) return;
-        event.preventDefault();
-        event.stopPropagation();
-        window.__rushhubLastPng = anchor.href;
-      },
-      true,
-    );
-  })();
-`;
-
 // --- Main ---
 
 async function renderCard(page, file) {
@@ -245,20 +217,8 @@ async function renderCard(page, file) {
   // Debounce (250 ms) + text-fit layout effects + image decode.
   await page.waitForTimeout(800);
 
-  await page.evaluate(() => {
-    window.__rushhubLastPng = null;
-  });
-
-  await page
-    .locator('button:visible', { hasText: 'Download' })
-    .first()
-    .click({ timeout });
-
-  await page.waitForFunction(() => !!window.__rushhubLastPng, undefined, {
-    timeout,
-  });
-
-  const dataUrl = await page.evaluate(() => window.__rushhubLastPng);
+  const dataUrl = await page.evaluate(() => window.rushhubExportPng());
+  if (!dataUrl) throw new Error('export produced no image');
   const base64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
   const buffer = Buffer.from(base64, 'base64');
 
@@ -295,8 +255,7 @@ async function main() {
     viewport: { width: 1600, height: 1200 },
     deviceScaleFactor: 1,
   });
-  await context.addInitScript(INSTALL_INTERCEPTOR);
-  const page = await context.newPage();
+    const page = await context.newPage();
 
   let succeeded = 0;
   const failures = [];
@@ -304,16 +263,13 @@ async function main() {
   try {
     try {
       await page.goto(url, { timeout, waitUntil: 'domcontentloaded' });
-      await page.waitForSelector('text=DOWNLOAD', { timeout });
+      await page.waitForSelector('text=Save As', { timeout });
     } catch (e) {
       throw new Error(
         `Could not load ${url} — is the dev server running? Start it with start-dev.bat.\n     (${e.message})`,
       );
     }
 
-    // Belt and braces: addInitScript covers navigations, this covers the
-    // already-loaded document.
-    await page.evaluate(INSTALL_INTERCEPTOR);
     // Let hydration finish so the file input's change handler is attached.
     await page.waitForTimeout(2000);
 

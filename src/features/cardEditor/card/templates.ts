@@ -96,8 +96,8 @@ export const templates: Record<Template, TemplateInfo> = {
     nameColor: '#fff',
   }),
   token: monster('token', 'Token', '#806F6C', 'Dragon', {}, 1),
-  spell: backrow('spell', 'Spell', '#00A3A1', 'Spell Card'),
-  trap: backrow('trap', 'Trap', '#E5579B', 'Trap Card'),
+  spell: backrow('spell', 'Spell', '#00A3A1', 'Spell'),
+  trap: backrow('trap', 'Trap', '#E5579B', 'Trap'),
 };
 
 export const templateList: TemplateInfo[] = templateIds.map(
@@ -149,7 +149,7 @@ const iconInfo: Record<
     appliesTo: ['spell', 'trap'],
   },
   counter: { label: 'Counter', file: 'Counter', appliesTo: ['trap'] },
-  equip: { label: 'Equip', file: 'Equip', appliesTo: ['spell'] },
+  equip: { label: 'Equip', file: 'Equip', appliesTo: ['spell', 'trap'] },
   field: { label: 'Field', file: 'Field', appliesTo: ['spell'] },
   quickPlay: { label: 'Quick-Play', file: 'Quick-play', appliesTo: ['spell'] },
   ritual: { label: 'Ritual', file: 'Ritual', appliesTo: ['spell'] },
@@ -179,6 +179,19 @@ export const bracketIcons = {
   right: '/assets/rush/icons/rightbracket.png',
   leftWhite: '/assets/rush/icons/leftbracketwhite.png',
   rightWhite: '/assets/rush/icons/rightbracketwhite.png',
+};
+
+/**
+ * The type line a template autofills: monsters use their default; Spell/Trap
+ * append the property icon's name ("Trap / Continuous").
+ */
+export const getAutoTypeLine = (
+  template: Template,
+  icon: SpellTrapIcon,
+): string => {
+  const { defaults, spellTrap } = templates[template];
+  if (!spellTrap || icon === 'none') return defaults.typeLine;
+  return `${defaults.typeLine} / ${iconInfo[icon].label}`;
 };
 
 export const isIconValidFor = (

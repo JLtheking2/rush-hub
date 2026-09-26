@@ -28,7 +28,7 @@ State is one Zustand store, `useRushCardStore` (`store.ts`): `card`, `savedJson`
 
 ### Defaults and switching template (`defaults.ts`)
 
-`getDefaultCard(template)` builds a card in canonical key order from `templates[t].defaults`. Default template is `effect`. `switchTemplate(card, next)` keeps name, effect, Set ID, serial and art always; attribute / level / ATK / DEF only monster → monster (reset when entering or leaving Spell/Trap); the type line only if the user edited it (otherwise it follows the new template's default); the Spell/Trap icon only if valid for the new template. `setTemplate` doesn't touch `savedJson`, so a switch counts as an unsaved edit.
+`getDefaultCard(template)` builds a card in canonical key order from `templates[t].defaults`. Default template is `effect`. `switchTemplate(card, next)` keeps name, effect, Set ID, serial and art always; attribute / level / ATK / DEF only monster → monster (reset when entering or leaving Spell/Trap); the type line only if the user edited it (otherwise it follows the new template's auto type line, `getAutoTypeLine`: `Spell` / `Trap`, plus ` / <icon name>` when a property icon is set, e.g. `Trap / Continuous`; changing the icon updates an unedited type line the same way); the Spell/Trap icon only if valid for the new template. `setTemplate` doesn't touch `savedJson`, so a switch counts as an unsaved edit.
 
 ### Validation (`validate.ts`)
 
@@ -50,11 +50,11 @@ Buttons: Load Directory, Load, Save, Save As, New. Uses the **File System Access
 
 ## PNG export (`editor/CardDownloader/utils.ts`)
 
-`makeCanvas(cardId, w = 421, h = 614)`: awaits `document.fonts.ready`, clones `#card` into the hidden `#temp` div, forces width/height and `font-size = baseEmphemeralUnit`, calls `html-to-image`'s `toCanvas` with a transparent background, and removes the clone in `finally`. Two safety nets: broken images are replaced by a 1×1 transparent PNG (otherwise `html-to-image` hangs on an empty `src`), and a 15 s timeout rejects a stalled export. **The exported PNG has a transparent art window** when no art is set. Export is always native 421 × 614 — no other resolutions. Download filename is `<Set ID> - <Name>.png`.
+`makeCanvas(cardId, w = 421, h = 614)`: awaits `document.fonts.ready`, clones `#card` into the hidden `#temp` div, forces width/height and `font-size = baseEmphemeralUnit`, calls `html-to-image`'s `toCanvas` with a transparent background, and removes the clone in `finally`. Two safety nets: broken images are replaced by a 1×1 transparent PNG (otherwise `html-to-image` hangs on an empty `src`), and a 15 s timeout rejects a stalled export. **The exported PNG has a transparent art window** when no art is set. Export is always native 421 × 614 — no other resolutions. Save filename is `<Set ID> - <Name>.png`.
 
 ## Batch rendering (`npm run render:cards`)
 
-`npm run render:cards -- <folder-or-json...> [--url http://localhost:3000] [--dry-run] [--timeout ms] [--headed]` (dev server running) loads each card JSON into the creator in headless Chromium and rewrites the `.png` next to it. It races "preview shows the name + Set ID" against the "Card not loaded" dialog, so an invalid or foreign JSON **fails in ~4 s** with the dialog's text instead of hanging; each output's PNG header is read and must be **exactly 421 × 614** or the run fails. It waits 2 s after page load for hydration (the file input's `change` handler isn't attached earlier).
+`npm run render:cards -- <folder-or-json...> [--url http://localhost:3000] [--dry-run] [--timeout ms] [--headed]` (dev server running) loads each card JSON into the creator in headless Chromium and rewrites the `.png` next to it. It races "preview shows the name + Set ID" against the "Card not loaded" dialog, so an invalid or foreign JSON **fails in ~4 s** with the dialog's text instead of hanging; each output's PNG header is read and must be **exactly 421 × 614** or the run fails. Rendering calls `window.rushhubExportPng()` (set by the creator page, same `makeCanvas` pipeline as Save) — there is no Download button. It waits 2 s after page load for hydration (the file input's `change` handler isn't attached earlier).
 
 ## Gotchas
 

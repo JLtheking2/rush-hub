@@ -1,4 +1,8 @@
-import { spellTrapIcons, templates } from '@cardEditor/card/templates';
+import {
+  getAutoTypeLine,
+  spellTrapIcons,
+  templates,
+} from '@cardEditor/card/templates';
 import { SpellTrapIcon } from '@cardEditor/card/types';
 import { useRushCardStore } from '@cardEditor/card/store';
 import ControlledSelector from '@components/inputs/ControlledSelector';
@@ -16,8 +20,17 @@ const SpellTrapIconSelector: FC = () => {
   const setCard = useRushCardStore(state => state.setCard);
 
   const handleChange = useCallback(
-    (event: SelectChangeEvent) =>
-      setCard({ icon: event.target.value as SpellTrapIcon }),
+    (event: SelectChangeEvent) => {
+      const next = event.target.value as SpellTrapIcon;
+      const { card } = useRushCardStore.getState();
+      // Only rewrite the type line if the user hasn't edited it
+      const untouched =
+        card.typeLine === getAutoTypeLine(card.template, card.icon);
+      setCard({
+        icon: next,
+        ...(untouched && { typeLine: getAutoTypeLine(card.template, next) }),
+      });
+    },
     [setCard],
   );
 

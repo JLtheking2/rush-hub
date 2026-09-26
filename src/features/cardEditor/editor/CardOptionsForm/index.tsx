@@ -1,28 +1,13 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import CardFieldsForm from '../CardFieldsForm';
 import ImagesForm from '../ImagesForm';
-import ImportExport from '../ImportExport';
 import { Form } from './styles';
 
-const CardOptionsForm: FC = () => {
-  const [fileHandle, setFileHandle] = useState<FileSystemFileHandle | null>(
-    null,
-  );
-  const [directoryHandle, setDirectoryHandle] =
-    useState<FileSystemDirectoryHandle | null>(null);
-
-  return (
-    <Form as="form">
-      <ImportExport
-        fileHandle={fileHandle}
-        setFileHandle={setFileHandle}
-        directoryHandle={directoryHandle}
-        setDirectoryHandle={setDirectoryHandle}
-      />
-      <CardFieldsForm />
-      <ImagesForm />
-    </Form>
-  );
-};
+const CardOptionsForm: FC = () => (
+  <Form as="form">
+    <ImagesForm />
+    <CardFieldsForm />
+  </Form>
+);
 
 export default CardOptionsForm;

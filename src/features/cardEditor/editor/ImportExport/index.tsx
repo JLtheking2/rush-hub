@@ -1,26 +1,18 @@
 import { Box } from '@mui/system';
-import { Dispatch, FC, SetStateAction } from 'react';
+import { FC, useState } from 'react';
 import ExportButton from './atoms/ExportButton';
 import ImportButton from './atoms/ImportButton';
 import LoadDirectoryButton from './atoms/LoadDirectoryButton';
 import NewButton from './atoms/NewButton';
 import SaveAsButton from './atoms/SaveAsButton';
 
-interface ImportExportProps {
-  fileHandle: FileSystemFileHandle | null;
-  setFileHandle: Dispatch<SetStateAction<FileSystemFileHandle | null>>;
-  directoryHandle: FileSystemDirectoryHandle | null;
-  setDirectoryHandle: Dispatch<
-    SetStateAction<FileSystemDirectoryHandle | null>
-  >;
-}
+const ImportExport: FC = () => {
+  const [fileHandle, setFileHandle] = useState<FileSystemFileHandle | null>(
+    null,
+  );
+  const [directoryHandle, setDirectoryHandle] =
+    useState<FileSystemDirectoryHandle | null>(null);
 
-const ImportExport: FC<ImportExportProps> = ({
-  fileHandle,
-  setFileHandle,
-  directoryHandle,
-  setDirectoryHandle,
-}) => {
   return (
     <Box display="flex" flexDirection="column" gap={1}>
       <LoadDirectoryButton

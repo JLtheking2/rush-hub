@@ -1,4 +1,4 @@
-import { isIconValidFor, templates } from './templates';
+import { getAutoTypeLine, isIconValidFor, templates } from './templates';
 import { RushCard, Template, schemaVersion } from './types';
 
 export const defaultTemplate: Template = 'effect';
@@ -35,6 +35,7 @@ export const switchTemplate = (card: RushCard, next: Template): RushCard => {
   const target = templates[next];
   const fresh = getDefaultCard(next);
   const keepMonsterFields = prev.isMonster && target.isMonster;
+  const icon = isIconValidFor(card.icon, next) ? card.icon : 'none';
 
   return {
     ...fresh,
@@ -50,9 +51,9 @@ export const switchTemplate = (card: RushCard, next: Template): RushCard => {
       def: card.def,
     }),
     typeLine:
-      card.typeLine === prev.defaults.typeLine
-        ? target.defaults.typeLine
+      card.typeLine === getAutoTypeLine(card.template, card.icon)
+        ? getAutoTypeLine(next, icon)
         : card.typeLine,
-    icon: isIconValidFor(card.icon, next) ? card.icon : 'none',
+    icon,
   };
 };

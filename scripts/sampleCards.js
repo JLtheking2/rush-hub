@@ -101,14 +101,14 @@ const buildSamples = () => ({
   Spell: backrow(
     'spell',
     'Spell',
-    'Spell Card',
+    'Spell / Equip',
     'equip',
     '[REQUIREMENT] Pay 500 LP.\n[EFFECT] Draw 1 card.',
   ),
   Trap: backrow(
     'trap',
     'Trap',
-    'Trap Card',
+    'Trap',
     'none',
     '[REQUIREMENT] When your opponent attacks.\n[EFFECT] Negate the attack.',
   ),

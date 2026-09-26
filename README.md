@@ -5,7 +5,7 @@ A web tool for making custom **Yu-Gi-Oh! Rush Duel** style cards, with a Set Bro
 ## Features
 
 - **Card creator** (`/creator`) with all nine Rush Duel templates: Normal, Effect, Ritual, Fusion, Synchro, Xyz, Token, Spell, Trap
-- Editor form: template picker, name, attribute, level/rank, type line, Spell/Trap property icon, effect text, ATK/DEF, set ID, serial (with randomise), and art upload / web search with a 376:380 crop
+- Editor form: template picker, name, attribute, effect text, level/rank, ATK/DEF, type line (auto-filled for Spell/Trap from the property icon), Spell/Trap property icon, set ID, set name, and art upload / web search with a 376:380 crop
 - Native **421 × 614 px** PNG export (the 59 × 86 mm card ratio)
 - Save / load cards as `.json` + `.png` pairs in a working directory (File System Access API, Chromium)
 - **Set Browser** (`/sets`): published sets, a card grid, a full-size viewer and an "Edit in Creator" deep link
