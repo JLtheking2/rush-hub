@@ -1,13 +1,12 @@
 import { CardImage, CropArea } from '@cardEditor/card';
 import { useRushCardStore } from '@cardEditor/card/store';
-import { cardImgHeight, cardImgWidth } from '@cardEditor/cardStyles/constants';
 import ImgCropper from '@components/ImgCropper';
 import { Crop as CropIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { Button, Paper } from '@mui/material';
 import { Box } from '@mui/system';
 import { FC, memo, useCallback, useEffect, useState } from 'react';
 import { useBoolean, useThrottle } from 'react-use';
-import { cropperHeight, cropperWidth } from '../../constants';
+import { artAspect, cropperHeight, cropperWidth } from '../../constants';
 import { SrcLabel } from './styles';
 
 export interface ImgItemProps {
@@ -15,7 +14,6 @@ export interface ImgItemProps {
   name: string;
 }
 
-// Phase 5 swaps this for the 376:380 art-window aspect
 const ImgItem: FC<ImgItemProps> = ({ img, name }) => {
   const setCard = useRushCardStore(state => state.setCard);
   const [cropActive, toggleCropActive] = useBoolean(false);
@@ -63,7 +61,7 @@ const ImgItem: FC<ImgItemProps> = ({ img, name }) => {
             onChange={setCrop}
             allowPrecisionControls
             cropSize={{ width: cropperWidth, height: cropperHeight }}
-            aspect={cardImgWidth / cardImgHeight}
+            aspect={artAspect}
           />
         </Box>
       )}

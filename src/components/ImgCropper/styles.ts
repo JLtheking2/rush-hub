@@ -1,15 +1,14 @@
 import { cropperWidth } from '@cardEditor/editor/ImagesForm/constants';
-import { cardImgHeight, cardImgWidth } from '@cardEditor/cardStyles/constants';
 import { styled } from '@css';
 
-export const Wrapper = styled('div')`
+export const Wrapper = styled('div')<{ $aspect: number }>`
   position: relative;
   background: ${({ theme }) => theme.palette.background.default};
   width: 100%;
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
   max-width: ${cropperWidth}px;
   margin: 0 auto;
-  aspect-ratio: ${cardImgWidth} / ${cardImgHeight};
+  aspect-ratio: ${({ $aspect }) => $aspect};
 
   [data-testid='container'] {
     border-radius: ${({ theme }) => theme.shape.borderRadius}px;

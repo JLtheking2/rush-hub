@@ -5,7 +5,7 @@ import { TooltipProps } from '../Tooltip/types';
 export interface ControlledSelectorProps {
   displayName: string;
   slug: string;
-  value?: number | '';
+  value?: number | string;
   gap?: number;
   helpText?: ReactNode;
   tooltipProps?: TooltipProps;

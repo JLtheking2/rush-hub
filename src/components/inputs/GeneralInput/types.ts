@@ -9,6 +9,7 @@ export interface InputProps {
   startAdornment?: ReactNode;
   endAdornment?: ReactNode;
   disabled?: boolean;
+  helperText?: ReactNode;
   onChange: ((value: string) => void) | ((value: number | '') => void);
   tooltipProps?: PropsWithChildren<TooltipProps>;
   skipDebounce?: boolean;

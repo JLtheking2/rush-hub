@@ -40,6 +40,7 @@ const ImgCropper: FC<ImgCropperProps> = ({
   return (
     <>
       <Wrapper
+        $aspect={aspect ?? 1}
         sx={precisionControlsActive ? { pointerEvents: 'none' } : undefined}
       >
         <Cropper

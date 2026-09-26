@@ -36,10 +36,10 @@
 
 | | |
 |---|---|
-| **Phase** | Phases 1–4 ✅ → **Phase 5 next** |
+| **Phase** | Phases 1–5 ✅ → **Phase 6 next** |
 | **Repo** | `D:\GitRepos\rush-hub` → `JLtheking2/rush-hub` (canonical copy of this file lives here) |
-| **Last completed** | Phase 4: all Rush layers, `FitText`, stroked numerals, `compare:ref` visual diff (0.6–1.3 % pixels differ per template). typecheck + lint clean (2026-09-26). Committed locally, **not pushed** |
-| **Next action** | Phase 5: the editor form (template picker, fields, image crop at 376:380). Read `templates.ts` flags for show/hide; `CardOptionsForm` is currently an empty shell that keeps the ImportExport wiring |
+| **Last completed** | Phase 5: editor form (`editor/CardFieldsForm`), 376:380 art crop, Trap reference recaptured. typecheck + lint clean, verified in headless Chromium (2026-09-26). Committed locally, **not pushed** |
+| **Next action** | Phase 6: PNG export filename check, `render:cards` on the new schema, `createSetsData.js` (`name`/`setId`), `/sets` grid + viewer at 421:614, `/sets/print` at 59×86 mm, and a sample set of the 9 §2 cards |
 | **Blockers / questions for user** | None. Favicon/logo now uses the same icon set as pokeoh-hub (see §F, 2026-09-26). |
 
 ---
@@ -360,12 +360,13 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 - [x] **Visual-diff script** (`scripts/compareReference.js`): build each §2 sample card in the creator, export it, and overlay it at 50 % on the matching `reference-renders/*.png` (path passed as an argument, since the renders aren't in the repo). Aim for ±2 px, and log the corrections in §F and §3. **Done: `npm run compare:ref -- <referenceDir>`; all templates are 0.6–1.3 % differing pixels (Trap excepted, see §F).**
 
 ### Phase 5: Editor form (≈ 1 day)
-- [ ] Template picker (9, with frame-colour swatches)
-- [ ] Name, Attribute (icon menu), Level/Rank (label from `templates[t].levelLabel`), Type line (free text), Spell/Trap icon
-- [ ] Effect textarea (plain, `\n` = new paragraph)
-- [ ] ATK/DEF, Set ID, Serial (with a randomise button)
-- [ ] Image upload/search + crop at the 376:380 aspect (the art layer assumes the saved crop has the window's aspect; `ImgItem` still uses 421:614)
-- [ ] Show/hide fields from the template flags
+- [x] Template picker (9, with frame-colour swatches)
+- [x] Name, Attribute (icon menu), Level/Rank (label from `templates[t].levelLabel`), Type line (free text), Spell/Trap icon
+- [x] Effect textarea (plain, `\n` = new paragraph)
+- [x] ATK/DEF, Set ID, Serial (with a randomise button)
+- [x] Image upload/search + crop at the 376:380 aspect (the art layer assumes the saved crop has the window's aspect; `ImgItem` still uses 421:614)
+- [x] Show/hide fields from the template flags
+- [x] Recapture `reference-renders/Trap.rush.png` with the frame loaded (pink border); `compare:ref` Trap now 1.21 %
 
 ### Phase 6: Export, sets, print (≈ 1 day)
 - [ ] PNG export at exactly 421 × 614, filename from the card name
@@ -428,9 +429,15 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 - **2026-09-26 (Phase 4):** Gotcha: never set a positioning `em` (left/top/width/height) on the same element that sets its own `font-size` — the em then refers to that font size. `FitText` nests an inner sized div in a `CardBox`; stroke widths on the inner element are divided by the font size for the same reason.
 - **2026-09-26 (Phase 4):** Measured DOM vs canvas offsets (`dy`, units): name +9, level number +5, ATK/DEF +3 (and left −1), effect +1, serial/set ID +2, Normal flavour (Amiri italic) +5. Type line and Spell/Trap geometry needed no correction.
 - **2026-09-26 (Phase 4):** Type-line details (from NCM, corrected): Spell/Trap property icon at `left = textWidth + 40`, `]` at `textWidth + 20 (icon) + 42` (or `+ 42` with no icon); monster `]` at `floor(37 + textWidth)`. We clamp `textWidth` to the box width so `]` follows squashed text (NCM lets it run off the card). **Xyz uses a white type line and white brackets** (it sits on the black strip); other templates black.
-- **2026-09-26 (Phase 4):** The reference `Trap.rush.png` was captured with **no frame** (transparent background), so its whole-image diff is ~40 % and not meaningful; Trap text positions match by eye. The Spell reference validates the shared backrow geometry (0.7 %). Regenerate the Trap ref if a real diff is ever needed.
+- **2026-09-26 (Phase 4) — superseded by the Phase 5 entry below (Trap ref recaptured):** The reference `Trap.rush.png` was captured with **no frame** (transparent background), so its whole-image diff is ~40 % and not meaningful; Trap text positions match by eye. The Spell reference validates the shared backrow geometry (0.7 %). Regenerate the Trap ref if a real diff is ever needed.
 - **2026-09-26 (Phase 4):** Fonts: NCM's "Stone Serif Italic" is not shipped, so the reference falls back to Amiri italic. Google's Amiri stylesheet is cross-origin and **cannot be embedded by html-to-image**, so the export fell back to a generic serif; `AmiriItalic.ttf` is now self-hosted (registered as "Amiri Italic"). `useFontsReady` now calls `document.fonts.load()` per registered face (fonts load lazily, so `fonts.ready` alone resolved too early). Stroked numerals (`-webkit-text-stroke` + `paint-order`) render correctly in the exported PNG.
 - **2026-09-26 (Phase 4):** `ImgItem` still crops at 421:614 — Phase 5 must switch to 376:380. With no saved crop the art layer uses `object-fit: cover`.
+
+- **2026-09-26 (Phase 5):** **Supersedes the Phase 4 Trap entry:** `reference-renders/Trap.rush.png` was recaptured (old copy kept as `Trap.rush.old.png`) and now has the pink frame; Trap diff is 1.21 %, in line with the rest (all nine 0.58–1.26 %). `tools/capture-refs.js` now loads playwright from rush-hub, takes optional template names (`node tools/capture-refs.js Trap`), and waits until the frame border pixel (5,300) is opaque instead of a fixed sleep, failing loudly otherwise. The first run hit a transient `UNKNOWN` error opening the output file for write to the Desktop folder; a plain retry worked.
+- **2026-09-26 (Phase 5):** Picker swatches are sampled from each frame at (200, 56) (name-bar interior): normal #C08C3F, effect #B85A2F, ritual #4671AE, fusion #844195, synchro #DED7D3, xyz #000000, token #806F6C, spell #00A3A1, trap #E5579B (`TemplateInfo.swatch`). Points on the effect box or outer border are washed out or near-black.
+- **2026-09-26 (Phase 5):** Form lives in `editor/CardFieldsForm/` (`TemplatePicker`, `AttributeSelector`, `SpellTrapIconSelector` + accordions Card / Text / Stats & Info). Input ids are `#<slug>-input`: `cardName level typeLine attribute stIcon effect atk def setId serial`, template chips are `[data-template=<id>]`. `ControlledSelector.value` widened to `number | string`; `InputProps` gained `helperText`. Spell shows None/Continuous/Equip/Field/Quick-Play/Ritual; Trap shows None/Continuous/Counter.
+- **2026-09-26 (Phase 5):** Crop aspect now comes from `layout.art` (`artAspect` in `ImagesForm/constants.ts`); `ImgCropper`'s wrapper takes the `aspect` prop instead of a hardcoded 421:614. A non-376:380 image at zoom 1 is letterboxed inside the art window (white bands) until the user zooms/crops. That is the cropper's normal contain-fit start, not distortion.
+- **2026-09-26 (Phase 5):** Gotcha for scripts: the page has two `input[type=file]` (first is ImportExport's JSON-load fallback, second is `#imgUpload-input` for art). Target by id. `FitText` now uses react-use's `useIsomorphicLayoutEffect`, removing the dev-server "useLayoutEffect does nothing on the server" warning.
 
 ## G. Session log  ← append one entry per session (newest last)
 
@@ -440,3 +447,4 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 - **2026-09-26 (session 4, Phase 2):** Finished the card model: enum id arrays, `templates.ts` flags table, `getDefaultCard`/`switchTemplate`, `parseRushCard` validation, store `setTemplate` + new `applyCardJson` result type; rewired ImportButton and SetCardLoader to show the failure reason. Verified: typecheck + lint clean; a Node smoke test of defaults/switching/validation passed; in the running app (file-input fallback) a pokeoh-style JSON shows "Card not loaded — This isn't a rush-hub card." and a valid card loads with no dialog (the dialog screenshot was caught mid-fade, DOM text confirmed). No form UI yet (Phase 5). Nothing half-done.
 - **2026-09-26 (session 5, Phase 3):** Added the no-push rule to PLAN.md. Copied 31 assets and 6 fonts into `public/`, wired `fonts.ts` (+ Google fallbacks), added `useFontsReady` and the export fonts wait, asset path helpers in `templates.ts`, footer + README credits. Verified: typecheck + lint clean; headless Chromium: every asset URL 200, all 6 font faces `loaded`, footer credit screenshot checked at 400 px. Not re-checked after the `makeCanvas` change: the Download PNG size (still expected 421×614). Committed locally, not pushed. **Next:** Phase 4.
 - **2026-09-26 (session 6, Phase 4):** Built the renderer: `units`, `layout`, `CardBox`, `FitText`, `measureText`, the nine layers, and `scripts/compareReference.js` (`npm run compare:ref`). Tuned offsets against the reference renders (0.6–1.3 % pixels differ, Trap reference is frameless). Self-hosted Amiri Italic, fixed `useFontsReady`. Verified: typecheck + lint clean; exports are 421×614; overlays viewed; preview at 1280 px and 420 px viewports matches; long name squashes, long effect shrinks, art crop works. README + CLAUDE.md updated. Committed locally, not pushed. **Next:** Phase 5.
+- **2026-09-26 (session 7, Phase 5):** Recaptured the Trap reference (pink frame) with a hardened `capture-refs.js`. Added `swatch` to the template table and built the editor form (`CardFieldsForm`: template picker, name, attribute, level/rank, type line, Spell/Trap icon, effect, ATK/DEF, set ID, serial + randomise), wired into `CardOptionsForm`; switched the art cropper to 376:380; swapped `FitText` to `useIsomorphicLayoutEffect`. Verified: typecheck + lint clean; headless Chromium: all nine templates show/hide the right fields (Xyz label "Rank", Spell/Trap icon lists filtered), typing/`\n`/"?"/randomise update the card, cropper box aspect 0.9895 = 376:380, export is the expected `<setId> - <name>.png`, JSON load repopulates every input, 400 px template grid wraps to 3 columns, no page errors; `compare:ref` 0.58–1.26 % for all nine incl. Trap (overlay viewed). Committed locally, not pushed. **Next:** Phase 6.

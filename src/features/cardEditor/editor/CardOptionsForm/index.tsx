@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import CardFieldsForm from '../CardFieldsForm';
 import ImagesForm from '../ImagesForm';
 import ImportExport from '../ImportExport';
 import { Form } from './styles';
@@ -18,6 +19,7 @@ const CardOptionsForm: FC = () => {
         directoryHandle={directoryHandle}
         setDirectoryHandle={setDirectoryHandle}
       />
+      <CardFieldsForm />
       <ImagesForm />
     </Form>
   );

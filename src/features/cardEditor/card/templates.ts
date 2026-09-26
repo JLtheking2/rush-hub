@@ -10,6 +10,8 @@ import {
 export interface TemplateInfo {
   id: Template;
   label: string;
+  /** Frame colour for the picker chip (sampled from the frame at 200,56) */
+  swatch: string;
   /** Root-relative; wrap in `withBasePath` when used */
   frame: string;
   isMonster: boolean;
@@ -33,6 +35,7 @@ export interface TemplateInfo {
 const monster = (
   id: Template,
   label: string,
+  swatch: string,
   typeLine: string,
   overrides: Partial<TemplateInfo> = {},
   level = 4,
@@ -40,6 +43,7 @@ const monster = (
 ): TemplateInfo => ({
   id,
   label,
+  swatch,
   frame: `/assets/rush/frames/${id}.png`,
   isMonster: true,
   hasLevel: true,
@@ -57,10 +61,12 @@ const monster = (
 const backrow = (
   id: 'spell' | 'trap',
   label: string,
+  swatch: string,
   typeLine: string,
 ): TemplateInfo => ({
   id,
   label,
+  swatch,
   frame: `/assets/rush/frames/${id}.png`,
   isMonster: false,
   hasLevel: false,
@@ -76,22 +82,22 @@ const backrow = (
 
 /** Picker order */
 export const templates: Record<Template, TemplateInfo> = {
-  normal: monster('normal', 'Normal', 'Dragon', {
+  normal: monster('normal', 'Normal', '#C08C3F', 'Dragon', {
     effectFont: 'stoneSerifItalic',
   }),
-  effect: monster('effect', 'Effect', 'Dragon/Effect'),
-  ritual: monster('ritual', 'Ritual', 'Dragon/Ritual/Effect'),
-  fusion: monster('fusion', 'Fusion', 'Dragon/Fusion/Effect'),
-  synchro: monster('synchro', 'Synchro', 'Dragon/Synchro/Effect'),
-  xyz: monster('xyz', 'Xyz', 'Dragon/Xyz/Effect', {
+  effect: monster('effect', 'Effect', '#B85A2F', 'Dragon/Effect'),
+  ritual: monster('ritual', 'Ritual', '#4671AE', 'Dragon/Ritual/Effect'),
+  fusion: monster('fusion', 'Fusion', '#844195', 'Dragon/Fusion/Effect'),
+  synchro: monster('synchro', 'Synchro', '#DED7D3', 'Dragon/Synchro/Effect'),
+  xyz: monster('xyz', 'Xyz', '#000000', 'Dragon/Xyz/Effect', {
     star: 'xyz',
     levelStroke: '#000',
     levelLabel: 'Rank',
     nameColor: '#fff',
   }),
-  token: monster('token', 'Token', 'Dragon', {}, 1),
-  spell: backrow('spell', 'Spell', 'Spell Card'),
-  trap: backrow('trap', 'Trap', 'Trap Card'),
+  token: monster('token', 'Token', '#806F6C', 'Dragon', {}, 1),
+  spell: backrow('spell', 'Spell', '#00A3A1', 'Spell Card'),
+  trap: backrow('trap', 'Trap', '#E5579B', 'Trap Card'),
 };
 
 export const templateList: TemplateInfo[] = templateIds.map(

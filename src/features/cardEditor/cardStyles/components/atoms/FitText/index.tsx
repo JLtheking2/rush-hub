@@ -1,5 +1,6 @@
 import useFontsReady from '@hooks/useFontsReady';
-import { FC, useLayoutEffect, useState } from 'react';
+import { FC, useState } from 'react';
+import { useIsomorphicLayoutEffect } from 'react-use';
 import { Rect } from '../../../layout';
 import { fitsHeight, measureWidth } from '../../../utils/measureText';
 import { u } from '../../../units';
@@ -50,7 +51,7 @@ const FitText: FC<FitTextProps> = ({
   });
   const [, , width, height] = at;
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!fontsReady) return;
     const font = { family, weight, style: fontStyle };
     if (mode === 'line') {

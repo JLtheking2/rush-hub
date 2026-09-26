@@ -2,11 +2,12 @@
 
 A web tool for making custom **Yu-Gi-Oh! Rush Duel** style cards, with a Set Browser and printable card sheets. Live at <https://jltheking2.github.io/rush-hub/>.
 
-> **Status:** early port. The repo is a stripped shell (blank 421:614 card, save/load, image upload) with the Rush frames, icons and fonts in place. The Rush card renderer and editor form are being built — see [`PLAN.md`](PLAN.md) for the roadmap and current status.
+> **Status:** early port. The Rush card renderer and the editor form work (all nine templates, art upload + crop, save/load, PNG export). The Set Browser, print sheets and sample set are still being adapted — see [`PLAN.md`](PLAN.md) for the roadmap and current status.
 
 ## Features (target)
 
 - Rush Duel templates: Normal, Effect, Ritual, Fusion, Synchro, Xyz, Token, Spell, Trap
+- Editor form: template picker, name, attribute, level/rank, type line, Spell/Trap property icon, effect text, ATK/DEF, set ID, serial, and art upload with a 376:380 crop
 - Native 421 × 614 px PNG export (59 × 86 mm card ratio)
 - Save / load cards as `.json` + `.png` pairs (File System Access API)
 - `/sets` Set Browser and `/sets/print` 3×3-per-A4 print sheets
