@@ -37,7 +37,8 @@ export const atk: TextSpec = {
   size: 19.25,
   family: fontStacks.numerals,
   weight: 700,
-  dy: 3,
+  // Centres the digits on the grey bar (rows 410–439), not the NCM label boxes
+  dy: 4.5,
 };
 export const def: TextSpec = { ...atk, at: [276, 411, 75, 30] };
 export const statStroke = { width: 3, color: '#000' };
@@ -46,11 +47,14 @@ export const monsterTypeLine: TextSpec = {
   at: [36, 443, 350, 30],
   size: 16,
   family: fontStacks.typeLine,
+  // Centres the capitals on the bracket images (rows 447–461)
+  dy: 2,
 };
 export const backrowTypeLine: TextSpec = {
   at: [38, 443, 330, 20],
   size: 16,
   family: fontStacks.typeLine,
+  dy: 2,
 };
 /** Bracket images (left, top, width, height) */
 export const monsterBracket = { left: 30, top: 447, w: 5, h: 15 };
