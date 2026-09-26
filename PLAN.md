@@ -36,10 +36,10 @@
 
 | | |
 |---|---|
-| **Phase** | Phases 1–5 ✅ → **Phase 6 next** |
+| **Phase** | Phases 1–6 ✅ → **Phase 7 next** |
 | **Repo** | `D:\GitRepos\rush-hub` → `JLtheking2/rush-hub` (canonical copy of this file lives here) |
-| **Last completed** | Phase 5: editor form (`editor/CardFieldsForm`), 376:380 art crop, Trap reference recaptured. typecheck + lint clean, verified in headless Chromium (2026-09-26). Committed locally, **not pushed** |
-| **Next action** | Phase 6: PNG export filename check, `render:cards` on the new schema, `createSetsData.js` (`name`/`setId`), `/sets` grid + viewer at 421:614, `/sets/print` at 59×86 mm, and a sample set of the 9 §2 cards |
+| **Last completed** | Phase 6: `render:cards` hardened (fail-fast invalid JSON, 421×614 assert), `createSetsData.js` reads `name`/`setId`, `/sets` + `/sets/print` at 421:614 / 59×86 mm, tracked Sample Set (`npm run create:sample-set`). typecheck + lint + build clean, verified in headless Chromium (2026-09-26). Committed locally, **not pushed** |
+| **Next action** | Phase 7: full `CLAUDE.md` + `docs/*.md`, README polish, home page rewrite, rush-hub Claude memory, ask the user about `PLAN.md` |
 | **Blockers / questions for user** | None. Favicon/logo now uses the same icon set as pokeoh-hub (see §F, 2026-09-26). |
 
 ---
@@ -89,6 +89,8 @@
 | Workflow | **Single contributor, pushes straight to `master`.** No PR workflow, no PR CI and no branch protection. The deploy workflow runs the typecheck and lint gates itself. |
 | Set Browser + Print | **Keep both**, adapted to Rush cards and 59 × 86 mm. |
 | Publishing | Agents commit locally but **never push**; the user pushes and publishes (2026-09-26). |
+| Rounded corners | **Deferred.** Corners stay square in preview, Set Browser and print (2026-09-26, Phase 6). |
+| Sample set | Folder `SAMPLE`, display name "Sample Set", the 9 §2 cards numbered `RD/SMP-EN001`–`009` in template order (2026-09-26, Phase 6). |
 
 ---
 
@@ -288,7 +290,7 @@ Reuse the pokeoh `ImportExport` system as it is (working directory via `showDire
 - **Export:** PNG at exactly **421 × 614 px** (`cardImgWidth/Height` constants). Filename from the card name.
 - **Set Browser (`/sets`):** pipeline `cards/sets/<SetId>/` (local staging; only `cover.png` is tracked) → `npm run create:sets` promotes it into `public/sets/<SetId>/{cards/<slug>.png + <slug>.json, thumb/<slug>.webp, cover.webp}` (tracked) and regenerates `src/utils/setsData.ts` (generated, never hand-edit). The `.gitignore` rules at the bottom of pokeoh's `.gitignore` produce this and must be kept. Adapt `createSetsData.js` to read the display name from `name` and the number from `setId` in the `RushCard` JSON. Thumbnails and the grid use 421:614. The `?set=&card=` deep link (`SetCardLoader`) loads a `RushCard`.
 - **Print (`/sets/print?set=<SetId>`):** cells are **59 × 86 mm**. 3×3 = 177 × 258 mm fits A4 (210 × 297) with 16.5 / 19.5 mm margins. Keep the cut marks. A native 421 px image at 59 mm prints at ≈ 181 DPI (slightly soft), which follows from the native-export decision.
-- **Rounded corners:** ~2.5 mm on real cards, shown as a guide in preview/print only. Exports stay square.
+- **Rounded corners:** ~2.5 mm on real cards. **Deferred (see §0)**; everything stays square for now.
 
 ---
 
@@ -369,12 +371,12 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 - [x] Recapture `reference-renders/Trap.rush.png` with the frame loaded (pink border); `compare:ref` Trap now 1.21 %
 
 ### Phase 6: Export, sets, print (≈ 1 day)
-- [ ] PNG export at exactly 421 × 614, filename from the card name
-- [ ] `render:cards` batch renderer on the new renderer and schema
-- [ ] `createSetsData.js`: read `name`/`setId` from the `RushCard` JSON, thumbnails at 421:614
-- [ ] `/sets` grid and full-size viewer at 421:614; the deep link loads a `RushCard`
-- [ ] `/sets/print`: 59 × 86 mm cells, 3×3 on A4, cut marks
-- [ ] A sample set built from the 9 §2 sample cards, so the Set Browser and print page aren't empty on first deploy
+- [x] PNG export at exactly 421 × 614, filename `<Set ID> - <Name>.png` (`/` → `-`)
+- [x] `render:cards` batch renderer on the new renderer and schema
+- [x] `createSetsData.js`: read `name`/`setId` from the `RushCard` JSON, thumbnails at 421:614
+- [x] `/sets` grid and full-size viewer at 421:614; the deep link loads a `RushCard`
+- [x] `/sets/print`: 59 × 86 mm cells, 3×3 on A4, cut marks
+- [x] A sample set built from the 9 §2 sample cards, so the Set Browser and print page aren't empty on first deploy
 
 ### Phase 7: Docs and polish (≈ 0.5 day)
 - [ ] Full rush-hub `CLAUDE.md` (core only) + `docs/` for: renderer & geometry, text fitting, save/load schema, set browser & print
@@ -439,6 +441,12 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 - **2026-09-26 (Phase 5):** Crop aspect now comes from `layout.art` (`artAspect` in `ImagesForm/constants.ts`); `ImgCropper`'s wrapper takes the `aspect` prop instead of a hardcoded 421:614. A non-376:380 image at zoom 1 is letterboxed inside the art window (white bands) until the user zooms/crops. That is the cropper's normal contain-fit start, not distortion.
 - **2026-09-26 (Phase 5):** Gotcha for scripts: the page has two `input[type=file]` (first is ImportExport's JSON-load fallback, second is `#imgUpload-input` for art). Target by id. `FitText` now uses react-use's `useIsomorphicLayoutEffect`, removing the dev-server "useLayoutEffect does nothing on the server" warning.
 
+- **2026-09-26 (Phase 6):** `scripts/sampleCards.js` now holds the §2 samples (`referenceSamples()` = `RD/ABC-EN001` for `compare:ref`, `sampleSetCards()` = `RD/SMP-EN00n`). Keys are in canonical `RushCard` order, so `JSON.stringify(card, null, 2)` equals the creator's `serializeCard`. `compare:ref` numbers were unchanged after the extraction (Normal 1.19 … Trap 1.13 %).
+- **2026-09-26 (Phase 6):** `renderCards.js` races "preview shows name + set ID" against the "Card not loaded" dialog, so an invalid/foreign JSON fails in ~4 s with the dialog text (was a 60 s timeout), then dismisses the dialog and continues. Each render's PNG width/height is read from the IHDR bytes and must be 421×614. It waits 2 s after load for hydration (the file input's `change` handler isn't attached before that).
+- **2026-09-26 (Phase 6):** `createSetsData.js` no longer requires `<Number> - <Name>.png` staging names: any non-cover `.png` is slugged from its whole basename (`RD-SMP-EN001 - Sample Normal` → `rd-smp-en001-sample-normal`, hyphen runs collapsed; duplicate slugs are skipped with a warning). Grid number = `setId` (may be empty), name = `name`; sort = prefix, number, then name. No `.json` → number `''`, name = slug. Re-runs are idempotent (0 copied, 0 thumbs).
+- **2026-09-26 (Phase 6):** `npm run create:sample-set` (dev server running) writes the 9 JSONs to `cards/sets/SAMPLE/`, renders them via `renderCards.js`, uses the Sample Effect render as `cover.png`, and runs `createSetsData.js`. Exported PNGs have a **transparent art window** (export background is `transparent`), so grid thumbs show the `Thumbnail` backdrop grey there while print/viewer on white show white. Real art fills it.
+- **2026-09-26 (Phase 6):** Verified headlessly: thumbs 0.6857 w/h, no horizontal scroll at 400 px, viewer arrows + "Edit in Creator" → `/creator?set=SAMPLE&card=…` loads the card with no error dialog, Download → `RD-SMP-EN002 - Sample Effect.png`, print cells 222.98 × 325.03 px (59 × 86 mm at 96 dpi), A4 PDF = 1 page for 9 cards, `npm run build` with `/rush-hub` base path passes and `out/sets/SAMPLE/` exists. Gotcha: `npm run build` while `next dev` is running shares `.next`; restart dev afterwards if it misbehaves.
+
 ## G. Session log  ← append one entry per session (newest last)
 
 - **2026-09-26 (session 1, in pokeoh-hub):** Researched ygopro.org's card maker (NCM). Downloaded Rush frames, attributes, stars, icons, brackets, foils and fonts to `site/` (54/57 fetched; 3 expected 404s). Captured 9 reference renders with `tools/capture-refs.js`. Mapped pokeoh-hub keep/delete targets (§4.1). User made every design decision (§0). No code or repo changes yet. **Next:** Phase 1.
@@ -450,3 +458,4 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 - **2026-09-26 (session 7, Phase 5):** Recaptured the Trap reference (pink frame) with a hardened `capture-refs.js`. Added `swatch` to the template table and built the editor form (`CardFieldsForm`: template picker, name, attribute, level/rank, type line, Spell/Trap icon, effect, ATK/DEF, set ID, serial + randomise), wired into `CardOptionsForm`; switched the art cropper to 376:380; swapped `FitText` to `useIsomorphicLayoutEffect`. Verified: typecheck + lint clean; headless Chromium: all nine templates show/hide the right fields (Xyz label "Rank", Spell/Trap icon lists filtered), typing/`\n`/"?"/randomise update the card, cropper box aspect 0.9895 = 376:380, export is the expected `<setId> - <name>.png`, JSON load repopulates every input, 400 px template grid wraps to 3 columns, no page errors; `compare:ref` 0.58–1.26 % for all nine incl. Trap (overlay viewed). Committed locally, not pushed. **Next:** Phase 6.
 - **2026-09-26 (alignment fix):** User reported the type line sitting too high in its `[ ]` and ATK/DEF too high in the grey bar. Measured on the Effect export (421-space rows): bracket images 447–461 (centre 454) vs our type-line text centre ≈452 (NCM's own text centre is 453, and our DOM baseline landed a further ~1 unit higher with no `dy`); grey bar rows 410–439 (centre 424.5) vs ATK/DEF fill 417–429 (centre 423), which had been tuned to match NCM pixel-for-pixel — NCM centres digits on the baked-in ATK/DEF label boxes (414–433), not on the bar. So this was calibration inherited from the reference, not a font or loading bug. Fix in `layout.ts`: type line `dy: 2` (both monster and backrow), ATK/DEF `dy: 3 → 4.5`; verified by zoomed crops (type line centred in brackets, digits centred in the bar; ATK/DEF fill now rows 419–431). This is a **deliberate departure from the reference**, so `compare:ref` rose to 0.71–1.82 % (Normal 1.25, Effect 1.51, Ritual 1.54, Fusion 1.58, Synchro 1.82, Xyz 1.60, Token 0.71, Spell 0.72, Trap 1.22); the remaining monster difference is those two strips.
 - **2026-09-26 (type-line follow-up):** User asked to raise the whole type line (text + brackets) to sit centred in the frame's type strip. Probed the frames (effect/spell/xyz, x=200 and 380): the strip runs from the dark top line at row 441 to the bottom bevel at 464–465, centre ≈453. Brackets (447–461) and capitals (449–459) were centred on 454, and small caps are visually bottom-heavy, so the whole line moved up 1.5 units: brackets `top` 447 → 445.5 (`monsterBracket`/`backrowBracket`), type-line `dy` 2 → 0.5 (both specs), giving a line centre of ≈452.5. The Spell/Trap property icon (`backrowIcon`, rows 443–463, centre 453) was already centred and is unchanged. Verified with zoomed crops of Effect/Spell/Xyz. `compare:ref` went *down* again (Normal 1.19, Effect 1.40, Ritual 1.42, Fusion 1.46, Synchro 1.70, Xyz 1.48, Token 0.65, Spell 0.64, Trap 1.13 %) since NCM's own text centre is 453.
+- **2026-09-26 (session 8, Phase 6):** Extracted shared sample cards, hardened `renderCards.js`, adapted `createSetsData.js`, switched `/sets` styles to 421:614 and print cells to 59 × 86 mm, added `create:sample-set` and generated the tracked Sample Set (`public/sets/SAMPLE`, 9 cards). Recorded the corners/sample-set decisions in §0. Verified: typecheck + lint clean; `compare:ref` unchanged; bad-JSON negative test fails fast; headless checks of `/sets`, viewer, deep link, download name, print geometry and 1-page PDF (screenshots viewed); production build passes. README + CLAUDE.md updated. Committed locally, not pushed. **Next:** Phase 7.

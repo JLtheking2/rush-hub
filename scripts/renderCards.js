@@ -11,13 +11,16 @@
  *
  * Two hook points make the page scriptable without any source changes:
  *   1. Load  — `ImportButton` always renders a hidden `<input type="file">` as its
- *              non-FSA fallback. `setInputFiles` on it runs the normal applyCard
- *              path (isCardInterface → migrateLegacyCard → stripStaleAttributes →
- *              setStateValues), bypassing the file picker and dirty-state dialog.
+ *              non-FSA fallback. `setInputFiles` on it runs the normal
+ *              `applyCardJson` path (`parseRushCard` validation), bypassing the
+ *              file picker and dirty-state dialog. A file that fails validation
+ *              opens the "Card not loaded" dialog, which we detect and report
+ *              instead of waiting for a timeout.
  *   2. Render — the Download button runs `makeCanvas(...)` then dispatches a
  *              synthetic `<a download href="data:image/png;...">` click. We install
  *              a capture-phase click listener that intercepts that anchor, cancels
  *              the navigation, and stashes the data URL on window for us to read.
+ *              Every render is checked to be exactly 421 × 614 px.
  *
  * Usage:
  *   node scripts/renderCards.js <path...> [options]
@@ -50,6 +53,8 @@ const path = require('path');
 
 const DEFAULT_URL = 'http://localhost:3000';
 const CARD_ID = 'card';
+const EXPECTED_WIDTH = 421;
+const EXPECTED_HEIGHT = 614;
 
 // --- Argument parsing (no external deps) ---
 
@@ -89,9 +94,9 @@ function printUsage() {
       '  <path...>  One or more folders and/or .json card files.',
       '',
       'Examples:',
-      '  npm run render:cards -- cards/sets/PKO1',
-      '  npm run render:cards -- "cards/sets/PKO1/P7 - Firegrass.json"',
-      '  npm run render:cards -- cards/sets/PKO1/*.json',
+      '  npm run render:cards -- cards/sets/SAMPLE',
+      '  npm run render:cards -- "public/sets/SAMPLE/cards/rd-smp-en001-sample-normal.json"',
+      '  npm run render:cards -- public/sets/SAMPLE/cards --dry-run',
       '',
     ].join('\n'),
   );
@@ -190,32 +195,55 @@ async function renderCard(page, file) {
   const raw = fs.readFileSync(file, 'utf8');
   const card = JSON.parse(raw);
   const expectedName = typeof card.name === 'string' ? card.name.trim() : '';
+  const expectedSetId = typeof card.setId === 'string' ? card.setId.trim() : '';
 
   // Load the card through the hidden fallback file input.
   const input = page.locator('input[type="file"][accept*=".json"]').first();
   await input.setInputFiles(file, { timeout });
 
-  // Wait for the store to hydrate and the preview to reflect this card. The
-  // card name is the cheapest reliable signal; when a card has no name at all
-  // we fall back to a fixed settle.
-  if (expectedName) {
-    await page.waitForFunction(
-      ({ cardId, name }) => {
-        const node = document.getElementById(cardId);
-        if (!node) return false;
-        const text = (node.textContent || '').replace(/\s+/g, ' ');
-        return text.includes(name.replace(/\s+/g, ' '));
-      },
-      { cardId: CARD_ID, name: expectedName },
-      { timeout },
-    );
+  // Race "the preview shows this card" against "the invalid-card dialog opened".
+  // Name and set ID both have to be present, so a stale previous card can't
+  // satisfy the check. A card with neither falls back to a fixed settle.
+  const dialog = page.getByText('Card not loaded');
+  if (expectedName || expectedSetId) {
+    const updated = page
+      .waitForFunction(
+        ({ cardId, name, setId }) => {
+          const node = document.getElementById(cardId);
+          if (!node) return false;
+          const text = (node.textContent || '').replace(/\s+/g, ' ');
+          return (
+            (!name || text.includes(name.replace(/\s+/g, ' '))) &&
+            (!setId || text.includes(setId))
+          );
+        },
+        { cardId: CARD_ID, name: expectedName, setId: expectedSetId },
+        { timeout },
+      )
+      .then(() => 'loaded');
+    const rejected = dialog
+      .waitFor({ state: 'visible', timeout })
+      .then(() => 'rejected');
+    const outcome = await Promise.race([updated, rejected]);
+    // Whichever promise lost keeps running until its timeout; swallow it.
+    updated.catch(() => {});
+    rejected.catch(() => {});
+
+    if (outcome === 'rejected') {
+      const message = (
+        await page.locator('[role="dialog"]').last().innerText()
+      ).replace(/\s+/g, ' ');
+      await page.keyboard.press('Escape');
+      await dialog.waitFor({ state: 'hidden', timeout });
+      throw new Error(`invalid card: ${message}`);
+    }
   } else {
     await page.waitForTimeout(500);
   }
 
   await page.evaluate(() => document.fonts.ready);
-  // Let images decode and any layout measuring (e.g. flavor-text line counts) settle.
-  await page.waitForTimeout(400);
+  // Debounce (250 ms) + text-fit layout effects + image decode.
+  await page.waitForTimeout(800);
 
   await page.evaluate(() => {
     window.__rushhubLastPng = null;
@@ -233,6 +261,15 @@ async function renderCard(page, file) {
   const dataUrl = await page.evaluate(() => window.__rushhubLastPng);
   const base64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
   const buffer = Buffer.from(base64, 'base64');
+
+  // PNG IHDR: width at byte 16, height at byte 20 (big-endian).
+  const width = buffer.readUInt32BE(16);
+  const height = buffer.readUInt32BE(20);
+  if (width !== EXPECTED_WIDTH || height !== EXPECTED_HEIGHT) {
+    throw new Error(
+      `export is ${width}x${height}, expected ${EXPECTED_WIDTH}x${EXPECTED_HEIGHT}`,
+    );
+  }
 
   // Reset the input so re-selecting the same file later still fires `change`.
   await page.evaluate(() => {
@@ -277,6 +314,8 @@ async function main() {
     // Belt and braces: addInitScript covers navigations, this covers the
     // already-loaded document.
     await page.evaluate(INSTALL_INTERCEPTOR);
+    // Let hydration finish so the file input's change handler is attached.
+    await page.waitForTimeout(2000);
 
     for (const file of cardFiles) {
       const label = path.basename(file);

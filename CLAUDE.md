@@ -24,7 +24,8 @@ rush-hub is a Yu-Gi-Oh! **Rush Duel** card maker, derived from pokeoh-hub (itsel
 npm run dev | build | lint | lint:fix | typecheck
 npm run create:sets   # cards/sets/ -> public/sets/ + regenerate src/utils/setsData.ts (generated, never hand-edit)
 npm run verify -- creator
-npm run render:cards -- <folder-or-json...>
+npm run render:cards -- <folder-or-json...>   # re-render .png next to card .json; fails on invalid cards / non-421x614 output
+npm run create:sample-set                     # rebuild the tracked Sample Set (cards/sets/SAMPLE -> public/sets/SAMPLE); dev server running
 npm run compare:ref -- <referenceDir>   # visual diff of the 9 sample cards vs reference renders (dev server running)
 ```
 

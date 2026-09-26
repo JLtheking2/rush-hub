@@ -19,13 +19,8 @@ const WEBP_QUALITY = 82;
  * folder name.
  */
 const SET_DISPLAY_NAMES = {
-  PKO1: 'Volume 1',
+  SAMPLE: 'Sample Set',
 };
-
-/**
- * `P6 - Fiend's Hand.png` -> number `P6`, name `Fiend's Hand`
- */
-const CARD_FILENAME_REGEX = /^(\S*\d+) - (.+)\.png$/;
 
 // sharp is a native module. If it failed to install we still want the site to
 // build - fall back to using the full-size image as its own thumbnail.
@@ -40,41 +35,47 @@ try {
 }
 
 /**
- * Turns a card name into an ASCII, URL-safe filename stem. Source filenames
- * contain spaces and typographic apostrophes (`P6 - Fiend’s Hand.png`) that are
- * awkward in URLs. The real name is read back out of the card's own `.json` in
- * phase B, so nothing is lost by slugging the filename.
- * @param {string} number
- * @param {string} name
+ * Turns a card filename stem (`RD-SMP-EN001 - Sample Normal`) into an ASCII,
+ * URL-safe slug (`rd-smp-en001-sample-normal`). Saved filenames contain spaces
+ * and possibly typographic characters that are awkward in URLs. The real name
+ * and Set ID are read back out of the card's own `.json` in phase B, so nothing
+ * is lost by slugging the filename.
+ * @param {string} stem
  * @returns {string}
  */
-const toSlug = (number, name) =>
-  `${number} ${name}`
+const toSlug = stem =>
+  stem
     .normalize('NFKD')
     // Strip combining accents, then any non-ASCII leftovers (’ -> nothing)
     .replace(/[̀-ͯ]/g, '')
     .replace(/[^\w\s-]/g, '')
     .trim()
     .replace(/[\s_]+/g, '-')
+    .replace(/-{2,}/g, '-')
     .toLowerCase();
 
 /**
- * Orders `K1, K2, ... K12, P1, ... P44` - by letter prefix, then numerically.
- * A plain string sort would place `K10` before `K2`.
+ * Orders Set IDs like `RD/SMP-EN001, RD/SMP-EN002, ... EN010` - by non-numeric
+ * prefix, then numerically (a plain string sort would place `10` before `2`),
+ * then by name so equal or empty numbers stay deterministic.
  */
-const compareCardNumbers = (a, b) => {
+const compareCards = (a, b) => {
   const split = value => {
     const match = value.match(/^(\D*)(\d+)$/);
     return match ? [match[1], Number(match[2])] : [value, 0];
   };
   const [aPrefix, aNumber] = split(a.number);
   const [bPrefix, bNumber] = split(b.number);
-  return aPrefix.localeCompare(bPrefix) || aNumber - bNumber;
+  return (
+    aPrefix.localeCompare(bPrefix) ||
+    aNumber - bNumber ||
+    a.name.localeCompare(b.name)
+  );
 };
 
 /**
  * True when `source` is newer than `destination`, or `destination` is missing.
- * Lets repeat runs skip the ~62MB of copying.
+ * Lets repeat runs skip re-copying unchanged files.
  */
 const isStale = async (source, destination) => {
   try {
@@ -158,17 +159,22 @@ const importSet = async (setId, pngFiles) => {
   await fs.promises.mkdir(cardsDir, { recursive: true });
 
   const cards = [];
+  const seenSlugs = new Map();
 
   pngFiles.forEach(file => {
-    const match = file.match(CARD_FILENAME_REGEX);
-    if (!match) {
+    const slug = toSlug(file.replace(/\.png$/i, ''));
+    if (!slug) {
+      console.warn(`  skipping "${file}" - filename has no usable characters`);
+      return;
+    }
+    if (seenSlugs.has(slug)) {
       console.warn(
-        `  skipping "${file}" - expected "<Number> - <Name>.png" format`,
+        `  skipping "${file}" - same slug "${slug}" as "${seenSlugs.get(slug)}"`,
       );
       return;
     }
-    const [, number, name] = match;
-    cards.push({ slug: toSlug(number, name), file });
+    seenSlugs.set(slug, file);
+    cards.push({ slug, file });
   });
 
   let copied = 0;
@@ -235,17 +241,11 @@ const importSet = async (setId, pngFiles) => {
 
 /**
  * Last-resort number/name when a card has no `.json` next to its image. The
- * slug is lossy (`p6-fiends-hand` can't give back `Fiend's Hand`), which is
- * exactly why the card data is the authority everywhere else.
+ * slug is lossy (it can't give back the Set ID or the original punctuation),
+ * which is exactly why the card data is the authority everywhere else.
  * @param {string} slug
  */
-const fallbackCardInfo = slug => {
-  const [number, ...rest] = slug.split('-');
-  return {
-    number: number.toUpperCase(),
-    name: rest.join(' ') || slug,
-  };
-};
+const fallbackCardInfo = slug => ({ number: '', name: slug });
 
 /**
  * Phase B - derive everything from the tracked files in
@@ -302,8 +302,8 @@ const readPublicSets = async () => {
     const cards = [];
     let rendered = 0;
 
-    // Sequential: sharp already parallelises internally, and 56 concurrent
-    // decodes of 1MB PNGs is a needless memory spike.
+    // Sequential: sharp already parallelises internally, and a whole set of
+    // concurrent PNG decodes is a needless memory spike.
     // eslint-disable-next-line no-restricted-syntax
     for (const slug of slugs) {
       const png = path.join(cardsDir, `${slug}.png`);
@@ -323,13 +323,17 @@ const readPublicSets = async () => {
       try {
         // eslint-disable-next-line no-await-in-loop
         const card = JSON.parse(await fs.promises.readFile(jsonPath, 'utf8'));
-        info = { number: card.cardNumber, name: card.name };
+        info = {
+          number: typeof card.setId === 'string' ? card.setId : '',
+          name: card.name,
+        };
       } catch {
         info = undefined;
       }
-      if (!info?.number || !info?.name) {
+      // An empty Set ID is fine; a missing name is not.
+      if (!info?.name || typeof info.name !== 'string') {
         if (info) {
-          console.warn(`  "${slug}.json" has no name/cardNumber - using slug`);
+          console.warn(`  "${slug}.json" has no name - using slug`);
         }
         info = fallbackCardInfo(slug);
       }
@@ -354,7 +358,7 @@ const readPublicSets = async () => {
       });
     }
 
-    cards.sort(compareCardNumbers);
+    cards.sort(compareCards);
 
     // eslint-disable-next-line no-await-in-loop
     await pruneDirectory(thumbDir, new Set(slugs.map(slug => `${slug}.webp`)));

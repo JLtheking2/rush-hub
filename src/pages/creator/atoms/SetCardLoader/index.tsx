@@ -14,7 +14,7 @@ import { useIsCardDirty, useRushCardStore } from '@cardEditor/card';
 import UnsavedChangesDialog from '@cardEditor/editor/ImportExport/atoms/UnsavedChangesDialog';
 import sets from '@utils/sets';
 
-/** `?set=PKO1&card=k1-beast-fangs` -> the single value, whichever shape Next gives us */
+/** `?set=SAMPLE&card=rd-smp-en001-sample-normal` -> the single value, whichever shape Next gives us */
 const firstValue = (value: string | string[] | undefined): string | undefined =>
   Array.isArray(value) ? value[0] : value;
 

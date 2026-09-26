@@ -1,13 +1,12 @@
 import { css, styled } from '@css';
 
 /**
- * Card geometry. 63.5 x 88.9mm is the standard trading-card size, so a cut sheet
- * fits commercial sleeves. Three columns (190.5mm) and three rows (266.7mm) on
- * A4 leave ~9.75mm side and ~15.15mm top/bottom margins — inside the unprintable
- * area of every consumer printer.
+ * Card geometry. 59 x 86mm is the Yu-Gi-Oh! card size. Three columns (177mm)
+ * and three rows (258mm) on A4 leave 16.5mm side and 19.5mm top/bottom margins
+ * — inside the unprintable area of every consumer printer.
  */
-const cardWidth = '63.5mm';
-const cardHeight = '88.9mm';
+const cardWidth = '59mm';
+const cardHeight = '86mm';
 
 /**
  * Applied by the print page only. The app chrome is semantic (`AppBar` renders
@@ -94,8 +93,8 @@ export const CardCell = styled('div')`
 `;
 
 /**
- * `object-fit: fill` is deliberate. The source art is 745x1040 (0.7164) against a
- * 0.7143 target — a 0.3% difference that is invisible, whereas `contain` would
+ * `object-fit: fill` is deliberate. The source art is 421x614 (0.6857) against a
+ * 0.6860 target — a difference that is invisible, whereas `contain` would
  * introduce white slivers and break the flush-cut geometry.
  */
 export const CardPrintImage = styled('img')`

@@ -22,7 +22,8 @@ npm run lint
 npm run build        # static export into out/
 npm run create:sets  # promote cards/sets/ into public/sets/ and regenerate src/utils/setsData.ts
 npm run verify -- creator   # headless screenshot (dev server must be running)
-npm run render:cards -- <folder-or-json...>   # batch re-render saved cards (dev server must be running)
+npm run render:cards -- <folder-or-json...>   # batch re-render saved cards, checked to be 421x614 (dev server must be running)
+npm run create:sample-set                       # rebuild the tracked "Sample Set" (9 cards) in public/sets/SAMPLE (dev server must be running)
 npm run compare:ref -- <referenceDir>           # export the 9 sample cards and diff them against reference renders (dev server must be running)
 ```
 

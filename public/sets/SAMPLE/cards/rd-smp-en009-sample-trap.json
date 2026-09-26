@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "template": "trap",
+  "name": "Sample Trap",
+  "attribute": "none",
+  "level": 0,
+  "typeLine": "Trap Card",
+  "icon": "none",
+  "effect": "[REQUIREMENT] When your opponent attacks.\n[EFFECT] Negate the attack.",
+  "atk": "",
+  "def": "",
+  "setId": "RD/SMP-EN009",
+  "serial": "0123456789",
+  "image": null
+}

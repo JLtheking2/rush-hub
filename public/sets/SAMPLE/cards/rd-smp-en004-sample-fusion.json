@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "template": "fusion",
+  "name": "Sample Fusion",
+  "attribute": "fire",
+  "level": 7,
+  "typeLine": "Dragon/Fusion/Effect",
+  "icon": "none",
+  "effect": "[REQUIREMENT] Send the top card of your Deck to the GY.\n[EFFECT] This card gains 500 ATK until the end of this turn.",
+  "atk": "2500",
+  "def": "2000",
+  "setId": "RD/SMP-EN004",
+  "serial": "0123456789",
+  "image": null
+}

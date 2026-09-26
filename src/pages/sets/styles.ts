@@ -56,7 +56,7 @@ export const GridButton = styled('button')`
 export const Thumbnail = styled('img')`
   display: block;
   width: 100%;
-  aspect-ratio: 745 / 1040;
+  aspect-ratio: 421 / 614;
   object-fit: contain;
   border-radius: ${({ theme }) => theme.shape.borderRadius}px;
   box-shadow: ${({ theme }) => theme.shadows[3]};
@@ -66,7 +66,7 @@ export const Thumbnail = styled('img')`
 export const CoverImage = styled('img')`
   display: block;
   width: 100%;
-  aspect-ratio: 624 / 1247;
+  aspect-ratio: 421 / 614;
   object-fit: contain;
   filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45));
 `;

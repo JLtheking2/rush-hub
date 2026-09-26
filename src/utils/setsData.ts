@@ -17,6 +17,86 @@ export interface CardSet {
   cards: SetCard[];
 }
 
-const sets: CardSet[] = [];
+const sets: CardSet[] = [
+  {
+    id: 'SAMPLE',
+    displayName: 'Sample Set',
+    cover: '/sets/SAMPLE/cover.webp',
+    cards: [
+      {
+        id: 'rd-smp-en001-sample-normal',
+        number: 'RD/SMP-EN001',
+        name: 'Sample Normal',
+        thumb: '/sets/SAMPLE/thumb/rd-smp-en001-sample-normal.webp',
+        full: '/sets/SAMPLE/cards/rd-smp-en001-sample-normal.png',
+        json: '/sets/SAMPLE/cards/rd-smp-en001-sample-normal.json',
+      },
+      {
+        id: 'rd-smp-en002-sample-effect',
+        number: 'RD/SMP-EN002',
+        name: 'Sample Effect',
+        thumb: '/sets/SAMPLE/thumb/rd-smp-en002-sample-effect.webp',
+        full: '/sets/SAMPLE/cards/rd-smp-en002-sample-effect.png',
+        json: '/sets/SAMPLE/cards/rd-smp-en002-sample-effect.json',
+      },
+      {
+        id: 'rd-smp-en003-sample-ritual',
+        number: 'RD/SMP-EN003',
+        name: 'Sample Ritual',
+        thumb: '/sets/SAMPLE/thumb/rd-smp-en003-sample-ritual.webp',
+        full: '/sets/SAMPLE/cards/rd-smp-en003-sample-ritual.png',
+        json: '/sets/SAMPLE/cards/rd-smp-en003-sample-ritual.json',
+      },
+      {
+        id: 'rd-smp-en004-sample-fusion',
+        number: 'RD/SMP-EN004',
+        name: 'Sample Fusion',
+        thumb: '/sets/SAMPLE/thumb/rd-smp-en004-sample-fusion.webp',
+        full: '/sets/SAMPLE/cards/rd-smp-en004-sample-fusion.png',
+        json: '/sets/SAMPLE/cards/rd-smp-en004-sample-fusion.json',
+      },
+      {
+        id: 'rd-smp-en005-sample-synchro',
+        number: 'RD/SMP-EN005',
+        name: 'Sample Synchro',
+        thumb: '/sets/SAMPLE/thumb/rd-smp-en005-sample-synchro.webp',
+        full: '/sets/SAMPLE/cards/rd-smp-en005-sample-synchro.png',
+        json: '/sets/SAMPLE/cards/rd-smp-en005-sample-synchro.json',
+      },
+      {
+        id: 'rd-smp-en006-sample-xyz',
+        number: 'RD/SMP-EN006',
+        name: 'Sample Xyz',
+        thumb: '/sets/SAMPLE/thumb/rd-smp-en006-sample-xyz.webp',
+        full: '/sets/SAMPLE/cards/rd-smp-en006-sample-xyz.png',
+        json: '/sets/SAMPLE/cards/rd-smp-en006-sample-xyz.json',
+      },
+      {
+        id: 'rd-smp-en007-sample-token',
+        number: 'RD/SMP-EN007',
+        name: 'Sample Token',
+        thumb: '/sets/SAMPLE/thumb/rd-smp-en007-sample-token.webp',
+        full: '/sets/SAMPLE/cards/rd-smp-en007-sample-token.png',
+        json: '/sets/SAMPLE/cards/rd-smp-en007-sample-token.json',
+      },
+      {
+        id: 'rd-smp-en008-sample-spell',
+        number: 'RD/SMP-EN008',
+        name: 'Sample Spell',
+        thumb: '/sets/SAMPLE/thumb/rd-smp-en008-sample-spell.webp',
+        full: '/sets/SAMPLE/cards/rd-smp-en008-sample-spell.png',
+        json: '/sets/SAMPLE/cards/rd-smp-en008-sample-spell.json',
+      },
+      {
+        id: 'rd-smp-en009-sample-trap',
+        number: 'RD/SMP-EN009',
+        name: 'Sample Trap',
+        thumb: '/sets/SAMPLE/thumb/rd-smp-en009-sample-trap.webp',
+        full: '/sets/SAMPLE/cards/rd-smp-en009-sample-trap.png',
+        json: '/sets/SAMPLE/cards/rd-smp-en009-sample-trap.json',
+      },
+    ],
+  },
+];
 
 export default sets;

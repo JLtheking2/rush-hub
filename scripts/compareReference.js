@@ -48,68 +48,7 @@ if (!referenceDir || !fs.existsSync(referenceDir)) {
   process.exit(1);
 }
 
-const E1 =
-  '[REQUIREMENT] Send the top card of your Deck to the GY.\n[EFFECT] This card gains 500 ATK until the end of this turn.';
-
-const base = {
-  schemaVersion: 1,
-  icon: 'none',
-  setId: 'RD/ABC-EN001',
-  serial: '0123456789',
-  image: null,
-};
-const monster = (template, label, attribute, level, typeLine, effect, stats) => ({
-  ...base,
-  template,
-  name: `Sample ${label}`,
-  attribute,
-  level,
-  typeLine,
-  effect,
-  atk: stats[0],
-  def: stats[1],
-});
-
-const samples = {
-  Normal: monster(
-    'normal',
-    'Normal',
-    'dark',
-    7,
-    'Dragon',
-    'A legendary dragon of flavor text. This italic vanilla text describes the monster.',
-    ['2500', '2000'],
-  ),
-  Effect: monster('effect', 'Effect', 'dark', 7, 'Dragon/Effect', E1, ['2500', '2000']),
-  Ritual: monster('ritual', 'Ritual', 'light', 7, 'Dragon/Ritual/Effect', E1, ['2500', '2000']),
-  Fusion: monster('fusion', 'Fusion', 'fire', 7, 'Dragon/Fusion/Effect', E1, ['2500', '2000']),
-  Synchro: monster('synchro', 'Synchro', 'wind', 7, 'Dragon/Synchro/Effect', E1, ['2500', '2000']),
-  Xyz: monster('xyz', 'Xyz', 'water', 4, 'Dragon/Xyz/Effect', E1, ['2500', '2000']),
-  Token: monster('token', 'Token', 'earth', 1, 'Dragon', 'This card can be used as any Token.', ['0', '0']),
-  Spell: {
-    ...base,
-    template: 'spell',
-    name: 'Sample Spell',
-    attribute: 'none',
-    level: 0,
-    typeLine: 'Spell Card',
-    icon: 'equip',
-    effect: '[REQUIREMENT] Pay 500 LP.\n[EFFECT] Draw 1 card.',
-    atk: '',
-    def: '',
-  },
-  Trap: {
-    ...base,
-    template: 'trap',
-    name: 'Sample Trap',
-    attribute: 'none',
-    level: 0,
-    typeLine: 'Trap Card',
-    effect: '[REQUIREMENT] When your opponent attacks.\n[EFFECT] Negate the attack.',
-    atk: '',
-    def: '',
-  },
-};
+const samples = require('./sampleCards').referenceSamples();
 
 const INTERCEPTOR = `
   (() => {
