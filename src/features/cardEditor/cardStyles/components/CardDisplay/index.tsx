@@ -6,6 +6,17 @@ import {
 import { FC, memo, useState } from 'react';
 import { useDebounce, useMeasure } from 'react-use';
 import shallow from 'zustand/shallow';
+import {
+  ArtLayer,
+  AttributeLayer,
+  EffectLayer,
+  FooterLayer,
+  FrameLayer,
+  LevelLayer,
+  NameLayer,
+  StatsLayer,
+  TypeLineLayer,
+} from '../layers';
 import { CardContainer, CardContent } from './styles';
 
 const CardDisplay: FC = () => {
@@ -35,8 +46,17 @@ const CardDisplay: FC = () => {
       $height={height}
       ref={squareRef}
     >
-      {/* Phase 4 renders the Rush layers here */}
-      <CardContent />
+      <CardContent>
+        <ArtLayer />
+        <FrameLayer />
+        <AttributeLayer />
+        <LevelLayer />
+        <NameLayer />
+        <TypeLineLayer />
+        <EffectLayer />
+        <StatsLayer />
+        <FooterLayer />
+      </CardContent>
     </CardContainer>
   );
 };

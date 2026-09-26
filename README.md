@@ -22,6 +22,7 @@ npm run build        # static export into out/
 npm run create:sets  # promote cards/sets/ into public/sets/ and regenerate src/utils/setsData.ts
 npm run verify -- creator   # headless screenshot (dev server must be running)
 npm run render:cards -- <folder-or-json...>   # batch re-render saved cards (dev server must be running)
+npm run compare:ref -- <referenceDir>           # export the 9 sample cards and diff them against reference renders (dev server must be running)
 ```
 
 `start-dev.bat` / `stop-dev.bat` start and stop the dev server on Windows.
@@ -34,7 +35,7 @@ Pushes to `master` run `.github/workflows/deploy.yml`, which typechecks, lints, 
 
 - Descends from [pokecardmaker.net](https://github.com/karl/pokecardmaker.net) via [pokeoh-hub](https://github.com/JLtheking2/pokeoh-hub).
 - Rush Duel card frames by **AlixSep**, via the Neo New Card Maker at ygopro.org. The "MADE BY ALIXSEP" credit on the frames is intentionally left intact.
-- Card fonts: Matrix, ITC Stone Serif and Eurostile Candy (shipped in `public/fonts/`), with Google Fonts fallbacks (Spectral, Spectral SC, Amiri, Crimson Text).
+- Card fonts: Matrix, ITC Stone Serif and Eurostile Candy (shipped in `public/fonts/`), plus Amiri Italic (SIL OFL, self-hosted for the Normal-card flavour text), with Google Fonts fallbacks (Spectral, Spectral SC, Amiri, Crimson Text).
 - Layout measurements were taken with reference to the Neo New Card Maker; no code from it is used.
 
 ## Legal

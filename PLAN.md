@@ -36,10 +36,10 @@
 
 | | |
 |---|---|
-| **Phase** | Phases 1–3 ✅ → **Phase 4 next** |
+| **Phase** | Phases 1–4 ✅ → **Phase 5 next** |
 | **Repo** | `D:\GitRepos\rush-hub` → `JLtheking2/rush-hub` (canonical copy of this file lives here) |
-| **Last completed** | Phase 3: 31 assets + 6 fonts in `public/`, `fonts.ts` wired, fonts-ready waits, credits; typecheck + lint clean, all asset URLs 200 and all fonts load in headless Chromium (2026-09-26). Committed locally, **not pushed** (user publishes) |
-| **Next action** | Phase 4: container at 421:614 with the ephemeral unit, the `<Box at={[l,t,w,h]}>` helper, then the layers in §6 Phase 4. Use `templates.ts` (`frame`, `starIcons`, `spellTrapAttributeIcons`, `bracketIcons`), `fontStacks` from `utils/fonts.ts` and `useFontsReady` |
+| **Last completed** | Phase 4: all Rush layers, `FitText`, stroked numerals, `compare:ref` visual diff (0.6–1.3 % pixels differ per template). typecheck + lint clean (2026-09-26). Committed locally, **not pushed** |
+| **Next action** | Phase 5: the editor form (template picker, fields, image crop at 376:380). Read `templates.ts` flags for show/hide; `CardOptionsForm` is currently an empty shell that keeps the ImportExport wiring |
 | **Blockers / questions for user** | None. Favicon/logo now uses the same icon set as pokeoh-hub (see §F, 2026-09-26). |
 
 ---
@@ -185,8 +185,8 @@ All values are in the **421 × 614** coordinate space (1 unit = card width / 421
 | Type line (monster) | 36, 443, 350, 30 | Stone Serif SC 16 px. `[` bracket image at left 30 (5×15, top 447). `]` at `37 + measuredTextWidth`. |
 | Type line (Spell/Trap) | 38, 443, 330, 20 | Same font and brackets. Optional 20×20 property icon at `left = textWidth + 20`, top 443. `]` at `textWidth(+iconWidth) + 42`. |
 | Effect text | 30, 466, 360, 103 | Matrix Book 18 px, justified, auto-shrink. **Normal template: Stone Serif italic.** |
-| ATK | 147, 411, 75, – | Eurostile 19.25 px, weight 600, right-aligned, white with a 3 px #000 stroke. Monsters only. |
-| DEF | 277, 411, 75, – | Same as ATK |
+| ATK | 146, 411, 75, – | Eurostile 19.25 px, weight 600, right-aligned, white with a 3 px #000 stroke. Monsters only. |
+| DEF | 276, 411, 75, – | Same as ATK |
 | Serial (bottom-left) | 23, 577, 133, – | Stone Serif 12 px, white |
 | Set ID (bottom-right) | 264, 576, 131, – | Stone Serif 12 px, white, right-aligned |
 | Copyright | – | Rush cards have none |
@@ -201,7 +201,8 @@ Effect text is rendered **as typed**, with no automatic bolding (decided).
 | Name | Matrix Regular Small Caps | `Matrix Regular Small Caps.ttf` | Spectral SC, serif |
 | Effect text | Matrix Book | `Yu-Gi-Oh! Matrix Book.ttf` | Spectral, serif |
 | Type line | Stone Serif Small Caps | `Yu-Gi-Oh_ITC_Stone_Serif_Small_Caps_Bold.ttf` | Spectral SC, serif |
-| Normal flavour, Set ID, Serial | Stone Serif | `StoneSerif.otf` (italic for Normal flavour is synthesised unless a real italic turns up) | Amiri (italic), serif |
+| Set ID, Serial | Stone Serif | `StoneSerif.otf` | Amiri, serif |
+| Normal flavour (italic) | NCM asks for "Stone Serif Italic", which it does not ship, so it renders as **Amiri italic** | `AmiriItalic.ttf` (OFL, self-hosted; see §F) | Amiri, serif |
 | ATK/DEF, level number | Eurostile Candy W01 (Regular + Bold) | `Eurostile Candy W01 Regular.ttf`, `… Bold.ttf` | Crimson Text, serif |
 
 Rename the files to web-safe names when copying (no spaces or `!`). pokeoh-hub loads fonts through the `Font` enum and a `fonts: FontFace[]` list in `src/utils/fonts.ts`, emitted as `GlobalStyles` in `src/pages/_document.page.tsx`. Entries support `ttfOnly: true` for fonts with no woff/woff2 files. Extend it for `.otf`, or convert the fonts to woff2.
@@ -347,23 +348,23 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 - [x] Credits: AlixSep and upstream projects in the README + site footer
 
 ### Phase 4: Renderer, `CardDisplay` rewrite (≈ 2–3 days)
-- [ ] Container at 421:614 with the ephemeral unit, and `cardImgWidth/Height = 421/614`
-- [ ] `<Box at={[l,t,w,h]}>` helper (421-space → em)
-- [ ] Layers: Art (cropped) → Frame → Attribute → Level badge + number → Name → Type line with brackets and icon → Effect → ATK/DEF → Serial / Set ID
-- [ ] `FitText`: auto-shrink, `scaleX` squash, justify, `\n` paragraphs, re-fit after fonts load
-- [ ] Stroked numerals (ATK/DEF/level), checked in both the preview and the exported PNG
-- [ ] Name colour: white on Xyz, black otherwise
-- [ ] Spell/Trap: no level or ATK/DEF, forced SPELL/TRAP attribute, icon after the text inside the brackets
-- [ ] Normal: italic flavour font
-- [ ] Xyz: Xyz star with a black stroke, and the form label reads "Rank"
-- [ ] **Visual-diff script** (`scripts/compareReference.js`): build each §2 sample card in the creator, export it, and overlay it at 50 % on the matching `reference-renders/*.png` (path passed as an argument, since the renders aren't in the repo). Aim for ±2 px, and log the corrections in §F and §3.
+- [x] Container at 421:614 with the ephemeral unit, and `cardImgWidth/Height = 421/614`
+- [x] `<Box at={[l,t,w,h]}>` helper (421-space → em)
+- [x] Layers: Art (cropped) → Frame → Attribute → Level badge + number → Name → Type line with brackets and icon → Effect → ATK/DEF → Serial / Set ID
+- [x] `FitText`: auto-shrink, `scaleX` squash, justify, `\n` paragraphs, re-fit after fonts load
+- [x] Stroked numerals (ATK/DEF/level), checked in both the preview and the exported PNG
+- [x] Name colour: white on Xyz, black otherwise
+- [x] Spell/Trap: no level or ATK/DEF, forced SPELL/TRAP attribute, icon after the text inside the brackets
+- [x] Normal: italic flavour font
+- [x] Xyz: Xyz star with a black stroke, and the form label reads "Rank" (renderer half done: the badge uses the Xyz star; the label comes from `templates[t].levelLabel` in Phase 5)
+- [x] **Visual-diff script** (`scripts/compareReference.js`): build each §2 sample card in the creator, export it, and overlay it at 50 % on the matching `reference-renders/*.png` (path passed as an argument, since the renders aren't in the repo). Aim for ±2 px, and log the corrections in §F and §3. **Done: `npm run compare:ref -- <referenceDir>`; all templates are 0.6–1.3 % differing pixels (Trap excepted, see §F).**
 
 ### Phase 5: Editor form (≈ 1 day)
 - [ ] Template picker (9, with frame-colour swatches)
-- [ ] Name, Attribute (icon menu), Level/Rank, Type line (free text), Spell/Trap icon
+- [ ] Name, Attribute (icon menu), Level/Rank (label from `templates[t].levelLabel`), Type line (free text), Spell/Trap icon
 - [ ] Effect textarea (plain, `\n` = new paragraph)
 - [ ] ATK/DEF, Set ID, Serial (with a randomise button)
-- [ ] Image upload/search + crop at the 376:380 aspect
+- [ ] Image upload/search + crop at the 376:380 aspect (the art layer assumes the saved crop has the window's aspect; `ImgItem` still uses 421:614)
 - [ ] Show/hide fields from the template flags
 
 ### Phase 6: Export, sets, print (≈ 1 day)
@@ -423,6 +424,14 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 - **2026-09-26 (Phase 3):** `makeCanvas` now awaits `document.fonts.ready` before cloning. `src/hooks/useFontsReady.ts` is ready for Phase 4's `FitText` to re-measure on font load. Footer got a credit caption (AlixSep, Neo New Card Maker, pokecardmaker.net via pokeoh-hub) that wraps cleanly at 400 px.
 - **2026-09-26:** User rule: agents commit locally but never push (see §A, §C, §0).
 
+- **2026-09-26 (Phase 4):** Renderer decisions: `baseEmphemeralUnit` stays 16 and positions are `u(n) = n/16 em`; all text is fitted at native px in a hidden measurer (`cardStyles/utils/measureText.ts`) so preview and export share one fit (no re-fit on export clones; supersedes the §4.3 note). `geometry` lives in `cardStyles/layout.ts`; the layers are in `components/layers/index.tsx` (one file, not one per layer).
+- **2026-09-26 (Phase 4):** Gotcha: never set a positioning `em` (left/top/width/height) on the same element that sets its own `font-size` — the em then refers to that font size. `FitText` nests an inner sized div in a `CardBox`; stroke widths on the inner element are divided by the font size for the same reason.
+- **2026-09-26 (Phase 4):** Measured DOM vs canvas offsets (`dy`, units): name +9, level number +5, ATK/DEF +3 (and left −1), effect +1, serial/set ID +2, Normal flavour (Amiri italic) +5. Type line and Spell/Trap geometry needed no correction.
+- **2026-09-26 (Phase 4):** Type-line details (from NCM, corrected): Spell/Trap property icon at `left = textWidth + 40`, `]` at `textWidth + 20 (icon) + 42` (or `+ 42` with no icon); monster `]` at `floor(37 + textWidth)`. We clamp `textWidth` to the box width so `]` follows squashed text (NCM lets it run off the card). **Xyz uses a white type line and white brackets** (it sits on the black strip); other templates black.
+- **2026-09-26 (Phase 4):** The reference `Trap.rush.png` was captured with **no frame** (transparent background), so its whole-image diff is ~40 % and not meaningful; Trap text positions match by eye. The Spell reference validates the shared backrow geometry (0.7 %). Regenerate the Trap ref if a real diff is ever needed.
+- **2026-09-26 (Phase 4):** Fonts: NCM's "Stone Serif Italic" is not shipped, so the reference falls back to Amiri italic. Google's Amiri stylesheet is cross-origin and **cannot be embedded by html-to-image**, so the export fell back to a generic serif; `AmiriItalic.ttf` is now self-hosted (registered as "Amiri Italic"). `useFontsReady` now calls `document.fonts.load()` per registered face (fonts load lazily, so `fonts.ready` alone resolved too early). Stroked numerals (`-webkit-text-stroke` + `paint-order`) render correctly in the exported PNG.
+- **2026-09-26 (Phase 4):** `ImgItem` still crops at 421:614 — Phase 5 must switch to 376:380. With no saved crop the art layer uses `object-fit: cover`.
+
 ## G. Session log  ← append one entry per session (newest last)
 
 - **2026-09-26 (session 1, in pokeoh-hub):** Researched ygopro.org's card maker (NCM). Downloaded Rush frames, attributes, stars, icons, brackets, foils and fonts to `site/` (54/57 fetched; 3 expected 404s). Captured 9 reference renders with `tools/capture-refs.js`. Mapped pokeoh-hub keep/delete targets (§4.1). User made every design decision (§0). No code or repo changes yet. **Next:** Phase 1.
@@ -430,3 +439,4 @@ pokeoh-hub's git pack is **~778 MB** (card-art history), so start clean:
 - **2026-09-26 (session 3, favicon):** Swapped the placeholder favicon set for pokeoh-hub's (image files only; hashes verified identical). Updated §B and §F. No code changes. Not pushed, so the live site still shows the old icon until the next deploy.
 - **2026-09-26 (session 4, Phase 2):** Finished the card model: enum id arrays, `templates.ts` flags table, `getDefaultCard`/`switchTemplate`, `parseRushCard` validation, store `setTemplate` + new `applyCardJson` result type; rewired ImportButton and SetCardLoader to show the failure reason. Verified: typecheck + lint clean; a Node smoke test of defaults/switching/validation passed; in the running app (file-input fallback) a pokeoh-style JSON shows "Card not loaded — This isn't a rush-hub card." and a valid card loads with no dialog (the dialog screenshot was caught mid-fade, DOM text confirmed). No form UI yet (Phase 5). Nothing half-done.
 - **2026-09-26 (session 5, Phase 3):** Added the no-push rule to PLAN.md. Copied 31 assets and 6 fonts into `public/`, wired `fonts.ts` (+ Google fallbacks), added `useFontsReady` and the export fonts wait, asset path helpers in `templates.ts`, footer + README credits. Verified: typecheck + lint clean; headless Chromium: every asset URL 200, all 6 font faces `loaded`, footer credit screenshot checked at 400 px. Not re-checked after the `makeCanvas` change: the Download PNG size (still expected 421×614). Committed locally, not pushed. **Next:** Phase 4.
+- **2026-09-26 (session 6, Phase 4):** Built the renderer: `units`, `layout`, `CardBox`, `FitText`, `measureText`, the nine layers, and `scripts/compareReference.js` (`npm run compare:ref`). Tuned offsets against the reference renders (0.6–1.3 % pixels differ, Trap reference is frameless). Self-hosted Amiri Italic, fixed `useFontsReady`. Verified: typecheck + lint clean; exports are 421×614; overlays viewed; preview at 1280 px and 420 px viewports matches; long name squashes, long effect shrinks, art crop works. README + CLAUDE.md updated. Committed locally, not pushed. **Next:** Phase 5.

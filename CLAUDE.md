@@ -25,6 +25,7 @@ npm run dev | build | lint | lint:fix | typecheck
 npm run create:sets   # cards/sets/ -> public/sets/ + regenerate src/utils/setsData.ts (generated, never hand-edit)
 npm run verify -- creator
 npm run render:cards -- <folder-or-json...>
+npm run compare:ref -- <referenceDir>   # visual diff of the 9 sample cards vs reference renders (dev server running)
 ```
 
 After every code change run `npm run typecheck` and `npm run lint` and fix **all** errors before calling a step done.
@@ -36,7 +37,7 @@ Next.js 12 + React 17 + TypeScript, Zustand, MUI v5 + Emotion, React Hook Form, 
 ## Architecture
 
 - `src/features/cardEditor/card/` — `RushCard` type (schema v1) + enum id arrays, `templates.ts` (per-template flags/frame/defaults, attribute and Spell/Trap icon tables — the form and renderer read these), `defaults.ts` (`getDefaultCard`, `switchTemplate`), `validate.ts` (`parseRushCard`), and `useRushCardStore` (card, save state, `setTemplate`, `applyCardJson` → `{ ok } | { ok:false, error }`). Data files import siblings directly, never via the `index.ts` barrel.
-- `src/features/cardEditor/cardStyles/` — `constants.ts` (421×614 canvas, `baseEmphemeralUnit`), the ephemeral-unit store, and `components/CardDisplay` (the card preview; export clones `#card`).
+- `src/features/cardEditor/cardStyles/` — `constants.ts` (421×614 canvas, `baseEmphemeralUnit`), the ephemeral-unit store, `layout.ts` (all 421-space geometry; the only file to tune against references), `units.ts` (`u(n)` → em), and `components/CardDisplay` (the card preview; export clones `#card`) with `components/layers/` (one component per card layer) and `atoms/{CardBox,FitText}`. **Never put a positioning `em` on an element that also sets its own font-size** — `FitText` nests a sized inner div inside a `CardBox`. Text is fitted at native px in a hidden measurer (`utils/measureText.ts`) after `useFontsReady`, so fits are identical in preview and export.
 - `src/features/cardEditor/editor/` — the form: `ImportExport` (save/load/save-as/new, File System Access API), `CardDownloader` (PNG export via `html-to-image`), `ImagesForm` (art upload + crop), `CardOptionsForm`.
 - `src/pages/` — `creator` (also `?set=<SetId>&card=<slug>` deep link via `SetCardLoader`), `sets` (Set Browser), `sets/print`.
 

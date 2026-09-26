@@ -9,6 +9,7 @@ export enum Font {
   StoneSerifSmallCaps = 'Stone Serif Small Caps',
   StoneSerif = 'Stone Serif',
   EurostileCandy = 'Eurostile Candy',
+  AmiriItalic = 'Amiri Italic',
 }
 
 interface FontFace {
@@ -44,6 +45,21 @@ const fonts: FontFace[] = [
     format: 'ttf',
     weight: 700,
   },
+  // Self-hosted (OFL): a cross-origin Google stylesheet can't be embedded into the PNG export
+  {
+    fontName: Font.AmiriItalic,
+    fileName: 'AmiriItalic',
+    format: 'ttf',
+    style: 'italic',
+  },
+];
+
+/** CSS font shorthands for `document.fonts.load`, one per registered face */
+export const fontLoadSpecs = [
+  ...fonts.map(
+    font =>
+      `${font.style ?? 'normal'} ${font.weight ?? 400} 16px "${font.fontName}"`,
+  ),
 ];
 
 /** `font-family` values per card role, each with its Google Fonts fallback */
@@ -52,6 +68,8 @@ export const fontStacks = {
   effect: `'${Font.MatrixBook}', Spectral, serif`,
   typeLine: `'${Font.StoneSerifSmallCaps}', 'Spectral SC', serif`,
   stoneSerif: `'${Font.StoneSerif}', Amiri, serif`,
+  /** NCM asks for 'Stone Serif Italic', which it doesn't ship, so it renders as Amiri italic */
+  flavor: `'${Font.AmiriItalic}', Amiri, serif`,
   numerals: `'${Font.EurostileCandy}', 'Crimson Text', serif`,
 };
 

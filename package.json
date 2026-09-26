@@ -14,7 +14,8 @@
     "lint:fix": "eslint --ext .ts,.tsx src --fix",
     "typecheck": "npx tsc",
     "verify": "node ./scripts/verify-page.js",
-    "render:cards": "node ./scripts/renderCards.js"
+    "render:cards": "node ./scripts/renderCards.js",
+    "compare:ref": "node ./scripts/compareReference.js"
   },
   "eslintConfig": {
     "extends": [
