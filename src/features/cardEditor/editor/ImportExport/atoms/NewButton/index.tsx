@@ -33,6 +33,8 @@ const NewButton: FC<Props> = ({ setFileHandle }) => {
       serial: card.serial,
     });
     setFileHandle(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('cardName-input')?.focus({ preventScroll: true });
   }, [card, resetCard, setFileHandle]);
 
   const handleClick = useCallback(() => {
