@@ -10,6 +10,7 @@ import ImagesForm from '../ImagesForm';
 import AttributeSelector from './fields/AttributeSelector';
 import EffectSymbols from './fields/EffectSymbols';
 import SpellTrapIconSelector from './fields/SpellTrapIconSelector';
+import StatInput from './fields/StatInput';
 import TemplatePicker from './fields/TemplatePicker';
 import YugipediaLookup from './fields/YugipediaLookup';
 
@@ -45,13 +46,13 @@ const CardFieldsForm: FC = () => {
         )}
         {info.hasAtkDef && (
           <Box display="flex" gap={2}>
-            <TextInput
+            <StatInput
               label="ATK"
               slug="atk"
               value={card.atk}
               onChange={atk => setCard({ atk })}
             />
-            <TextInput
+            <StatInput
               label="DEF"
               slug="def"
               value={card.def}
