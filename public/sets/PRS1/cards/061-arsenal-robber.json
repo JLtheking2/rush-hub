@@ -6,7 +6,7 @@
   "level": 0,
   "typeLine": "Trap",
   "icon": "none",
-  "effect": "Target 1 Equip Spell from the Draw Pool; Add it to your Life Deck.",
+  "effect": "Target 1 Equip Spell from the Draw Pool; Add it to your Side Deck.",
   "atk": "",
   "def": "",
   "setId": "061",

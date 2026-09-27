@@ -6,7 +6,7 @@
   "level": 0,
   "typeLine": "Spell",
   "icon": "none",
-  "effect": "All monsters controlled by your opponents lose 800 ATK until the end of this turn.",
+  "effect": "All monsters controlled by your opponents lose 800 ATK and cannot change their Battle Positions until the start of your next turn.",
   "atk": "",
   "def": "",
   "setId": "040",

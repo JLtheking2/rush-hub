@@ -6,7 +6,7 @@
   "level": 0,
   "typeLine": "Trap",
   "icon": "none",
-  "effect": "If you control exactly 3 cards: Until the end of the turn, your monsters cannot be destroyed by battle, you take no battle damage, and each time your monster inflicts battle damage to your opponent, you gain the same amount of LP.",
+  "effect": "If you control exactly 3 cards: Until the start of your next turn, the following effects apply:\n● Monsters you control cannot be destroyed by battle.\n● You take no battle damage.\n●Each time a monster you control inflicts battle damage, you gain the same amount of LP.",
   "atk": "",
   "def": "",
   "setId": "007",

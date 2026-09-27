@@ -6,7 +6,7 @@
   "level": 0,
   "typeLine": "Trap",
   "icon": "none",
-  "effect": "Monsters you control gain 500 DEF until the end of this turn.",
+  "effect": "Monsters you control gain 500 DEF until the start of your next turn.",
   "atk": "",
   "def": "",
   "setId": "006",
