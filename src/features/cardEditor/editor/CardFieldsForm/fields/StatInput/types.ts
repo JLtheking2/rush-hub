@@ -5,4 +5,6 @@ export interface StatInputProps {
   onChange: (value: string) => void;
   /** Amount each spinner press/wheel tick changes the value by. Default 100. */
   step?: number;
+  /** Show the controls tooltip on this field's label. */
+  showHelp?: boolean;
 }

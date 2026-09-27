@@ -13,7 +13,33 @@ const stepValue = (value: string, delta: number): string => {
   return String(Math.max(0, base + delta));
 };
 
-const StatInput: FC<StatInputProps> = ({ step = 100, ...props }) => {
+/** Modifier step sizes: Ctrl for finer, Shift for coarser. Apply to every
+ * way of stepping (buttons, arrow keys, wheel), not just the wheel. */
+const CTRL_STEP = 50;
+const SHIFT_STEP = 1000;
+
+/** Shift wins if both modifiers are held. */
+const stepFor = (
+  e: { shiftKey: boolean; ctrlKey: boolean },
+  step: number,
+): number => (e.shiftKey ? SHIFT_STEP : e.ctrlKey ? CTRL_STEP : step);
+
+const StatHelp: FC<{ step: number }> = ({ step }) => (
+  <Box
+    component="ul"
+    sx={{ margin: 0, paddingLeft: 2, '& li': { marginBottom: 0.5 } }}
+  >
+    <li>
+      ▲ / ▼ buttons, ↑ / ↓ keys, or scroll wheel (click into the field first): ±
+      {step}
+    </li>
+    <li>Hold Ctrl: ±{CTRL_STEP}</li>
+    <li>Hold Shift: ±{SHIFT_STEP}</li>
+    <li>Stops at 0; blank or &quot;?&quot; counts as 0</li>
+  </Box>
+);
+
+const StatInput: FC<StatInputProps> = ({ step = 100, showHelp, ...props }) => {
   const { value, onChange, label } = props;
 
   // Kept in a ref so the native wheel listener always sees the latest
@@ -32,8 +58,16 @@ const StatInput: FC<StatInputProps> = ({ step = 100, ...props }) => {
       // native <input type="number"> spinner behaves; otherwise scrolling
       // the page past the field would get hijacked.
       if (document.activeElement !== input) return;
+      // Ctrl+wheel would otherwise zoom the page; preventDefault (below)
+      // stops that too as long as the field is focused.
       e.preventDefault();
-      const delta = -Math.sign(e.deltaY) * step;
+
+      // Shift+wheel is turned into horizontal scroll by the browser, so its
+      // movement arrives as deltaX instead of deltaY.
+      const rawDelta = e.deltaY || e.deltaX;
+      if (rawDelta === 0) return;
+
+      const delta = -Math.sign(rawDelta) * stepFor(e, step);
       latest.current.onChange(stepValue(latest.current.value, delta));
     };
 
@@ -46,16 +80,17 @@ const StatInput: FC<StatInputProps> = ({ step = 100, ...props }) => {
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'ArrowUp') {
       e.preventDefault();
-      onChange(stepValue(value, step));
+      onChange(stepValue(value, stepFor(e, step)));
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
-      onChange(stepValue(value, -step));
+      onChange(stepValue(value, -stepFor(e, step)));
     }
   };
 
   return (
     <TextInput
       {...props}
+      tooltipProps={showHelp ? { title: <StatHelp step={step} /> } : undefined}
       inputProps={{ onKeyDown: handleKeyDown }}
       InputProps={{
         inputRef,
@@ -66,7 +101,7 @@ const StatInput: FC<StatInputProps> = ({ step = 100, ...props }) => {
                 size="small"
                 sx={{ padding: 0 }}
                 aria-label={`Increase ${label} by ${step}`}
-                onClick={() => onChange(stepValue(value, step))}
+                onClick={e => onChange(stepValue(value, stepFor(e, step)))}
               >
                 <KeyboardArrowUpIcon fontSize="inherit" />
               </IconButton>
@@ -74,7 +109,7 @@ const StatInput: FC<StatInputProps> = ({ step = 100, ...props }) => {
                 size="small"
                 sx={{ padding: 0 }}
                 aria-label={`Decrease ${label} by ${step}`}
-                onClick={() => onChange(stepValue(value, -step))}
+                onClick={e => onChange(stepValue(value, -stepFor(e, step)))}
               >
                 <KeyboardArrowDownIcon fontSize="inherit" />
               </IconButton>

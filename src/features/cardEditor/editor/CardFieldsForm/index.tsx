@@ -57,6 +57,7 @@ const CardFieldsForm: FC = () => {
               slug="def"
               value={card.def}
               onChange={def => setCard({ def })}
+              showHelp
             />
           </Box>
         )}

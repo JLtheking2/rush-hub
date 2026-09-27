@@ -1,7 +1,8 @@
 import { ReactNode } from 'react';
 
 export interface TooltipProps {
-  title: string;
+  // Matches MUI Tooltip's own `title` type, which excludes `undefined`.
+  title: NonNullable<ReactNode>;
   withPopup?: boolean;
   children?: ReactNode;
 }
