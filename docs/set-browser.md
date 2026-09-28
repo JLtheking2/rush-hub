@@ -6,7 +6,7 @@ Read this when working on `/sets`, `/sets/print`, the `cards/sets/` → `public/
 
 ```
 cards/sets/<SetId>/*.png + *.json + cover.png   ← local staging (gitignored, except cover.png)
-        │  npm run create:sets   (also runs as prestart / prebuild)
+        │  npm run create:sets   (manual only - prestart / prebuild run phase B alone via --no-import)
         ▼
 public/sets/<SetId>/cards/<slug>.png + <slug>.json   ← TRACKED source of truth
 public/sets/<SetId>/thumb/<slug>.webp                 ← 320 px wide, regenerated when stale
@@ -20,13 +20,15 @@ src/utils/setsData.ts   ← GENERATED; never hand-edit. Read via src/utils/sets.
 - **A — promote:** for each staging folder that has PNGs, copy `.png` + `.json` verbatim into `public/sets/<SetId>/cards/` (only when the staged file is newer, so a card edited in place in `public/sets` is never clobbered), build `cover.webp`, and prune files no longer staged. A staging folder with **no** PNGs is left alone, so a fresh clone (empty staging) keeps the tracked `public/sets` untouched.
 - **B — derive:** for every folder in `public/sets`, refresh stale thumbnails, read each card's `.json` for its number and name, and write `setsData.ts`.
 
+**Publishing is manual.** Only an explicit `npm run create:sets` runs phase A. The `prestart` (so `npm run dev` / `start-dev.bat`) and `prebuild` hooks call the script with `--no-import`, which skips phase A — starting the dev server or building never publishes work-in-progress staging.
+
 Rules:
 
-- Any non-`cover.png` `.png` in staging is a card. Its **slug** is the whole basename, ASCII-folded and lower-cased with hyphen runs collapsed (`001 - Smile World` → `001-smile-world`); duplicate slugs are skipped with a warning.
+- Any `.png` in staging other than the set-level `cover.png` is a card, **including in subfolders** (`PRS-02/Main/…`) — subfolders only organise staging; the published set is flat. Its **slug** is the whole basename (the subfolder is not part of it), ASCII-folded and lower-cased with hyphen runs collapsed (`001 - Smile World` → `001-smile-world`); duplicate slugs, also across subfolders, are skipped with a warning.
 - The grid **number is `setId`** and the **name is `name`**, both read from the `.json` — the filename is only an identifier. A card with no `.json` gets number `''` and name = slug, and no "Edit in Creator" button (`json: null`). An empty Set ID is fine; a missing name falls back to the slug with a warning.
 - Sort: number prefix, then the number numerically (so `EN10` after `EN2`), then name.
 - Set display names come from `SET_DISPLAY_NAMES` at the top of the script (default: the folder name). Add an entry for a new set.
-- `.gitignore` keeps `cards/sets/*/*.png` and `*.json` out of git but negates `cover.png`. `cards/sets/<Set>/cover.png` is hand-supplied and must be tracked. Don't remove those rules.
+- `.gitignore` keeps `cards/sets/**/*.png` and `*.json` (any depth, so subfolders like `PRS-02/Main/` are covered) out of git but negates the set-level `cover.png`. `cards/sets/<Set>/cover.png` is hand-supplied and must be tracked. Don't remove those rules.
 - The card `.png` + `.json` side by side means **`public/sets/<SetId>/cards/` is itself a valid creator working directory**: open it with Load Directory, edit, Save in place, then re-run `npm run create:sets` — the thumbnail and grid entry refresh.
 - Re-runs are idempotent. Without `sharp` the script degrades to full-size images as thumbnails.
 

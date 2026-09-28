@@ -22,7 +22,7 @@ npm run dev          # http://localhost:3000
 npm run typecheck
 npm run lint
 npm run build        # static export into out/
-npm run create:sets  # promote cards/sets/ into public/sets/ and regenerate src/utils/setsData.ts
+npm run create:sets  # publish: promote cards/sets/ into public/sets/ and regenerate src/utils/setsData.ts (manual only; dev/build never publish)
 npm run verify -- creator   # headless screenshot (dev server must be running)
 npm run render:cards -- <folder-or-json...>   # batch re-render saved cards, checked to be 421x614 (dev server must be running)
 npm run compare:ref -- <referenceDir>           # export the 9 sample cards and diff them against reference renders (dev server must be running)

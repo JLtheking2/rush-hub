@@ -37,6 +37,7 @@ dev-server.log
 # cards/sets/ is a local staging area for sets being worked on. A set becomes
 # official when `npm run create:sets` promotes it into public/sets/, which is
 # the tracked source of truth for both the card images and the card data.
-/cards/sets/*/*.png
-/cards/sets/*/*.json
+# `**` also covers subfolders inside a set (e.g. cards/sets/PRS-02/Main/).
+/cards/sets/**/*.png
+/cards/sets/**/*.json
 !/cards/sets/*/cover.png

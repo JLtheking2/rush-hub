@@ -10,6 +10,12 @@ const COVER_FILENAME = 'cover.png';
 const CARDS_DIRNAME = 'cards';
 const THUMB_DIRNAME = 'thumb';
 
+/**
+ * `--no-import` skips phase A, so `cards/sets` staging is never published. The
+ * prestart/prebuild hooks pass it; only a manual `npm run create:sets` promotes.
+ */
+const SKIP_IMPORT = process.argv.includes('--no-import');
+
 const THUMB_WIDTH = 320;
 const COVER_WIDTH = 400;
 const WEBP_QUALITY = 82;
@@ -135,6 +141,28 @@ const pruneDirectory = async (directory, keep) => {
 };
 
 /**
+ * Every file under `directory`, as paths relative to it, so a set can organise
+ * its staging into subfolders (`PRS-02/Main/M-001 - Name.png`).
+ * @param {string} directory
+ * @param {string} [prefix]
+ * @returns {Promise<string[]>}
+ */
+const listFilesRecursive = async (directory, prefix = '') => {
+  const entries = await fs.promises.readdir(path.join(directory, prefix), {
+    withFileTypes: true,
+  });
+  const nested = await Promise.all(
+    entries.map(entry => {
+      const relative = path.join(prefix, entry.name);
+      return entry.isDirectory()
+        ? listFilesRecursive(directory, relative)
+        : [relative];
+    }),
+  );
+  return nested.flat();
+};
+
+/**
  * Phase A - promote one staged set into `public/sets/<setId>/cards`.
  *
  * `cards/sets` is a local staging area; `public/sets` is the tracked source of
@@ -147,7 +175,7 @@ const pruneDirectory = async (directory, keep) => {
  * card edited in place in `public/sets` self-heals just like a promoted one.
  *
  * @param {string} setId
- * @param {string[]} pngFiles
+ * @param {string[]} pngFiles paths relative to the set's staging folder
  */
 const importSet = async (setId, pngFiles) => {
   const sourceDir = path.join(SETS_SOURCE_FOLDER, setId);
@@ -160,7 +188,9 @@ const importSet = async (setId, pngFiles) => {
   const seenSlugs = new Map();
 
   pngFiles.forEach(file => {
-    const slug = toSlug(file.replace(/\.png$/i, ''));
+    // Subfolders only organise staging - the published set stays flat, so the
+    // slug comes from the filename alone.
+    const slug = toSlug(path.basename(file).replace(/\.png$/i, ''));
     if (!slug) {
       console.warn(`  skipping "${file}" - filename has no usable characters`);
       return;
@@ -454,15 +484,21 @@ export default sets;
   } catch {
     console.warn(`createSetsData: ${SETS_SOURCE_FOLDER} not found`);
   }
+  if (SKIP_IMPORT && setDirs.length) {
+    console.info(
+      `  --no-import: not publishing ${SETS_SOURCE_FOLDER} (run \`npm run create:sets\` to publish)`,
+    );
+    setDirs = [];
+  }
 
   // eslint-disable-next-line no-restricted-syntax
   for (const setId of setDirs) {
     // eslint-disable-next-line no-await-in-loop
-    const files = await fs.promises.readdir(
+    const files = await listFilesRecursive(
       path.join(SETS_SOURCE_FOLDER, setId),
     );
     const pngFiles = files.filter(
-      file => file.endsWith('.png') && file !== COVER_FILENAME,
+      file => /\.png$/i.test(file) && file !== COVER_FILENAME,
     );
 
     if (!pngFiles.length) {
