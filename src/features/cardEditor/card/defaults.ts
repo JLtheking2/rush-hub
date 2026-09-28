@@ -11,6 +11,7 @@ export const getDefaultCard = (template: Template): RushCard => {
     template,
     name: '',
     attribute: 'none',
+    deck: 'main',
     level: defaults.level,
     typeLine: defaults.typeLine,
     icon: 'none',
@@ -26,8 +27,8 @@ export const getDefaultCard = (template: Template): RushCard => {
 export const defaultCard: RushCard = getDefaultCard(defaultTemplate);
 
 /**
- * Switches template, keeping what carries over: name, effect, set ID, serial
- * and art always; attribute/level/ATK/DEF between monsters; the type line if
+ * Switches template, keeping what carries over: name, deck, effect, set ID,
+ * serial and art always; attribute/level/ATK/DEF between monsters; the type line if
  * the user edited it; the Spell/Trap icon if it's valid for the new template.
  */
 export const switchTemplate = (card: RushCard, next: Template): RushCard => {
@@ -40,6 +41,7 @@ export const switchTemplate = (card: RushCard, next: Template): RushCard => {
   return {
     ...fresh,
     name: card.name,
+    deck: card.deck,
     effect: card.effect,
     setId: card.setId,
     serial: card.serial,

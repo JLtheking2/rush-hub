@@ -13,7 +13,7 @@ These are the **user's** decisions from the port (2026-09-26). Don't re-open the
 | Code | We write our own. The Neo New Card Maker (NCM) bundle was only a behaviour and measurement reference. |
 | Renderer | **DOM + `em` units** (the ephemeral-unit pattern), not canvas. |
 | Export | **Native 421 × 614 px** only. |
-| Rarity | **Not supported.** No rarity field, foil overlays, or silver/gold names. |
+| Rarity | **Not supported.** No rarity field, art foils, or silver/gold names. **Exception (2026-09-29):** a per-card **Main / Extra** toggle (all templates). Extra applies NCM's Rainbow Rare treatment minus the art wash: the full-card rainbow border overlay and a white name, outlined in black so it reads on light frames. |
 | Rush extras | **None.** No LEGEND, no MAXIMUM, no auto-bold `[REQUIREMENT]`/`[EFFECT]`, no Spell/Trap property text. |
 | Language | **English only.** |
 | Repo | `JLtheking2/rush-hub`, public, fresh history (not a GitHub fork). |
@@ -24,7 +24,7 @@ These are the **user's** decisions from the port (2026-09-26). Don't re-open the
 
 ## Out of scope (don't build)
 
-- Rarity (foils, silver/gold names)
+- Rarity (art foils, silver/gold names), beyond the Extra-deck rainbow border above
 - LEGEND badge, MAXIMUM monsters, auto-bold effect labels, Spell/Trap property text
 - Non-English text and JP layout
 - Higher-than-native export resolutions
@@ -34,7 +34,7 @@ These are the **user's** decisions from the port (2026-09-26). Don't re-open the
 
 ## Licensing notes
 
-1. **The NCM code has no licence.** Treat it as all rights reserved. Don't copy it; the measured geometry in [`renderer.md`](renderer.md) is our own notes.
+1. **The NCM code has no licence.** Treat it as all rights reserved. Don't copy it; the measured geometry in [`renderer.md`](renderer.md) is our own notes. **One deliberate exception:** NCM's `foil/Rainbow.png` is reused as-is as `public/assets/rush/foil/rainbow.png` (user decision 2026-09-29, personal non-commercial project).
 2. **The frames are fan art by AlixSep.** Use them as-is, never strip or crop the credit, credit AlixSep in the README and footer, and keep the takedown-contact line in the README.
 3. **The fonts are commercial.** Shipping them was a deliberate, user-accepted risk: being non-commercial doesn't by itself grant a redistribution licence.
 4. Yu-Gi-Oh! and Rush Duel trade dress belongs to Konami — the same category of risk as pokeoh-hub's Pokémon trade dress.

@@ -2,10 +2,12 @@ import { getDefaultCard } from './defaults';
 import {
   Attribute,
   CardImage,
+  Deck,
   RushCard,
   SpellTrapIcon,
   Template,
   attributeIds,
+  deckIds,
   schemaVersion,
   spellTrapIconIds,
   templateIds,
@@ -110,6 +112,12 @@ export const parseRushCard = (text: string): ParseResult => {
       return bad('attribute', `expected one of ${attributeIds.join(', ')}`);
     }
     card.attribute = parsed.attribute;
+  }
+  if (parsed.deck !== undefined) {
+    if (!isOneOf<Deck>(deckIds, parsed.deck)) {
+      return bad('deck', `expected one of ${deckIds.join(', ')}`);
+    }
+    card.deck = parsed.deck;
   }
   if (parsed.icon !== undefined) {
     if (!isOneOf<SpellTrapIcon>(spellTrapIconIds, parsed.icon)) {

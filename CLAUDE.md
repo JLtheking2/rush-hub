@@ -4,7 +4,7 @@ Guidance for Claude Code in this repository.
 
 ## Project
 
-rush-hub is a Yu-Gi-Oh! **Rush Duel** card maker, derived from pokeoh-hub (itself a fork of pokecardmaker.net). Rush style only; English only; no rarity. Nine templates: Normal, Effect, Ritual, Fusion, Synchro, Xyz, Token, Spell, Trap. Cards are 421 × 614 px (59 × 86 mm). Live at <https://jltheking2.github.io/rush-hub/>.
+rush-hub is a Yu-Gi-Oh! **Rush Duel** card maker, derived from pokeoh-hub (itself a fork of pokecardmaker.net). Rush style only; English only; no rarity (one exception: the per-card Main/Extra toggle, where Extra adds NCM's Rainbow Rare border and a white outlined name). Nine templates: Normal, Effect, Ritual, Fusion, Synchro, Xyz, Token, Spell, Trap. Cards are 421 × 614 px (59 × 86 mm). Live at <https://jltheking2.github.io/rush-hub/>.
 
 The scope decisions (what was deliberately left out, licensing risk, deferred rounded corners) are in [`docs/decisions.md`](docs/decisions.md) — **don't re-open them without asking the user.**
 

@@ -14,6 +14,7 @@ import {
   FrameLayer,
   LevelLayer,
   NameLayer,
+  RainbowBorderLayer,
   StatsLayer,
   TypeLineLayer,
 } from '../layers';
@@ -56,6 +57,7 @@ const CardDisplay: FC = () => {
         <EffectLayer />
         <StatsLayer />
         <FooterLayer />
+        <RainbowBorderLayer />
       </CardContent>
     </CardContainer>
   );

@@ -19,6 +19,7 @@ const card = fields => ({
   template: fields.template,
   name: fields.name,
   attribute: fields.attribute,
+  deck: 'main',
   level: fields.level,
   typeLine: fields.typeLine,
   icon: fields.icon ?? 'none',

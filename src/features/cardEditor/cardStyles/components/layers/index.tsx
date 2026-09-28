@@ -2,6 +2,7 @@ import { CardImage } from '@cardEditor/card/types';
 import {
   attributes,
   bracketIcons,
+  rainbowBorder,
   spellTrapAttributeIcons,
   spellTrapIcons,
   starIcons,
@@ -97,12 +98,14 @@ export const LevelLayer: FC = () => {
 
 export const NameLayer: FC = () => {
   const { nameColor } = useTemplate();
-  const name = useRushCardStore(state => state.card.name);
+  const { name, deck } = useRushCardStore(state => state.card);
+  const extra = deck === 'extra';
   return (
     <FitText
       mode="line"
       text={name}
-      color={nameColor}
+      color={extra ? '#fff' : nameColor}
+      stroke={extra ? layout.extraNameStroke : undefined}
       size={layout.name.size}
       family={layout.name.family}
       at={layout.name.at}
@@ -245,4 +248,11 @@ export const FooterLayer: FC = () => {
       />
     </>
   );
+};
+
+/** Drawn over everything: tints the outer edge of the frame */
+export const RainbowBorderLayer: FC = () => {
+  const deck = useRushCardStore(state => state.card.deck);
+  if (deck !== 'extra') return null;
+  return <DisplayImg src={withBasePath(rainbowBorder)} />;
 };

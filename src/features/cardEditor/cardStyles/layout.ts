@@ -22,6 +22,8 @@ export const name: TextSpec = {
   family: fontStacks.name,
   dy: 9,
 };
+/** Extra cards: white name, outlined so it reads on light frames */
+export const extraNameStroke = { width: 3, color: '#000' };
 
 export const levelNumber: TextSpec = {
   at: [32, 392, 45, 32],

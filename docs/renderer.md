@@ -17,7 +17,9 @@ The card is DOM, not canvas. `CardDisplay` (`src/features/cardEditor/cardStyles/
 
 Rendered bottom to top by `CardDisplay`:
 
-`ArtLayer` → `FrameLayer` → `AttributeLayer` → `LevelLayer` → `NameLayer` → `TypeLineLayer` → `EffectLayer` → `StatsLayer` → `FooterLayer`
+`ArtLayer` → `FrameLayer` → `AttributeLayer` → `LevelLayer` → `NameLayer` → `TypeLineLayer` → `EffectLayer` → `StatsLayer` → `FooterLayer` → `RainbowBorderLayer`
+
+`RainbowBorderLayer` draws only when `card.deck === 'extra'`: a full-card overlay (`foil/rainbow.png`, NCM's Rainbow Rare `cardFoil`, reused as-is) whose outer 12 px band is a pastel vertical rainbow at ~60% alpha, transparent inside. Like NCM, it is drawn last, over everything, with a normal blend.
 
 The **frame is drawn over the art**; the art window is a hole in the frame PNG. With no crop saved, the art uses `object-fit: cover`; with a crop it goes through `CroppedImg`. The attribute icon covers the "MADE BY ALIXSEP" credit circle in the frame's top-right corner — that credit is intentional and must stay visible (see [`decisions.md`](decisions.md)).
 
@@ -31,7 +33,7 @@ The **frame is drawn over the art**; the art window is a hole in the frame PNG. 
 | Attribute | 345, 22, 54, 54 | Monsters: chosen attribute, or Void for `none`. Spell/Trap: forced SPELL/TRAP icon |
 | Level badge | 24, 370, 63, 68 | Normal star, or Xyz star. None on Spell/Trap |
 | Level number | 32, 392, 45, 32 | Eurostile 28 px bold, centred, white fill, 3 px stroke (`#dc3523` Normal star, `#000` Xyz), `dy` 5 |
-| Name | 28, 4, 310, 48 | Matrix Regular Small Caps 46 px, one line, squashed, `dy` 9. White on Xyz |
+| Name | 28, 4, 310, 48 | Matrix Regular Small Caps 46 px, one line, squashed, `dy` 9. White on Xyz. Extra deck: white with a 3 px black stroke (`extraNameStroke`) on every template |
 | Type line (monster) | 36, 443, 350, 30 | Stone Serif Small Caps 16 px, `dy` 0.5 |
 | Type line (Spell/Trap) | 38, 443, 330, 20 | Same font, `dy` 0.5 |
 | Brackets | left 30, top 445.5, 5 × 15 | Closing `]` placed from the measured text width |
@@ -41,7 +43,7 @@ The **frame is drawn over the art**; the art window is a hole in the frame PNG. 
 | Serial | 23, 577, 133, 16 | Stone Serif 12 px, white, `dy` 2 |
 | Set ID | 264, 576, 131, 16 | Stone Serif 12 px, white, right-aligned, `dy` 2 |
 
-Rush cards have no copyright line, no rarity, no foil.
+Rush cards have no copyright line, no rarity and no art foil; the only foil-like treatment is the Extra deck's rainbow border.
 
 ### Type-line brackets
 
@@ -57,7 +59,7 @@ Rush cards have no copyright line, no rarity, no foil.
 
 ## Assets (`public/assets/rush/`)
 
-`frames/<template>.png` (421 × 614), `attributes/{Dark,Divine,Earth,Fire,Light,Water,Wind,Void,Spell,Trap}.png`, `stars/{normal,xyz}.png`, `icons/{Continuous,Counter,Equip,Field,Quick-play,Ritual}.png` + the four bracket PNGs. Frames are AlixSep's Rush frames used as-is. Every URL goes through `withBasePath`.
+`frames/<template>.png` (421 × 614), `attributes/{Dark,Divine,Earth,Fire,Light,Water,Wind,Void,Spell,Trap}.png`, `stars/{normal,xyz}.png`, `icons/{Continuous,Counter,Equip,Field,Quick-play,Ritual}.png` + the four bracket PNGs, `foil/rainbow.png` (421 × 614 Extra-deck border overlay, from NCM). Frames are AlixSep's Rush frames used as-is. Every URL goes through `withBasePath`.
 
 ## Fonts (`src/utils/fonts.ts`)
 

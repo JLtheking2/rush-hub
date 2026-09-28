@@ -181,6 +181,9 @@ export const bracketIcons = {
   rightWhite: '/assets/rush/icons/rightbracketwhite.png',
 };
 
+/** Full-card overlay for Extra cards (NCM's Rainbow Rare border) */
+export const rainbowBorder = '/assets/rush/foil/rainbow.png';
+
 /**
  * The type line a template autofills: monsters use their default; Spell/Trap
  * append the property icon's name ("Trap / Continuous").

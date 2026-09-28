@@ -25,6 +25,9 @@ export const attributeIds = [
 ] as const;
 export type Attribute = typeof attributeIds[number];
 
+export const deckIds = ['main', 'extra'] as const;
+export type Deck = typeof deckIds[number];
+
 export const spellTrapIconIds = [
   'none',
   'continuous',
@@ -52,6 +55,8 @@ export interface RushCard {
   name: string;
   /** Monsters only; Spell/Trap force the SPELL/TRAP icon */
   attribute: Attribute;
+  /** `extra` adds the rainbow border and a white, outlined name */
+  deck: Deck;
   /** Xyz is labelled "Rank" in the form, same badge slot */
   level: number;
   /** e.g. "Dragon/Effect"; free text */

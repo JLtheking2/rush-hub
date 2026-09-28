@@ -8,6 +8,7 @@ import { Box } from '@mui/system';
 import { FC } from 'react';
 import ImagesForm from '../ImagesForm';
 import AttributeSelector from './fields/AttributeSelector';
+import DeckToggle from './fields/DeckToggle';
 import EffectSymbols from './fields/EffectSymbols';
 import SpellTrapIconSelector from './fields/SpellTrapIconSelector';
 import StatInput from './fields/StatInput';
@@ -31,6 +32,7 @@ const CardFieldsForm: FC = () => {
         <YugipediaLookup />
         <TemplatePicker />
         {info.isMonster && <AttributeSelector />}
+        <DeckToggle />
       </AccordionForm>
       <ImagesForm />
       <AccordionForm slug="statsForm" header="Stats">
