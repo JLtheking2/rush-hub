@@ -23,7 +23,7 @@ This file holds only the always-relevant core. Feature-deep detail lives in `doc
 ## Environment (Windows + PowerShell)
 
 - Use `Grep`/`Glob`/`Read` for search and reading, and pick one tool per question. Delayed or batched tool output is normal, not a failure — don't re-fire calls. Don't queue big speculative batches (one error cancels the rest).
-- Avoid Bash for filesystem work; Unix mounts are unreliable. Use Bash (not PowerShell 5.1) for background processes and `curl`. `start-dev.bat` / `stop-dev.bat` start/stop the dev server outside Claude.
+- Avoid Bash for filesystem work; Unix mounts are unreliable. Use Bash (not PowerShell 5.1) for background processes and `curl`. `start-dev.bat` / `stop-dev.bat` start/stop the dev server outside Claude; `start-dev.bat` also opens `scripts/dev-loading.html` in the browser, which pre-compiles `/`, `/creator` and `/sets` and then redirects.
 - Bash gotcha: `NEXT_PUBLIC_BASE_PATH=/rush-hub npm run build` gets MSYS-path-mangled; prefix `MSYS2_ENV_CONV_EXCL=NEXT_PUBLIC_BASE_PATH` or use PowerShell. CI (Linux) is unaffected.
 - Node scripts are native Windows processes: never pass `/tmp/...` paths; use `os.tmpdir()`.
 - **Headless verification:** `playwright` is a devDependency (Chromium is installed globally). Run `npm run verify -- creator [--wait "text=Save As"] [--screenshot <winpath>]` with the dev server running. HTTP 200 doesn't mean the route rendered — always wait on a real element, and **look at the screenshot** before interpreting anything (a blank image is a harness failure). The card preview appears ~1 s after `Save As` does. MUI checkboxes: click the hidden `<input>` via `page.evaluate`. The creator has two `input[type=file]`: target the art one by `#imgUpload-input`.

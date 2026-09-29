@@ -28,7 +28,7 @@ npm run render:cards -- <folder-or-json...>   # batch re-render saved cards, che
 npm run compare:ref -- <referenceDir>           # export the 9 sample cards and diff them against reference renders (dev server must be running)
 ```
 
-`start-dev.bat` / `stop-dev.bat` start and stop the dev server on Windows.
+`start-dev.bat` / `stop-dev.bat` start and stop the dev server on Windows. `start-dev.bat` also opens a loading page (`scripts/dev-loading.html`) that waits while `next dev` compiles the main pages, then redirects to <http://localhost:3000>.
 
 ## Docs
 
