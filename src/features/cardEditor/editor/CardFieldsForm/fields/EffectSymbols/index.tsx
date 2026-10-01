@@ -25,13 +25,23 @@ const symbols = [
 ];
 
 const EffectSymbols: FC = () => {
-  const effect = useRushCardStore(state => state.card.effect);
   const setCard = useRushCardStore(state => state.setCard);
 
   const insert = (symbol: string) => {
     const el = document.getElementById(
       'effect-input',
     ) as HTMLTextAreaElement | null;
+
+    // execCommand goes through the browser's editing pipeline, so the
+    // insertion lands on the native undo stack (Ctrl+Z) and fires a real
+    // input event. Assigning .value from script would wipe that stack.
+    if (el) {
+      el.focus();
+      if (document.execCommand('insertText', false, symbol)) return;
+    }
+
+    // Fallback: no undo support, but nothing is lost.
+    const effect = el?.value ?? useRushCardStore.getState().card.effect;
     const start = el?.selectionStart ?? effect.length;
     const end = el?.selectionEnd ?? effect.length;
     setCard({ effect: effect.slice(0, start) + symbol + effect.slice(end) });
