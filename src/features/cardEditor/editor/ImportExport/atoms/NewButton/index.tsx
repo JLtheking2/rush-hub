@@ -44,11 +44,14 @@ const NewButton: FC<Props> = ({ setFileHandle, newSource }) => {
       // e.g. folder permission revoked — fall back to the card on screen
       console.warn('Failed to read the set for the next Set ID:', e);
     }
+    const setId = incrementCardNumber(lastSetId ?? card.setId) ?? '';
     resetCard({
       // Preserve what stays constant across a print run
       template: card.template,
-      setId: incrementCardNumber(lastSetId ?? card.setId) ?? '',
+      setId,
       serial: card.serial,
+      // Set ID convention: an "E" prefix (e.g. E-015) marks an Extra Deck card
+      deck: setId.startsWith('E') ? 'extra' : 'main',
     });
     setFileHandle(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
