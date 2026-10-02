@@ -12,11 +12,9 @@ import {
 } from '@mui/material';
 import { useIsCardDirty, useRushCardStore } from '@cardEditor/card';
 import UnsavedChangesDialog from '@cardEditor/editor/ImportExport/atoms/UnsavedChangesDialog';
+import Routes from '@routes';
+import firstQueryValue from '@utils/firstQueryValue';
 import sets from '@utils/sets';
-
-/** `?set=PRS1&card=001-smile-world` -> the single value, whichever shape Next gives us */
-const firstValue = (value: string | string[] | undefined): string | undefined =>
-  Array.isArray(value) ? value[0] : value;
 
 /**
  * Loads a published Set Browser card into the creator when /creator is opened
@@ -39,6 +37,8 @@ const SetCardLoader: FC = () => {
   const [pending, setPending] = useState<{
     url: string;
     label: string;
+    /** The `set|card` key that was showing before, to restore on cancel */
+    previousKey: string | null;
   } | null>(null);
 
   // The query params are deliberately left in the URL so the link stays
@@ -80,12 +80,13 @@ const SetCardLoader: FC = () => {
     const isInitialPass = initialPassRef.current;
     initialPassRef.current = false;
 
-    const setId = firstValue(router.query.set);
-    const cardId = firstValue(router.query.card);
+    const setId = firstQueryValue(router.query.set);
+    const cardId = firstQueryValue(router.query.card);
     if (!setId || !cardId) return;
 
     const key = `${setId}|${cardId}`;
     if (handledRef.current === key) return;
+    const previousKey = handledRef.current;
     handledRef.current = key;
 
     const card = sets
@@ -100,7 +101,7 @@ const SetCardLoader: FC = () => {
     // the Edit in Creator link opens a fresh tab, which lands on the initial
     // pass and loads straight away.
     if (isDirty && !isInitialPass) {
-      setPending({ url: card.json, label: card.name });
+      setPending({ url: card.json, label: card.name, previousKey });
       return;
     }
     load(card.json, card.name);
@@ -111,6 +112,22 @@ const SetCardLoader: FC = () => {
     setPending(null);
   }, [pending, load]);
 
+  // Declining keeps the current card, so point the URL (and the set arrows)
+  // back at it — marking it handled so it isn't loaded again.
+  const cancelPending = useCallback(() => {
+    const previousKey = pending?.previousKey ?? null;
+    setPending(null);
+    handledRef.current = previousKey;
+    const [setId, cardId] = previousKey?.split('|') ?? [];
+    router.replace(
+      setId && cardId
+        ? { pathname: Routes.Creator, query: { set: setId, card: cardId } }
+        : { pathname: Routes.Creator },
+      undefined,
+      { shallow: true },
+    );
+  }, [pending, router]);
+
   return (
     <>
       <Backdrop open={loading} sx={{ zIndex: theme => theme.zIndex.modal + 1 }}>
@@ -120,7 +137,7 @@ const SetCardLoader: FC = () => {
         open={pending !== null}
         actionLabel="LOAD"
         onConfirm={confirmPending}
-        onCancel={() => setPending(null)}
+        onCancel={cancelPending}
       />
       <Dialog
         open={errorMessage !== null}

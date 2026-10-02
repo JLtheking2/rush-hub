@@ -1,5 +1,69 @@
+import { RushCard, parseRushCard } from '@cardEditor/card';
 import { cardId } from '@cardEditor/cardStyles';
 import { makeCardPngBlob } from '../CardDownloader/utils';
+
+export interface FolderCard {
+  handle: FileSystemFileHandle;
+  text: string;
+  card: RushCard;
+}
+
+// Orders Set IDs by their trailing number (the part New increments), so
+// "RDM-01-009" sorts before "RDM-01-010" and before "RDM-01-100".
+const splitSetId = (setId: string): [string, number] => {
+  const match = setId.match(/^(.*?)(\d+)$/);
+  return match ? [match[1], Number(match[2])] : [setId, -1];
+};
+
+export const compareFolderCards = (
+  a: { setId: string; fileName: string },
+  b: { setId: string; fileName: string },
+): number => {
+  // Cards without a Set ID go last
+  if (!a.setId !== !b.setId) return a.setId ? -1 : 1;
+  const [prefixA, numberA] = splitSetId(a.setId);
+  const [prefixB, numberB] = splitSetId(b.setId);
+  return (
+    prefixA.localeCompare(prefixB) ||
+    numberA - numberB ||
+    a.fileName.localeCompare(b.fileName, undefined, { numeric: true })
+  );
+};
+
+// Every valid card .json directly inside parentHandle, in Set ID order.
+// Invalid or unreadable files are skipped.
+export const listFolderCards = async (
+  parentHandle: FileSystemDirectoryHandle,
+): Promise<FolderCard[]> => {
+  const handles: FileSystemFileHandle[] = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for await (const entryHandle of parentHandle.values()) {
+    if (entryHandle.kind === 'file' && /\.json$/i.test(entryHandle.name)) {
+      handles.push(entryHandle as FileSystemFileHandle);
+    }
+  }
+
+  const cards = await Promise.all(
+    handles.map(async (handle): Promise<FolderCard | null> => {
+      try {
+        const text = await (await handle.getFile()).text();
+        const result = parseRushCard(text);
+        return result.ok ? { handle, text, card: result.card } : null;
+      } catch {
+        return null;
+      }
+    }),
+  );
+
+  return cards
+    .filter((c): c is FolderCard => c !== null)
+    .sort((a, b) =>
+      compareFolderCards(
+        { setId: a.card.setId, fileName: a.handle.name },
+        { setId: b.card.setId, fileName: b.handle.name },
+      ),
+    );
+};
 
 export const requestDirectoryHandle =
   async (): Promise<FileSystemDirectoryHandle> => {

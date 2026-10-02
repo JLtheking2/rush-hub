@@ -40,6 +40,8 @@ Rules:
 
 "Edit in Creator" opens `/creator?set=<SetId>&card=<slug>` in a new tab. `pages/creator/atoms/SetCardLoader` resolves the two **lookup keys** through `setsData` (never a raw path/URL), fetches the card's `json`, and calls `applyCardJson`; failures show "Card not loaded". It guards against re-applying on later renders (the query stays in the URL so the link is shareable) and asks before replacing unsaved work on in-tab navigation. No file handle is set, so the first Save acts as Save As.
 
+While the deep link is active, `ImportExport/atoms/SetCardNav` shows ‹ › arrows under the preview. They step through the set's cards that have a `json`, in `setsData` order (set number), by `router.push`ing a shallow `?set=&card=`; `SetCardLoader` then loads the card. If the user cancels the unsaved-changes prompt, the loader `router.replace`s back to the previous card so the URL and arrows match the editor. Load, Save As and New remove the query, and from then on the local-folder arrows take over (see [`save-load.md`](save-load.md)).
+
 ## `/sets/print?set=<SetId>` (`print.page.tsx`, `printStyles.ts`)
 
 - Sheets of **9 cards, 3 × 3 on A4 portrait**; cells are **59 × 86 mm** (Yu-Gi-Oh! size). 177 × 258 mm leaves 16.5 mm side and 19.5 mm top/bottom margins, inside every consumer printer's unprintable area.

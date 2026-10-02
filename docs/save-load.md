@@ -51,7 +51,9 @@ Buttons: Load Directory, Load, Save, Save As, New. Uses the **File System Access
 - Suggested filenames: `getSuggestedCardFileName(name, setId, ext)` → `<Set ID> - <Name>.<ext>`, illegal characters (`\ / : * ? " < > |`, so `RD/SMP-EN001` → `RD-SMP-EN001`) turned into `-`; fallback `Rush Hub`.
 - `Save` with no file handle behaves like Save As. Cards opened via `?set=&card=` have no handle, so the first Save is a Save As — the user edits a copy, never the served asset.
 
-`CardOptionsForm` holds the `fileHandle` / `directoryHandle` state and passes it to `ImportExport`.
+- **Prev/next arrows** (`atoms/CardNav`, shown above the buttons). With a file handle open (after Load, Save or Save As), `atoms/LocalCardNav` steps through the valid card `.json` files in **that file's folder**, ordered by Set ID (`listFolderCards` / `compareFolderCards` in `utils.ts`: trailing number compared numerically, cards without a Set ID last, filename as tiebreak). The folder is re-read on every step so newly saved cards appear; stepping asks first if there are unsaved changes, and moves the file handle so Save writes the card being shown. New clears the handle, which hides the arrows. With no handle, `atoms/SetCardNav` shows the Set Browser arrows instead (see [`set-browser.md`](set-browser.md)).
+
+`ImportExport` holds the `fileHandle` / `directoryHandle` state. Its `setFileHandle` wrapper also removes a `?set=&card=` deep link, so after Load, Save As or New the creator no longer shows a Set Browser card.
 
 ## PNG export (`editor/CardDownloader/utils.ts`)
 
