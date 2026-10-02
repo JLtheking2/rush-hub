@@ -8,6 +8,23 @@ export interface FolderCard {
   card: RushCard;
 }
 
+/** Where New looks for the highest Set ID: the open card's folder or a published set */
+export type NewSource =
+  | { kind: 'folder'; parent: FileSystemDirectoryHandle }
+  | { kind: 'set'; setId: string };
+
+export const incrementCardNumber = (value?: string): string | undefined => {
+  if (value === undefined || value === '') return value;
+
+  const match = value.match(/^(.*?)(\d+)$/);
+  if (!match) return value; // no trailing digits — pass through unchanged
+
+  const [, prefix, digits] = match;
+  // Preserve zero-padding width (e.g. "007" -> "008"), unless the increment overflows it (e.g. "099" -> "100")
+  const incremented = String(Number(digits) + 1).padStart(digits.length, '0');
+  return prefix + incremented;
+};
+
 // Orders Set IDs by their trailing number (the part New increments), so
 // "RDM-01-009" sorts before "RDM-01-010" and before "RDM-01-100".
 const splitSetId = (setId: string): [string, number] => {

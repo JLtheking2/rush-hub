@@ -48,6 +48,7 @@ Buttons: Load Directory, Load, Save, Save As, New. Uses the **File System Access
 - `writeCardPng` never throws (a timeout or declined permission must not block the JSON write); `writeCardJson` deliberately does.
 - Browsers without the API fall back to a hidden `<input type="file">` for Load. (Note the creator page has **two** file inputs: this fallback, and `#imgUpload-input` for art — target by id in scripts.)
 - Load/New with unsaved changes opens `UnsavedChangesDialog`.
+- **New's Set ID** is the next free one in the current set: `incrementCardNumber` (`utils.ts`) applied to the highest Set ID in the set, not the card on screen. The set is `ImportExport`'s `newSource`: the folder of the last opened/saved file (re-read with `listFolderCards` on every New), or the published set of a `?set=&card=` deep link. It survives New, so pressing New twice gives the same ID until that card is saved. Load Directory resets it. With no set, an empty one, or a read failure, New falls back to incrementing the card on screen. New keeps the template and serial.
 - Suggested filenames: `getSuggestedCardFileName(name, setId, ext)` → `<Set ID> - <Name>.<ext>`, illegal characters (`\ / : * ? " < > |`, so `RD/SMP-EN001` → `RD-SMP-EN001`) turned into `-`; fallback `Rush Hub`.
 - `Save` with no file handle behaves like Save As. Cards opened via `?set=&card=` have no handle, so the first Save is a Save As — the user edits a copy, never the served asset.
 
