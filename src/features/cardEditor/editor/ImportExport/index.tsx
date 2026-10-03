@@ -56,10 +56,11 @@ const ImportExport: FC = () => {
     };
   }, [fileHandle, directoryHandle]);
 
-  // A new working directory means a different set
+  // A new working directory means a different set: New numbers from it
+  // straight away, until opening a card narrows it to that card's folder
   const changeDirectory = useCallback((h: FileSystemDirectoryHandle) => {
     setDirectoryHandle(h);
-    setNewSource(null);
+    setNewSource({ kind: 'folder', parent: h });
   }, []);
 
   return (
