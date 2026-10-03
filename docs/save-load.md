@@ -47,7 +47,7 @@ The Autofill button fetches the card's **main (Master Rules) page** wikitext (ne
 
 Buttons: Load Directory, Load, Save, Save As, New. Uses the **File System Access API** (Chromium):
 
-- **Working directory** (`showDirectoryPicker`, read/write) is required first; Load/Save ask for it if missing. Picked files must be inside it, otherwise `OutsideWorkingDirectoryDialog` offers to change directory or retry.
+- **Working directory** (`showDirectoryPicker`, read/write) is required first; Load/Save ask for it if missing. A file picked (Load) or saved (Save As / first Save) outside it opens the folder picker already in that file's folder (`adoptDirectoryFor`); the chosen folder becomes the working directory and the action finishes. Cancelling the picker aborts (a stray Save As `.png` is deleted). Only if the chosen folder still doesn't contain the file does `OutsideWorkingDirectoryDialog` offer to change directory or retry.
 - A card is a **pair** `<name>.png` + `<name>.json` written side by side. The JSON is authoritative and re-loadable; the PNG is a render of it. Loading a `.png` finds its sibling `.json` case-insensitively (`findSiblingFileHandle`); none → `MissingJsonPairDialog`.
 - `writeCardPng` never throws (a timeout or declined permission must not block the JSON write); `writeCardJson` deliberately does.
 - Browsers without the API fall back to a hidden `<input type="file">` for Load. (Note the creator page has **two** file inputs: this fallback, and `#imgUpload-input` for art — target by id in scripts.)

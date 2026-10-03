@@ -82,13 +82,13 @@ const ImportExport: FC = () => {
         <ImportButton
           setFileHandle={setFileHandle}
           directoryHandle={directoryHandle}
-          setDirectoryHandle={setDirectoryHandle}
+          setDirectoryHandle={changeDirectory}
         />
         <ExportButton
           fileHandle={fileHandle}
           setFileHandle={setFileHandle}
           directoryHandle={directoryHandle}
-          setDirectoryHandle={setDirectoryHandle}
+          setDirectoryHandle={changeDirectory}
         />
       </Box>
       <Box display="flex" flexDirection="row" gap={1}>
@@ -96,7 +96,7 @@ const ImportExport: FC = () => {
         <SaveAsButton
           setFileHandle={setFileHandle}
           directoryHandle={directoryHandle}
-          setDirectoryHandle={setDirectoryHandle}
+          setDirectoryHandle={changeDirectory}
         />
       </Box>
     </Box>

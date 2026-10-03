@@ -82,14 +82,29 @@ export const listFolderCards = async (
     );
 };
 
-export const requestDirectoryHandle =
-  async (): Promise<FileSystemDirectoryHandle> => {
-    const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
-    if ((await handle.queryPermission({ mode: 'readwrite' })) !== 'granted') {
-      await handle.requestPermission({ mode: 'readwrite' });
-    }
-    return handle;
-  };
+export const requestDirectoryHandle = async (
+  startIn?: FileSystemHandle,
+): Promise<FileSystemDirectoryHandle> => {
+  const handle = await window.showDirectoryPicker({
+    mode: 'readwrite',
+    ...(startIn ? { startIn } : {}),
+  });
+  if ((await handle.queryPermission({ mode: 'readwrite' })) !== 'granted') {
+    await handle.requestPermission({ mode: 'readwrite' });
+  }
+  return handle;
+};
+
+// A picked file can't be mapped up to its folder (resolve() only walks down),
+// so the closest to "switch automatically" is opening the folder picker
+// already inside the file's folder. Returns null if the chosen folder doesn't
+// contain the file; a cancelled picker throws.
+export const adoptDirectoryFor = async (
+  picked: FileSystemHandle,
+): Promise<FileSystemDirectoryHandle | null> => {
+  const handle = await requestDirectoryHandle(picked);
+  return (await handle.resolve(picked)) !== null ? handle : null;
+};
 
 export const ensureDirectoryHandle = async (
   directoryHandle: FileSystemDirectoryHandle | null,

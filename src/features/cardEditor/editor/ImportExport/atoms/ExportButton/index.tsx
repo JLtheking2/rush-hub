@@ -6,6 +6,7 @@ import { FC, useCallback, useState } from 'react';
 import { getSuggestedCardFileName } from '../../../utils/getSuggestedCardFileName';
 import { makeCardPngBlob } from '../../../CardDownloader/utils';
 import {
+  adoptDirectoryFor,
   checkWithinWorkingDirectory,
   discardStrayHandle,
   ensureDirectoryHandle,
@@ -49,7 +50,7 @@ const ExportButton: FC<Props> = ({
 
     if (supportsFileSystemAccess) {
       try {
-        const dirHandle = await ensureDirectoryHandle(
+        let dirHandle = await ensureDirectoryHandle(
           directoryHandle,
           setDirectoryHandle,
         );
@@ -86,9 +87,21 @@ const ExportButton: FC<Props> = ({
         });
         const within = await checkWithinWorkingDirectory(dirHandle, pngHandle);
         if (!within) {
-          await discardStrayHandle(pngHandle);
-          setOutsideDialogOpen(true);
-          return;
+          let newDir: FileSystemDirectoryHandle | null = null;
+          try {
+            newDir = await adoptDirectoryFor(pngHandle);
+          } catch {
+            // User cancelled the folder picker
+            await discardStrayHandle(pngHandle);
+            return;
+          }
+          if (!newDir) {
+            await discardStrayHandle(pngHandle);
+            setOutsideDialogOpen(true);
+            return;
+          }
+          setDirectoryHandle(newDir);
+          dirHandle = newDir;
         }
 
         // Derive the base name from the actual saved handle — the user may

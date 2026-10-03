@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { FC, useCallback, useRef, useState } from 'react';
 import {
+  adoptDirectoryFor,
   checkWithinWorkingDirectory,
   ensureDirectoryHandle,
   findSiblingFileHandle,
@@ -54,7 +55,7 @@ const ImportButton: FC<Props> = ({
   const doImport = useCallback(async () => {
     if (supportsFileSystemAccess) {
       try {
-        const dirHandle = await ensureDirectoryHandle(
+        let dirHandle = await ensureDirectoryHandle(
           directoryHandle,
           setDirectoryHandle,
         );
@@ -73,8 +74,13 @@ const ImportButton: FC<Props> = ({
 
         const within = await checkWithinWorkingDirectory(dirHandle, handle);
         if (!within) {
-          setOutsideDialogOpen(true);
-          return;
+          const newDir = await adoptDirectoryFor(handle);
+          if (!newDir) {
+            setOutsideDialogOpen(true);
+            return;
+          }
+          setDirectoryHandle(newDir);
+          dirHandle = newDir;
         }
 
         if (/\.png$/i.test(handle.name)) {
