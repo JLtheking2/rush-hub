@@ -2,11 +2,14 @@ import { OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import { Button, FormControl, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { FC, useCallback, useMemo, useState } from 'react';
-import { parseYugipediaCard } from '@cardEditor/card/fromYugipedia';
+import { parseFandomCard, parseYugipediaCard } from '@cardEditor/card/fromWiki';
 import { useRushCardStore } from '@cardEditor/card/store';
 import Label from '@components/inputs/Label';
 import Routes from '@routes';
-import fetchYugipediaWikitext from '@utils/fetchYugipediaWikitext';
+import {
+  fetchFandomWikitext,
+  fetchYugipediaWikitext,
+} from '@utils/fetchWikiCardText';
 import toTitleCase from '@utils/toTitleCase';
 
 const YugipediaLookup: FC = () => {
@@ -14,6 +17,7 @@ const YugipediaLookup: FC = () => {
   const setCard = useRushCardStore(state => state.setCard);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [source, setSource] = useState<string | null>(null);
 
   const trimmedName = useMemo(() => name?.trim() || '', [name]);
   const titledName = useMemo(() => toTitleCase(trimmedName), [trimmedName]);
@@ -26,13 +30,22 @@ const YugipediaLookup: FC = () => {
 
   const handleAutofill = useCallback(async () => {
     setError(null);
+    setSource(null);
     setIsLoading(true);
     applyTitleCase();
+    // Covers every content field; name, set info and art are untouched.
+    // Yugipedia first; Fandom is the fallback when it fails for any reason.
     try {
-      // Covers every content field; name, set info and art are untouched
       setCard(parseYugipediaCard(await fetchYugipediaWikitext(titledName)));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not fetch card');
+    } catch (yugipediaError) {
+      try {
+        setCard(parseFandomCard(await fetchFandomWikitext(titledName)));
+        setSource('Filled from Fandom (Yugipedia unavailable)');
+      } catch (fandomError) {
+        const message = (e: unknown) =>
+          e instanceof Error ? e.message : 'Could not fetch card';
+        setError(`${message(yugipediaError)}. ${message(fandomError)}.`);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -77,6 +90,11 @@ const YugipediaLookup: FC = () => {
       {error && (
         <Typography variant="body2" color="error" sx={{ mt: 0.5 }}>
           {error}
+        </Typography>
+      )}
+      {source && (
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+          {source}
         </Typography>
       )}
     </FormControl>
