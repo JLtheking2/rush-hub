@@ -61,6 +61,23 @@ const monsterTemplate = (types: string[]): Template => {
   return types.includes('normal') ? 'normal' : 'effect';
 };
 
+const cardKindTypes = [
+  'effect',
+  'normal',
+  'ritual',
+  'fusion',
+  'synchro',
+  'xyz',
+  'link',
+  'token',
+];
+
+/** Old Fandom pages omit `Normal`; Yugipedia has added it to every Normal monster */
+const withImpliedNormal = (types: string[]): string[] =>
+  types.some(t => cardKindTypes.includes(t.toLowerCase()))
+    ? types
+    : [...types, 'Normal'];
+
 export type WikiCardFields = Pick<
   RushCard,
   | 'template'
@@ -152,12 +169,17 @@ export const parseFandomCard = (wikitext: string): WikiCardFields => {
   const p = parseParams(wikitext);
   const lore = stripWikiMarkup(p.lore ?? '');
   const requirement = stripWikiMarkup(p.requirement ?? '');
+  const cardType = (p.card_type ?? '').trim().toLowerCase();
+  const types = [p.type, p.type2, p.type3, p.type4]
+    .map(t => stripWikiMarkup(t ?? ''))
+    .filter(Boolean);
   return buildCard({
     cardType: p.card_type ?? '',
     property: p.property ?? '',
-    types: [p.type, p.type2, p.type3, p.type4]
-      .map(t => stripWikiMarkup(t ?? ''))
-      .filter(Boolean),
+    types:
+      cardType === 'spell' || cardType === 'trap'
+        ? types
+        : withImpliedNormal(types),
     attribute: p.attribute ?? '',
     level: p.level ?? p.rank ?? '',
     atk: p.atk ?? '',
