@@ -154,6 +154,7 @@ const FileUploader: FC<FileUploaderProps> = ({
           />
         </Button>
         <Button
+          id={`${slug}-paste`}
           title="Paste image from clipboard"
           onClick={onClipboardUpload}
           variant="outlined"

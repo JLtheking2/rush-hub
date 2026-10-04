@@ -17,11 +17,20 @@ The card is DOM, not canvas. `CardDisplay` (`src/features/cardEditor/cardStyles/
 
 Rendered bottom to top by `CardDisplay`:
 
-`ArtLayer` → `FrameLayer` → `AttributeLayer` → `LevelLayer` → `NameLayer` → `TypeLineLayer` → `EffectLayer` → `StatsLayer` → `FooterLayer` → `RainbowBorderLayer`
+`ArtLayer` → `FrameLayer` → `AttributeLayer` → `LevelLayer` → `NameLayer` → `TypeLineLayer` → `EffectLayer` → `StatsLayer` → `FooterLayer` → `RainbowBorderLayer` → `HotspotLayer`
 
 `RainbowBorderLayer` draws only when `card.deck === 'extra'`: a full-card overlay (`foil/rainbow.png`, NCM's Rainbow Rare `cardFoil`, reused as-is) whose outer 12 px band is a pastel vertical rainbow at ~60% alpha, transparent inside. Like NCM, it is drawn last, over everything, with a normal blend.
 
 The **frame is drawn over the art**; the art window is a hole in the frame PNG. With no crop saved, the art uses `object-fit: cover`; with a crop it goes through `CroppedImg`. The attribute icon covers the "MADE BY ALIXSEP" credit circle in the frame's top-right corner — that credit is intentional and must stay visible (see [`decisions.md`](decisions.md)).
+
+## Interactive preview (`layers/HotspotLayer.tsx`)
+
+The preview is linked to the form. `HotspotLayer` draws transparent `CardBox` click targets (each `data-card-ui`) over the card, placed from `layout.ts` rects (text boxes include their `dy`). It is drawn last so the small targets sit above the art target.
+
+- **Text** (name, type line, effect, ATK/DEF, level, set name, set ID): a click puts that region into inline editing (`cardStyles/inlineEditStore.ts`, one `editing: CardField | null`). `FitText` then swaps its text for an `<input>`/`<textarea>` with the same typography (`editing`, `onTextChange`, `onDone`); typing writes straight into the card store, so the form field follows. Enter / blur finishes (effect: Ctrl+Enter), Esc restores the value from when editing began (`layers/useInlineField.ts`). ATK/DEF/Level editors also step with ↑/↓ and the wheel while focused (`useStepper`, sharing `StatInput/step.ts`; Level is ±1, capped at 12).
+- **Attribute / Property icon**: scroll to the form field and open its dropdown. **Spell/Trap badge**: scrolls to the template picker. **Art**: scrolls to the Image section; **right-click** clicks `#imgUpload-paste` (the form's clipboard button) synchronously so the clipboard read keeps its user activation.
+- `editor/fieldTargets.ts` maps each `CardField` to its accordion and element, and `revealField` expands a collapsed accordion, scrolls, flashes and (optionally) focuses it. Below the `md` breakpoint (card above the form) text clicks edit on the card without scrolling.
+- Hotspot hover styles live in `CardDisplay/styles.ts`; `makeCanvas` filters `data-card-ui` nodes out of the PNG export. Editing state is not part of the saved card.
 
 ## Geometry (`cardStyles/layout.ts`)
 

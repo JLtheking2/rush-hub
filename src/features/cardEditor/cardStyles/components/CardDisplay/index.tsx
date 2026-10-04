@@ -18,6 +18,7 @@ import {
   StatsLayer,
   TypeLineLayer,
 } from '../layers';
+import { HotspotLayer } from '../layers/HotspotLayer';
 import { CardContainer, CardContent } from './styles';
 
 const CardDisplay: FC = () => {
@@ -58,6 +59,7 @@ const CardDisplay: FC = () => {
         <StatsLayer />
         <FooterLayer />
         <RainbowBorderLayer />
+        <HotspotLayer />
       </CardContent>
     </CardContainer>
   );

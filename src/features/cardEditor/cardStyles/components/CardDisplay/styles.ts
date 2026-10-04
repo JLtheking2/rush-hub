@@ -19,4 +19,17 @@ export const CardContent = styled('div')`
   height: 100%;
   width: 100%;
   z-index: 10;
+
+  /* Click targets linking the card to the form (see layers/HotspotLayer) */
+  [data-card-ui] {
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  [data-card-ui][data-cursor='text'] {
+    cursor: text;
+  }
+  [data-card-ui]:hover {
+    outline: 1px dashed rgba(25, 118, 210, 0.9);
+    background: rgba(25, 118, 210, 0.08);
+  }
 `;

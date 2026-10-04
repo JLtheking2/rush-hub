@@ -4,25 +4,8 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { IconButton, InputAdornment } from '@mui/material';
 import { Box } from '@mui/system';
 import { FC, KeyboardEvent, useEffect, useRef } from 'react';
+import { CTRL_STEP, SHIFT_STEP, stepFor, stepValue } from './step';
 import { StatInputProps } from './types';
-
-/** Clamped at 0; blank/non-numeric values (e.g. "?") are treated as 0. */
-const stepValue = (value: string, delta: number): string => {
-  const parsed = parseInt(value, 10);
-  const base = Number.isNaN(parsed) ? 0 : parsed;
-  return String(Math.max(0, base + delta));
-};
-
-/** Modifier step sizes: Ctrl for finer, Shift for coarser. Apply to every
- * way of stepping (buttons, arrow keys, wheel), not just the wheel. */
-const CTRL_STEP = 50;
-const SHIFT_STEP = 1000;
-
-/** Shift wins if both modifiers are held. */
-const stepFor = (
-  e: { shiftKey: boolean; ctrlKey: boolean },
-  step: number,
-): number => (e.shiftKey ? SHIFT_STEP : e.ctrlKey ? CTRL_STEP : step);
 
 const StatHelp: FC<{ step: number }> = ({ step }) => (
   <Box

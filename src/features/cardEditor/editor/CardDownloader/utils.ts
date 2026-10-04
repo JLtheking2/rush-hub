@@ -51,6 +51,9 @@ export const makeCanvas = async (
         // Replace any broken/missing image with a transparent pixel so the
         // export completes cleanly instead of hanging on an empty src.
         imagePlaceholder: TRANSPARENT_PIXEL,
+        // Click targets of the interactive preview aren't part of the card
+        filter: node =>
+          !(node instanceof HTMLElement && 'cardUi' in node.dataset),
       }),
       new Promise<never>((_, reject) =>
         setTimeout(

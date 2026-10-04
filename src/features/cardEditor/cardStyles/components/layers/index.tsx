@@ -14,6 +14,7 @@ import useFontsReady from '@hooks/useFontsReady';
 import withBasePath from '@utils/withBasePath';
 import { FC, useMemo } from 'react';
 import * as layout from '../../layout';
+import { useInlineField, useStepper } from './useInlineField';
 import { measureWidth } from '../../utils/measureText';
 import CardBox from '../atoms/CardBox';
 import DisplayImg from '../atoms/DisplayImg';
@@ -74,6 +75,15 @@ export const AttributeLayer: FC = () => {
 export const LevelLayer: FC = () => {
   const { hasLevel, star, levelStroke } = useTemplate();
   const level = useRushCardStore(state => state.card.level);
+  const setCard = useRushCardStore(state => state.setCard);
+  const setLevel = (v: string) =>
+    setCard({ level: Math.min(12, parseInt(v.replace(/\D/g, ''), 10) || 0) });
+  const field = useInlineField('level', String(level), setLevel);
+  const stepper = useStepper(String(level), setLevel, {
+    step: 1,
+    modifiers: false,
+    max: 12,
+  });
   if (!hasLevel || !star || !levelStroke) return null;
   return (
     <>
@@ -91,6 +101,9 @@ export const LevelLayer: FC = () => {
         family={layout.levelNumber.family}
         at={layout.levelNumber.at}
         dy={layout.levelNumber.dy}
+        inputMode="numeric"
+        {...field}
+        {...stepper}
       />
     </>
   );
@@ -100,10 +113,13 @@ export const NameLayer: FC = () => {
   const { nameColor } = useTemplate();
   const { name, deck } = useRushCardStore(state => state.card);
   const extra = deck === 'extra';
+  const setCard = useRushCardStore(state => state.setCard);
+  const field = useInlineField('name', name, v => setCard({ name: v }));
   return (
     <FitText
       mode="line"
       text={name}
+      {...field}
       color={extra ? '#fff' : nameColor}
       stroke={extra ? layout.extraNameStroke : undefined}
       size={layout.name.size}
@@ -116,9 +132,9 @@ export const NameLayer: FC = () => {
 
 const typeFont = { family: layout.monsterTypeLine.family };
 
-export const TypeLineLayer: FC = () => {
-  const { spellTrap, nameColor } = useTemplate();
-  const white = nameColor === '#fff'; // Xyz: the type line sits on black
+/** Type-line text width and where the property icon / closing bracket land */
+export const useTypeLineGeometry = () => {
+  const { spellTrap } = useTemplate();
   const { typeLine, icon } = useRushCardStore(state => state.card);
   const fontsReady = useFontsReady();
   const spec = spellTrap ? layout.backrowTypeLine : layout.monsterTypeLine;
@@ -139,6 +155,20 @@ export const TypeLineLayer: FC = () => {
   if (!spellTrap) closeLeft = Math.floor(37 + textWidth);
   else closeLeft = textWidth + (showIcon ? layout.backrowIcon.size : 0) + 42;
 
+  return { spec, iconSrc, showIcon, textWidth, bracket, closeLeft };
+};
+
+export const TypeLineLayer: FC = () => {
+  const { nameColor } = useTemplate();
+  const white = nameColor === '#fff'; // Xyz: the type line sits on black
+  const typeLine = useRushCardStore(state => state.card.typeLine);
+  const setCard = useRushCardStore(state => state.setCard);
+  const field = useInlineField('typeLine', typeLine, v =>
+    setCard({ typeLine: v }),
+  );
+  const { spec, iconSrc, showIcon, textWidth, bracket, closeLeft } =
+    useTypeLineGeometry();
+
   return (
     <>
       <CardBox at={[bracket.left, bracket.top, bracket.w, bracket.h]}>
@@ -154,6 +184,7 @@ export const TypeLineLayer: FC = () => {
         family={spec.family}
         at={spec.at}
         dy={spec.dy}
+        {...field}
       />
       {showIcon && iconSrc && (
         <CardBox
@@ -182,10 +213,13 @@ export const EffectLayer: FC = () => {
   const { effectFont } = useTemplate();
   const effect = useRushCardStore(state => state.card.effect);
   const italic = effectFont === 'stoneSerifItalic';
+  const setCard = useRushCardStore(state => state.setCard);
+  const field = useInlineField('effect', effect, v => setCard({ effect: v }));
   return (
     <FitText
       mode="block"
       text={effect}
+      {...field}
       size={layout.effect.size}
       at={layout.effect.at}
       dy={italic ? layout.flavorDy : layout.effect.dy}
@@ -195,36 +229,51 @@ export const EffectLayer: FC = () => {
   );
 };
 
+const StatText: FC<{ field: 'atk' | 'def'; spec: layout.TextSpec }> = ({
+  field: key,
+  spec,
+}) => {
+  const text = useRushCardStore(state => state.card[key]);
+  const setCard = useRushCardStore(state => state.setCard);
+  const set = (v: string) => setCard({ [key]: v });
+  const field = useInlineField(key, text, set);
+  const stepper = useStepper(text, set, { step: 100, modifiers: true });
+  return (
+    <FitText
+      mode="line"
+      align="right"
+      text={text}
+      color="#fff"
+      stroke={layout.statStroke}
+      size={spec.size}
+      weight={spec.weight}
+      family={spec.family}
+      at={spec.at}
+      dy={spec.dy}
+      {...field}
+      {...stepper}
+    />
+  );
+};
+
 export const StatsLayer: FC = () => {
   const { hasAtkDef } = useTemplate();
-  const { atk, def } = useRushCardStore(state => state.card);
   if (!hasAtkDef) return null;
   return (
     <>
-      {[
-        { spec: layout.atk, text: atk },
-        { spec: layout.def, text: def },
-      ].map(({ spec, text }) => (
-        <FitText
-          key={spec.at[0]}
-          mode="line"
-          align="right"
-          text={text}
-          color="#fff"
-          stroke={layout.statStroke}
-          size={spec.size}
-          weight={spec.weight}
-          family={spec.family}
-          at={spec.at}
-          dy={spec.dy}
-        />
-      ))}
+      <StatText field="atk" spec={layout.atk} />
+      <StatText field="def" spec={layout.def} />
     </>
   );
 };
 
 export const FooterLayer: FC = () => {
   const { serial, setId } = useRushCardStore(state => state.card);
+  const setCard = useRushCardStore(state => state.setCard);
+  const serialField = useInlineField('serial', serial, v =>
+    setCard({ serial: v }),
+  );
+  const setIdField = useInlineField('setId', setId, v => setCard({ setId: v }));
   return (
     <>
       <FitText
@@ -235,6 +284,7 @@ export const FooterLayer: FC = () => {
         family={layout.serial.family}
         at={layout.serial.at}
         dy={layout.serial.dy}
+        {...serialField}
       />
       <FitText
         mode="line"
@@ -245,6 +295,7 @@ export const FooterLayer: FC = () => {
         family={layout.setId.family}
         at={layout.setId.at}
         dy={layout.setId.dy}
+        {...setIdField}
       />
     </>
   );
