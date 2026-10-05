@@ -11,7 +11,8 @@ A web tool for making custom **Yu-Gi-Oh! Rush Duel** style cards, with a Set Bro
 - Native **421 × 614 px** PNG export (the 59 × 86 mm card ratio)
 - Save / load cards as `.json` + `.png` pairs in a working directory (File System Access API, Chromium), with ‹ › arrows to step through the loaded card's folder in Set ID order (or through a published set when the card was opened from the Set Browser); New starts the next free Set ID in that set
 - **Set Browser** (`/sets`): published sets, a card grid, a full-size viewer and an "Edit in Creator" deep link
-- **Print sheets** (`/sets/print?set=<SetId>`): 3×3 cards per A4 page at 59 × 86 mm, with cut marks. Custom sheets: `/sets/print?cards=<SetId>/<cardId>*<copies>,...` (see [`docs/set-browser.md`](docs/set-browser.md))
+- **Set Quantity** (Info section): how many copies of a card the set contains (default 1, not drawn on the card). Shown as `×N` in the Set Browser.
+- **Print sheets** (`/sets/print?set=<SetId>`): 3×3 cards per A4 page at 59 × 86 mm, with cut marks; each card is printed Set Quantity times. Custom sheets: `/sets/print?cards=<SetId>/<cardId>*<copies>,...` (see [`docs/set-browser.md`](docs/set-browser.md))
 
 Not supported, by design: rarity/art foils (beyond the Extra-deck rainbow border), LEGEND/MAXIMUM, non-English text. See [`docs/decisions.md`](docs/decisions.md).
 

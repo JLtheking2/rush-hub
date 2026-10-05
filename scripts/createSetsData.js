@@ -273,7 +273,7 @@ const importSet = async (setId, pngFiles) => {
  * which is exactly why the card data is the authority everywhere else.
  * @param {string} slug
  */
-const fallbackCardInfo = slug => ({ number: '', name: slug });
+const fallbackCardInfo = slug => ({ number: '', name: slug, quantity: 1 });
 
 /**
  * Phase B - derive everything from the tracked files in
@@ -354,6 +354,11 @@ const readPublicSets = async () => {
         info = {
           number: typeof card.setId === 'string' ? card.setId : '',
           name: card.name,
+          // Cards saved before the field existed count as one copy
+          quantity:
+            Number.isInteger(card.quantity) && card.quantity >= 1
+              ? card.quantity
+              : 1,
         };
       } catch {
         info = undefined;
@@ -380,6 +385,7 @@ const readPublicSets = async () => {
         id: slug,
         number: info.number,
         name: info.name,
+        quantity: info.quantity,
         thumb: hasThumb ? `${base}/${THUMB_DIRNAME}/${slug}.webp` : full,
         full,
         json: hasJson ? `${base}/${CARDS_DIRNAME}/${slug}.json` : null,
@@ -454,6 +460,8 @@ export interface SetCard {
   id: string;
   number: string;
   name: string;
+  /** Copies in the set; print sheets repeat the card this many times */
+  quantity: number;
   thumb: string;
   full: string;
   /** Saved card data, or null when this card was promoted without a .json */

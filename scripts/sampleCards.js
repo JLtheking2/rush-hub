@@ -28,6 +28,7 @@ const card = fields => ({
   def: fields.def ?? '',
   setId: 'RD/ABC-EN001',
   serial: '0123456789',
+  quantity: 1,
   image: null,
 });
 

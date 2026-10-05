@@ -137,6 +137,17 @@ export const parseRushCard = (text: string): ParseResult => {
     }
     card.level = level;
   }
+  if (parsed.quantity !== undefined) {
+    const { quantity } = parsed;
+    if (
+      typeof quantity !== 'number' ||
+      !Number.isInteger(quantity) ||
+      quantity < 1
+    ) {
+      return bad('quantity', 'expected a whole number of 1 or more');
+    }
+    card.quantity = quantity;
+  }
   if (parsed.image !== undefined) {
     const image = parseImage(parsed.image);
     if (image === undefined) {

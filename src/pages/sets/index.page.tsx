@@ -26,6 +26,11 @@ const Sets: FC = () => {
     [selectedSetId],
   );
 
+  const totalCopies = useMemo(
+    () => selectedSet?.cards.reduce((sum, card) => sum + card.quantity, 0) ?? 0,
+    [selectedSet],
+  );
+
   // Keep the selection in the URL so a set view is linkable and the browser
   // back button works. A dynamic /sets/[id] route would need getStaticPaths,
   // which doesn't fit this project's `next export` build.
@@ -94,6 +99,8 @@ const Sets: FC = () => {
               </NextLink>
               <Typography variant="caption" color="text.secondary">
                 {selectedSet.cards.length} cards
+                {totalCopies !== selectedSet.cards.length &&
+                  ` · ${totalCopies} copies`}
               </Typography>
             </Box>
             <CardGrid cards={selectedSet.cards} onSelect={setViewerIndex} />

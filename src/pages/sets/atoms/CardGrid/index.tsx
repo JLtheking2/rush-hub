@@ -16,6 +16,7 @@ const CardGrid: FC<Props> = ({ cards, onSelect }) => (
           <Thumbnail src={card.thumb} alt={card.name} loading="lazy" />
           <Typography variant="caption" textAlign="center">
             {card.number} · {card.name}
+            {card.quantity > 1 && ` ×${card.quantity}`}
           </Typography>
         </GridButton>
       </li>

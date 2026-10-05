@@ -26,6 +26,7 @@ Rules:
 
 - Any `.png` in staging other than the set-level `cover.png` is a card, **including in subfolders** (`PRS-02/Main/…`) — subfolders only organise staging; the published set is flat. Its **slug** is the whole basename (the subfolder is not part of it), ASCII-folded and lower-cased with hyphen runs collapsed (`001 - Smile World` → `001-smile-world`); duplicate slugs, also across subfolders, are skipped with a warning.
 - The grid **number is `setId`** and the **name is `name`**, both read from the `.json` — the filename is only an identifier. A card with no `.json` gets number `''` and name = slug, and no "Edit in Creator" button (`json: null`). An empty Set ID is fine; a missing name falls back to the slug with a warning.
+- **`quantity`** (copies of the card in the set) is read from the `.json` — an integer ≥ 1, else 1 (so cards saved before the field existed count once; no `.json` = 1). It is shown as ` ×N` after the name in the grid and viewer when > 1, and the set header adds `· N copies` when the total differs from the card count.
 - Sort: number prefix, then the number numerically (so `EN10` after `EN2`), then name.
 - Set display names come from `SET_DISPLAY_NAMES` at the top of the script (default: the folder name). Add an entry for a new set.
 - `.gitignore` keeps `cards/sets/**/*.png` and `*.json` (any depth, so subfolders like `PRS-02/Main/` are covered) out of git but negates the set-level `cover.png`. `cards/sets/<Set>/cover.png` is hand-supplied and must be tracked. Don't remove those rules.
@@ -44,6 +45,7 @@ While the deep link is active, `ImportExport/atoms/SetCardNav` shows ‹ › arr
 
 ## `/sets/print?set=<SetId>` (`print.page.tsx`, `printStyles.ts`)
 
+- `?set=` sheets repeat each card **`quantity` times** (the toolbar count and sheet count follow the expanded list). Custom `?cards=` sheets ignore `quantity` — their `*<copies>` is explicit.
 - Sheets of **9 cards, 3 × 3 on A4 portrait**; cells are **59 × 86 mm** (Yu-Gi-Oh! size). 177 × 258 mm leaves 16.5 mm side and 19.5 mm top/bottom margins, inside every consumer printer's unprintable area.
 - Each cell is the card's full PNG with `object-fit: fill` (421:614 = 0.6857 vs 0.6860 — invisible, whereas `contain` would leave white slivers). Cut marks are a 0.25 mm `outline` on each cell (an outline takes no layout space, so seams line up and each cut is one line).
 - `@page { size: A4 portrait; margin: 0 }`; header/footer are hidden in print; a `break-after: page` per sheet, none after the last, and the background wrapper's gradient/min-height is neutralised so there's no trailing blank page. `-webkit-print-color-adjust: exact` keeps the colours.

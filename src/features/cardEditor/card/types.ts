@@ -70,5 +70,7 @@ export interface RushCard {
   def: string;
   setId: string;
   serial: string;
+  /** Copies of this card in its set (print sheets); never rendered */
+  quantity: number;
   image: CardImage | null;
 }

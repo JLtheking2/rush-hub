@@ -95,6 +95,15 @@ const CardFieldsForm: FC = () => {
           value={card.setId}
           onChange={setId => setCard({ setId })}
         />
+        <NumberInput
+          label="Set Quantity"
+          slug="quantity"
+          min={1}
+          value={card.quantity}
+          onChange={quantity =>
+            setCard({ quantity: quantity === '' ? 1 : Math.round(quantity) })
+          }
+        />
       </AccordionForm>
     </>
   );

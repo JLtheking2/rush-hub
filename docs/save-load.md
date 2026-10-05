@@ -19,6 +19,7 @@ Read this when working on the `RushCard` schema, validation, the Save/Load/Save-
   effect: string;           // "\n" = paragraph break
   atk: string; def: string; // strings so "?" works
   setId: string; serial: string;
+  quantity: number;         // whole number >= 1, default 1 (also when missing in old files); copies in the set, never rendered
   image: { src: string; crop?: { x, y, width, height } } | null;
 }
 ```
@@ -29,7 +30,7 @@ State is one Zustand store, `useRushCardStore` (`store.ts`): `card`, `savedJson`
 
 ### Defaults and switching template (`defaults.ts`)
 
-`getDefaultCard(template)` builds a card in canonical key order from `templates[t].defaults`. Default template is `effect`. `switchTemplate(card, next)` keeps name, deck, effect, Set ID, serial and art always; attribute / level / ATK / DEF only monster → monster (reset when entering or leaving Spell/Trap); the type line only if the user edited it (otherwise it follows the new template's auto type line, `getAutoTypeLine`: `Spell` / `Trap`, plus ` / <icon name>` when a property icon is set, e.g. `Trap / Continuous`; changing the icon updates an unedited type line the same way); the Spell/Trap icon only if valid for the new template. `setTemplate` doesn't touch `savedJson`, so a switch counts as an unsaved edit.
+`getDefaultCard(template)` builds a card in canonical key order from `templates[t].defaults`. Default template is `effect`. `switchTemplate(card, next)` keeps name, deck, effect, Set ID, serial, quantity and art always; attribute / level / ATK / DEF only monster → monster (reset when entering or leaving Spell/Trap); the type line only if the user edited it (otherwise it follows the new template's auto type line, `getAutoTypeLine`: `Spell` / `Trap`, plus ` / <icon name>` when a property icon is set, e.g. `Trap / Continuous`; changing the icon updates an unedited type line the same way); the Spell/Trap icon only if valid for the new template. `setTemplate` doesn't touch `savedJson`, so a switch counts as an unsaved edit.
 
 ### Validation (`validate.ts`)
 

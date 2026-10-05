@@ -52,15 +52,25 @@ const Print: FC = () => {
     return list;
   }, [router.query.cards]);
 
+  // A set prints each card as many times as its quantity.
+  const printCards = useMemo<SetCard[] | undefined>(
+    () =>
+      customCards ??
+      selectedSet?.cards.flatMap(card =>
+        Array.from({ length: card.quantity }, () => card),
+      ),
+    [customCards, selectedSet],
+  );
+
   const sheets = useMemo<SetCard[][]>(() => {
-    const source = customCards ?? selectedSet?.cards;
+    const source = printCards;
     if (!source) return [];
     const chunks: SetCard[][] = [];
     for (let i = 0; i < source.length; i += cardsPerSheet) {
       chunks.push(source.slice(i, i + cardsPerSheet));
     }
     return chunks;
-  }, [customCards, selectedSet]);
+  }, [printCards]);
 
   // router.query is empty until the router is ready on a statically exported
   // page, so an unknown set can only be reported once it is.
@@ -113,8 +123,8 @@ const Print: FC = () => {
         </Button>
         <Typography variant="caption" color="text.secondary">
           {customCards ? 'Custom sheet' : selectedSet?.displayName} ·{' '}
-          {customCards?.length ?? selectedSet?.cards.length} cards ·{' '}
-          {sheets.length} {sheets.length === 1 ? 'sheet' : 'sheets'}
+          {printCards?.length ?? 0} cards · {sheets.length}{' '}
+          {sheets.length === 1 ? 'sheet' : 'sheets'}
         </Typography>
       </PrintToolbar>
       {sheets.map((sheetCards, sheetIndex) => (

@@ -168,6 +168,7 @@ const CardViewer: FC<Props> = ({
 
           <Typography variant="subtitle1" textAlign="center">
             {card.number} · {card.name}
+            {card.quantity > 1 && ` ×${card.quantity}`}
           </Typography>
 
           {!!card.json && (
