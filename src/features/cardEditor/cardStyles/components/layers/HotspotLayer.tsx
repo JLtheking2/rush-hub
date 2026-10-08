@@ -1,5 +1,6 @@
 import { useRushCardStore } from '@cardEditor/card/store';
 import { templates } from '@cardEditor/card/templates';
+import { parseStatPair } from '@cardEditor/editor/CardFieldsForm/fields/StatInput/step';
 import { revealField } from '@cardEditor/editor/fieldTargets';
 import { useMediaQuery, useTheme } from '@mui/material';
 import { FC } from 'react';
@@ -60,6 +61,20 @@ const Hotspot: FC<HotspotProps> = ({ field, at, label }) => {
           document.querySelector<HTMLElement>('#imgUpload-paste')?.click();
           revealField('art', { focus: false });
         }
+      : field === 'atk' || field === 'def'
+      ? async (e: { preventDefault: () => void }) => {
+          e.preventDefault();
+          try {
+            const pair = parseStatPair(await navigator.clipboard.readText());
+            if (!pair) return;
+            // A lone value only sets the clicked field
+            useRushCardStore
+              .getState()
+              .setCard(pair.def === undefined ? { [field]: pair.atk } : pair);
+          } catch {
+            // clipboard unavailable or permission denied
+          }
+        }
       : undefined;
 
   return (
@@ -105,8 +120,16 @@ export const HotspotLayer: FC = () => {
       <Hotspot field="typeLine" at={typeLineRect} label="Type line" />
       {hasAtkDef && (
         <>
-          <Hotspot field="atk" at={textRect(layout.atk)} label="ATK" />
-          <Hotspot field="def" at={textRect(layout.def)} label="DEF" />
+          <Hotspot
+            field="atk"
+            at={textRect(layout.atk)}
+            label="ATK · Click: edit · Right-click: paste ATK/DEF"
+          />
+          <Hotspot
+            field="def"
+            at={textRect(layout.def)}
+            label="DEF · Click: edit · Right-click: paste ATK/DEF"
+          />
         </>
       )}
       <Hotspot field="effect" at={textRect(layout.effect)} label="Effect" />

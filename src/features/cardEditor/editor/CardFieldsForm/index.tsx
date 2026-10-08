@@ -53,12 +53,14 @@ const CardFieldsForm: FC = () => {
               slug="atk"
               value={card.atk}
               onChange={atk => setCard({ atk })}
+              onPastePair={setCard}
             />
             <StatInput
               label="DEF"
               slug="def"
               value={card.def}
               onChange={def => setCard({ def })}
+              onPastePair={setCard}
               showHelp
             />
           </Box>

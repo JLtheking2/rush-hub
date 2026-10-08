@@ -3,8 +3,14 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { IconButton, InputAdornment } from '@mui/material';
 import { Box } from '@mui/system';
-import { FC, KeyboardEvent, useEffect, useRef } from 'react';
-import { CTRL_STEP, SHIFT_STEP, stepFor, stepValue } from './step';
+import { ClipboardEvent, FC, KeyboardEvent, useEffect, useRef } from 'react';
+import {
+  CTRL_STEP,
+  SHIFT_STEP,
+  parseStatPair,
+  stepFor,
+  stepValue,
+} from './step';
 import { StatInputProps } from './types';
 
 const StatHelp: FC<{ step: number }> = ({ step }) => (
@@ -19,10 +25,16 @@ const StatHelp: FC<{ step: number }> = ({ step }) => (
     <li>Hold Ctrl: ±{CTRL_STEP}</li>
     <li>Hold Shift: ±{SHIFT_STEP}</li>
     <li>Stops at 0; blank or &quot;?&quot; counts as 0</li>
+    <li>Paste 2650/2800 or a Sheets row to set both ATK and DEF</li>
   </Box>
 );
 
-const StatInput: FC<StatInputProps> = ({ step = 100, showHelp, ...props }) => {
+const StatInput: FC<StatInputProps> = ({
+  step = 100,
+  showHelp,
+  onPastePair,
+  ...props
+}) => {
   const { value, onChange, label } = props;
 
   // Kept in a ref so the native wheel listener always sees the latest
@@ -70,11 +82,18 @@ const StatInput: FC<StatInputProps> = ({ step = 100, showHelp, ...props }) => {
     }
   };
 
+  const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
+    const pair = parseStatPair(e.clipboardData.getData('text'));
+    if (!onPastePair || pair?.def === undefined) return;
+    e.preventDefault();
+    onPastePair({ atk: pair.atk, def: pair.def });
+  };
+
   return (
     <TextInput
       {...props}
       tooltipProps={showHelp ? { title: <StatHelp step={step} /> } : undefined}
-      inputProps={{ onKeyDown: handleKeyDown }}
+      inputProps={{ onKeyDown: handleKeyDown, onPaste: handlePaste }}
       InputProps={{
         inputRef,
         endAdornment: (
