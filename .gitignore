@@ -41,3 +41,6 @@ dev-server.log
 /cards/sets/**/*.png
 /cards/sets/**/*.json
 !/cards/sets/*/cover.png
+
+# RDM-01 is kept on disk only (not published to git).
+/public/sets/RDM-01/
