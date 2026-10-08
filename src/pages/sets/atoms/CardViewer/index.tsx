@@ -1,31 +1,21 @@
 import { FC, MouseEvent, useCallback, useEffect } from 'react';
-import NextLink from 'next/link';
-import { Box, Button, Dialog, IconButton, Typography } from '@mui/material';
+import { Box, Dialog, IconButton, Typography } from '@mui/material';
 import {
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
   Close as CloseIcon,
-  Edit as EditIcon,
 } from '@mui/icons-material';
-import Routes from '@routes';
 import { SetCard } from '@utils/setsData';
 import { ViewerImage } from '../../styles';
 
 interface Props {
-  setId: string;
   cards: SetCard[];
   index: number | null;
   onNavigate: (index: number) => void;
   onClose: () => void;
 }
 
-const CardViewer: FC<Props> = ({
-  setId,
-  cards,
-  index,
-  onNavigate,
-  onClose,
-}) => {
+const CardViewer: FC<Props> = ({ cards, index, onNavigate, onClose }) => {
   const open = index !== null;
   const card = open ? cards[index] : undefined;
 
@@ -170,32 +160,6 @@ const CardViewer: FC<Props> = ({
             {card.number} · {card.name}
             {card.quantity > 1 && ` ×${card.quantity}`}
           </Typography>
-
-          {!!card.json && (
-            <NextLink
-              href={{
-                pathname: Routes.Creator,
-                query: { set: setId, card: card.id },
-              }}
-              passHref
-            >
-              <Button
-                component="a"
-                target="_blank"
-                // No color="inherit" here: the theme gives outlined buttons a
-                // `background.default` fill, which the dialog's white text
-                // would disappear into.
-                variant="outlined"
-                startIcon={<EditIcon />}
-                onClick={stopPropagation}
-                // The theme absolutely-positions startIcon into a left gutter,
-                // so a non-fullWidth button must pad its label clear of it.
-                sx={{ pl: 10, flexShrink: 0 }}
-              >
-                Edit in Creator
-              </Button>
-            </NextLink>
-          )}
 
           {/* On narrow screens there is no room beside the card */}
           <Box display={['flex', 'none']} gap={6} flexShrink={0}>

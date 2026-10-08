@@ -105,7 +105,6 @@ const Sets: FC = () => {
             </Box>
             <CardGrid cards={selectedSet.cards} onSelect={setViewerIndex} />
             <CardViewer
-              setId={selectedSet.id}
               cards={selectedSet.cards}
               index={viewerIndex}
               onNavigate={setViewerIndex}

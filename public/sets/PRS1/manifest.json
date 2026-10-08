@@ -1,0 +1,367 @@
+{
+  "001-smile-world": {
+    "number": "001",
+    "name": "Smile World",
+    "quantity": 1
+  },
+  "002-assault-on-ghq": {
+    "number": "002",
+    "name": "Assault on GHQ",
+    "quantity": 1
+  },
+  "003-goblins-secret-remedy": {
+    "number": "003",
+    "name": "Goblin's Secret Remedy",
+    "quantity": 1
+  },
+  "004-hinotama": {
+    "number": "004",
+    "name": "Hinotama",
+    "quantity": 1
+  },
+  "005-destruction-punch": {
+    "number": "005",
+    "name": "Destruction Punch",
+    "quantity": 1
+  },
+  "006-castle-walls": {
+    "number": "006",
+    "name": "Castle Walls",
+    "quantity": 1
+  },
+  "007-three-strikes-barrier": {
+    "number": "007",
+    "name": "Three Strikes Barrier",
+    "quantity": 1
+  },
+  "008-gamble": {
+    "number": "008",
+    "name": "Gamble",
+    "quantity": 1
+  },
+  "009-gather-your-mind": {
+    "number": "009",
+    "name": "Gather Your Mind",
+    "quantity": 1
+  },
+  "010-mind-crush": {
+    "number": "010",
+    "name": "Mind Crush",
+    "quantity": 1
+  },
+  "011-dark-room-of-nightmare": {
+    "number": "011",
+    "name": "Dark Room of Nightmare",
+    "quantity": 1
+  },
+  "012-type-zero-magic-crusher": {
+    "number": "012",
+    "name": "Type Zero Magic Crusher",
+    "quantity": 1
+  },
+  "013-ancient-telescope": {
+    "number": "013",
+    "name": "Ancient Telescope",
+    "quantity": 1
+  },
+  "014-abyss-flower": {
+    "number": "014",
+    "name": "Abyss Flower",
+    "quantity": 1
+  },
+  "015-armored-glass": {
+    "number": "015",
+    "name": "Armored Glass",
+    "quantity": 1
+  },
+  "016-blue-medicine": {
+    "number": "016",
+    "name": "Blue Medicine",
+    "quantity": 1
+  },
+  "017-bone-mouse": {
+    "number": "017",
+    "name": "Bone Mouse",
+    "quantity": 1
+  },
+  "018-book-of-secret-arts": {
+    "number": "018",
+    "name": "Book of Secret Arts",
+    "quantity": 1
+  },
+  "019-change-slime": {
+    "number": "019",
+    "name": "Change Slime",
+    "quantity": 1
+  },
+  "020-dark-energy": {
+    "number": "020",
+    "name": "Dark Energy",
+    "quantity": 1
+  },
+  "021-dark-plant": {
+    "number": "021",
+    "name": "Dark Plant",
+    "quantity": 1
+  },
+  "022-doron": {
+    "number": "022",
+    "name": "Doron",
+    "quantity": 1
+  },
+  "023-embryonic-beast": {
+    "number": "023",
+    "name": "Embryonic Beast",
+    "quantity": 1
+  },
+  "024-eyearmor": {
+    "number": "024",
+    "name": "eyearmor",
+    "quantity": 1
+  },
+  "025-fiends-hand": {
+    "number": "025",
+    "name": "Fiend's Hand",
+    "quantity": 1
+  },
+  "026-mushroom-man": {
+    "number": "026",
+    "name": "Mushroom Man",
+    "quantity": 1
+  },
+  "027-goblin-calligrapher": {
+    "number": "027",
+    "name": "Goblin Calligrapher",
+    "quantity": 1
+  },
+  "028-goblin-fan": {
+    "number": "028",
+    "name": "Goblin Fan",
+    "quantity": 1
+  },
+  "029-hitodenchak": {
+    "number": "029",
+    "name": "Hitodenchak",
+    "quantity": 1
+  },
+  "030-house-of-adhesive-tape": {
+    "number": "030",
+    "name": "House of Adhesive Tape",
+    "quantity": 1
+  },
+  "031-hurricail": {
+    "number": "031",
+    "name": "Hurricail",
+    "quantity": 1
+  },
+  "032-kagemusha-of-the-blue-flame": {
+    "number": "032",
+    "name": "Kagemusha of the Blue Flame",
+    "quantity": 1
+  },
+  "033-kageningen": {
+    "number": "033",
+    "name": "Kageningen",
+    "quantity": 1
+  },
+  "034-legendary-sword": {
+    "number": "034",
+    "name": "Legendary Sword",
+    "quantity": 1
+  },
+  "035-lucky-trinket": {
+    "number": "035",
+    "name": "Lucky Trinket",
+    "quantity": 1
+  },
+  "036-man-eater": {
+    "number": "036",
+    "name": "Man Eater",
+    "quantity": 1
+  },
+  "037-masked-clown": {
+    "number": "037",
+    "name": "Masked Clown",
+    "quantity": 1
+  },
+  "038-mech-mole-zombie": {
+    "number": "038",
+    "name": "Mech Mole Zombie",
+    "quantity": 1
+  },
+  "039-meda-bat": {
+    "number": "039",
+    "name": "Meda Bat",
+    "quantity": 1
+  },
+  "040-mesmeric-control": {
+    "number": "040",
+    "name": "Mesmeric Control",
+    "quantity": 1
+  },
+  "041-mystery-hand": {
+    "number": "041",
+    "name": "Mystery Hand",
+    "quantity": 1
+  },
+  "042-phantom-dewan": {
+    "number": "042",
+    "name": "Phantom Dewan",
+    "quantity": 1
+  },
+  "043-phantom-ghost": {
+    "number": "043",
+    "name": "Phantom Ghost",
+    "quantity": 1
+  },
+  "044-power-of-kaishin": {
+    "number": "044",
+    "name": "Power of Kaishin",
+    "quantity": 1
+  },
+  "045-psychic-kappa": {
+    "number": "045",
+    "name": "Psychic Kappa",
+    "quantity": 1
+  },
+  "046-raimei": {
+    "number": "046",
+    "name": "Raimei",
+    "quantity": 1
+  },
+  "047-red-medicine": {
+    "number": "047",
+    "name": "Red Medicine",
+    "quantity": 1
+  },
+  "048-rod-of-the-minds-eye": {
+    "number": "048",
+    "name": "Rod of the Mind's Eye",
+    "quantity": 1
+  },
+  "049-sectarian-of-secrets": {
+    "number": "049",
+    "name": "Sectarian of Secrets",
+    "quantity": 1
+  },
+  "050-sparks": {
+    "number": "050",
+    "name": "Sparks",
+    "quantity": 1
+  },
+  "051-the-melting-red-shadow": {
+    "number": "051",
+    "name": "The Melting Red Shadow",
+    "quantity": 1
+  },
+  "052-the-wandering-doomed": {
+    "number": "052",
+    "name": "The Wandering Doomed",
+    "quantity": 1
+  },
+  "053-thunder-crash": {
+    "number": "053",
+    "name": "Thunder Crash",
+    "quantity": 1
+  },
+  "054-vile-germs": {
+    "number": "054",
+    "name": "Vile Germs",
+    "quantity": 1
+  },
+  "055-violet-crystal": {
+    "number": "055",
+    "name": "Violet Crystal",
+    "quantity": 1
+  },
+  "056-curtain-of-the-dark-ones": {
+    "number": "056",
+    "name": "Curtain of the Dark Ones",
+    "quantity": 1
+  },
+  "057-wretched-ghost-of-the-attic": {
+    "number": "057",
+    "name": "Wretched Ghost of the Attic",
+    "quantity": 1
+  },
+  "058-yashinoki": {
+    "number": "058",
+    "name": "Yashinoki",
+    "quantity": 1
+  },
+  "059-zarigun": {
+    "number": "059",
+    "name": "Zarigun",
+    "quantity": 1
+  },
+  "060-hidden-spellbook": {
+    "number": "060",
+    "name": "Hidden Spellbook",
+    "quantity": 1
+  },
+  "061-arsenal-robber": {
+    "number": "061",
+    "name": "Arsenal Robber",
+    "quantity": 1
+  },
+  "062-assault-spirits": {
+    "number": "062",
+    "name": "Assault Spirits",
+    "quantity": 1
+  },
+  "063-darkness-approaches": {
+    "number": "063",
+    "name": "Darkness Approaches",
+    "quantity": 1
+  },
+  "064-final-destiny": {
+    "number": "064",
+    "name": "Final Destiny",
+    "quantity": 1
+  },
+  "065-germ-infection": {
+    "number": "065",
+    "name": "Germ Infection",
+    "quantity": 1
+  },
+  "066-flame-dancer": {
+    "number": "066",
+    "name": "Flame Dancer",
+    "quantity": 1
+  },
+  "067-atomic-firefly": {
+    "number": "067",
+    "name": "Atomic Firefly",
+    "quantity": 1
+  },
+  "068-kinka-byo": {
+    "number": "068",
+    "name": "Kinka-Byo",
+    "quantity": 1
+  },
+  "069-mystic-piper": {
+    "number": "069",
+    "name": "Mystic Piper",
+    "quantity": 1
+  },
+  "070-dharma-cannon": {
+    "number": "070",
+    "name": "Dharma Cannon",
+    "quantity": 1
+  },
+  "071-white-dolphin": {
+    "number": "071",
+    "name": "White Dolphin",
+    "quantity": 1
+  },
+  "072-pot-the-trick": {
+    "number": "072",
+    "name": "Pot the Trick",
+    "quantity": 1
+  },
+  "073-eatgaboon": {
+    "number": "073",
+    "name": "Eatgaboon",
+    "quantity": 1
+  }
+}

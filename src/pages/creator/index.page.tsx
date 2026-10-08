@@ -7,7 +7,6 @@ import { makeCanvas } from '@cardEditor/editor/CardDownloader/utils';
 import { TempDiv } from '@cardEditor/editor/CardDownloader/styles';
 import { SEO } from '@layout';
 import { siteDescription } from 'src/constants';
-import SetCardLoader from './atoms/SetCardLoader';
 import { CardWrapper, Wrapper } from './styles';
 
 declare global {
@@ -30,7 +29,6 @@ const Creator: FC = () => {
   return (
     <>
       <SEO title="Creator" description={siteDescription} />
-      <SetCardLoader />
       <Wrapper>
         <CardOptionsForm />
         <CardWrapper>

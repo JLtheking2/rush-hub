@@ -17,7 +17,7 @@ This file holds only the always-relevant core. Feature-deep detail lives in `doc
 - **[`docs/renderer.md`](docs/renderer.md)** — card geometry (`layout.ts`), layers, per-template flags, fonts, assets, and calibrating against the reference renders (`compare:ref`).
 - **[`docs/text-fitting.md`](docs/text-fitting.md)** — `FitText` / measurer: shrink, squash, justify, waiting for fonts; read when text overflows or preview and export differ.
 - **[`docs/save-load.md`](docs/save-load.md)** — the `RushCard` schema, validation, Save/Load/Save As/New, PNG export, `render:cards`.
-- **[`docs/set-browser.md`](docs/set-browser.md)** — `cards/sets/` → `public/sets/` → `setsData.ts` pipeline, `/sets`, the creator deep link, `/sets/print`.
+- **[`docs/set-browser.md`](docs/set-browser.md)** — `cards/sets/` → `public/sets/` → `setsData.ts` pipeline, `/sets`, `/sets/print`.
 - **[`docs/decisions.md`](docs/decisions.md)** — the user's design decisions, out-of-scope list, licensing notes.
 
 ## Environment (Windows + PowerShell)
@@ -55,7 +55,7 @@ Next.js 12 + React 17 + TypeScript, Zustand, MUI v5 + Emotion, React Hook Form, 
 - `src/features/cardEditor/cardStyles/` — `constants.ts` (421×614, `baseEmphemeralUnit`), the ephemeral-unit store (`emphemeralUnit` is misspelled in the store's real API), `layout.ts` (all 421-space geometry; the only file to tune positions in), `units.ts`, and `components/CardDisplay` with `components/layers/` and `atoms/{CardBox,FitText,DisplayImg}`.
 - Card ↔ form linking: `cardStyles/components/layers/HotspotLayer.tsx`, `cardStyles/inlineEditStore.ts` and `editor/fieldTargets.ts` (see `docs/renderer.md`). Hotspots carry `data-card-ui` and are filtered out of PNG export.
 - `src/features/cardEditor/editor/` — the form: `ImportExport` (Save/Load, rendered under the card preview), `CardDownloader` (only `utils.ts` PNG export + the `#temp` styles; there is no Download button), `CardFieldsForm` (input ids are `#<slug>-input`), `ImagesForm` (art upload + crop at 376:380), `CardOptionsForm` (the fields form; Image sits between Card and Stats).
-- `src/pages/` — `creator` (also `?set=<SetId>&card=<slug>` via `SetCardLoader`), `sets` (Set Browser), `sets/print`, home.
+- `src/pages/` — `creator`, `sets` (Set Browser), `sets/print`, home.
 - `src/utils/fonts.ts` — the card fonts and per-role `fontStacks`; `src/hooks/useFontsReady.ts`.
 - Assets: `public/assets/rush/{frames,attributes,stars,icons}`, `public/fonts/`, `public/assets/home/` (home thumbnails), `public/sets/` (published cards).
 

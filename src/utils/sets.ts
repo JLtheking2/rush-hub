@@ -17,7 +17,6 @@ const sets: CardSet[] = rawSets.map(set => ({
     ...card,
     thumb: withBasePath(card.thumb),
     full: withBasePath(card.full),
-    json: card.json === null ? null : withBasePath(card.json),
   })),
 }));
 

@@ -8,10 +8,8 @@ export interface FolderCard {
   card: RushCard;
 }
 
-/** Where New looks for the highest Set ID: the open card's folder or a published set */
-export type NewSource =
-  | { kind: 'folder'; parent: FileSystemDirectoryHandle }
-  | { kind: 'set'; setId: string };
+/** Where New looks for the highest Set ID: the open card's folder */
+export type NewSource = { kind: 'folder'; parent: FileSystemDirectoryHandle };
 
 export const incrementCardNumber = (value?: string): string | undefined => {
   if (value === undefined || value === '') return value;

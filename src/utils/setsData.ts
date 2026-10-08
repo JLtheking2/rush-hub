@@ -8,8 +8,6 @@ export interface SetCard {
   quantity: number;
   thumb: string;
   full: string;
-  /** Saved card data, or null when this card was promoted without a .json */
-  json: string | null;
 }
 
 export interface CardSet {
@@ -32,7 +30,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS0/thumb/001-parasite-paracide.webp',
         full: '/sets/PRS0/cards/001-parasite-paracide.png',
-        json: '/sets/PRS0/cards/001-parasite-paracide.json',
       },
     ],
   },
@@ -48,7 +45,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/001-smile-world.webp',
         full: '/sets/PRS1/cards/001-smile-world.png',
-        json: '/sets/PRS1/cards/001-smile-world.json',
       },
       {
         id: '002-assault-on-ghq',
@@ -57,7 +53,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/002-assault-on-ghq.webp',
         full: '/sets/PRS1/cards/002-assault-on-ghq.png',
-        json: '/sets/PRS1/cards/002-assault-on-ghq.json',
       },
       {
         id: '003-goblins-secret-remedy',
@@ -66,7 +61,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/003-goblins-secret-remedy.webp',
         full: '/sets/PRS1/cards/003-goblins-secret-remedy.png',
-        json: '/sets/PRS1/cards/003-goblins-secret-remedy.json',
       },
       {
         id: '004-hinotama',
@@ -75,7 +69,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/004-hinotama.webp',
         full: '/sets/PRS1/cards/004-hinotama.png',
-        json: '/sets/PRS1/cards/004-hinotama.json',
       },
       {
         id: '005-destruction-punch',
@@ -84,7 +77,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/005-destruction-punch.webp',
         full: '/sets/PRS1/cards/005-destruction-punch.png',
-        json: '/sets/PRS1/cards/005-destruction-punch.json',
       },
       {
         id: '006-castle-walls',
@@ -93,7 +85,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/006-castle-walls.webp',
         full: '/sets/PRS1/cards/006-castle-walls.png',
-        json: '/sets/PRS1/cards/006-castle-walls.json',
       },
       {
         id: '007-three-strikes-barrier',
@@ -102,7 +93,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/007-three-strikes-barrier.webp',
         full: '/sets/PRS1/cards/007-three-strikes-barrier.png',
-        json: '/sets/PRS1/cards/007-three-strikes-barrier.json',
       },
       {
         id: '008-gamble',
@@ -111,7 +101,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/008-gamble.webp',
         full: '/sets/PRS1/cards/008-gamble.png',
-        json: '/sets/PRS1/cards/008-gamble.json',
       },
       {
         id: '009-gather-your-mind',
@@ -120,7 +109,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/009-gather-your-mind.webp',
         full: '/sets/PRS1/cards/009-gather-your-mind.png',
-        json: '/sets/PRS1/cards/009-gather-your-mind.json',
       },
       {
         id: '010-mind-crush',
@@ -129,7 +117,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/010-mind-crush.webp',
         full: '/sets/PRS1/cards/010-mind-crush.png',
-        json: '/sets/PRS1/cards/010-mind-crush.json',
       },
       {
         id: '011-dark-room-of-nightmare',
@@ -138,7 +125,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/011-dark-room-of-nightmare.webp',
         full: '/sets/PRS1/cards/011-dark-room-of-nightmare.png',
-        json: '/sets/PRS1/cards/011-dark-room-of-nightmare.json',
       },
       {
         id: '012-type-zero-magic-crusher',
@@ -147,7 +133,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/012-type-zero-magic-crusher.webp',
         full: '/sets/PRS1/cards/012-type-zero-magic-crusher.png',
-        json: '/sets/PRS1/cards/012-type-zero-magic-crusher.json',
       },
       {
         id: '013-ancient-telescope',
@@ -156,7 +141,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/013-ancient-telescope.webp',
         full: '/sets/PRS1/cards/013-ancient-telescope.png',
-        json: '/sets/PRS1/cards/013-ancient-telescope.json',
       },
       {
         id: '014-abyss-flower',
@@ -165,7 +149,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/014-abyss-flower.webp',
         full: '/sets/PRS1/cards/014-abyss-flower.png',
-        json: '/sets/PRS1/cards/014-abyss-flower.json',
       },
       {
         id: '015-armored-glass',
@@ -174,7 +157,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/015-armored-glass.webp',
         full: '/sets/PRS1/cards/015-armored-glass.png',
-        json: '/sets/PRS1/cards/015-armored-glass.json',
       },
       {
         id: '016-blue-medicine',
@@ -183,7 +165,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/016-blue-medicine.webp',
         full: '/sets/PRS1/cards/016-blue-medicine.png',
-        json: '/sets/PRS1/cards/016-blue-medicine.json',
       },
       {
         id: '017-bone-mouse',
@@ -192,7 +173,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/017-bone-mouse.webp',
         full: '/sets/PRS1/cards/017-bone-mouse.png',
-        json: '/sets/PRS1/cards/017-bone-mouse.json',
       },
       {
         id: '018-book-of-secret-arts',
@@ -201,7 +181,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/018-book-of-secret-arts.webp',
         full: '/sets/PRS1/cards/018-book-of-secret-arts.png',
-        json: '/sets/PRS1/cards/018-book-of-secret-arts.json',
       },
       {
         id: '019-change-slime',
@@ -210,7 +189,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/019-change-slime.webp',
         full: '/sets/PRS1/cards/019-change-slime.png',
-        json: '/sets/PRS1/cards/019-change-slime.json',
       },
       {
         id: '020-dark-energy',
@@ -219,7 +197,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/020-dark-energy.webp',
         full: '/sets/PRS1/cards/020-dark-energy.png',
-        json: '/sets/PRS1/cards/020-dark-energy.json',
       },
       {
         id: '021-dark-plant',
@@ -228,7 +205,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/021-dark-plant.webp',
         full: '/sets/PRS1/cards/021-dark-plant.png',
-        json: '/sets/PRS1/cards/021-dark-plant.json',
       },
       {
         id: '022-doron',
@@ -237,7 +213,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/022-doron.webp',
         full: '/sets/PRS1/cards/022-doron.png',
-        json: '/sets/PRS1/cards/022-doron.json',
       },
       {
         id: '023-embryonic-beast',
@@ -246,7 +221,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/023-embryonic-beast.webp',
         full: '/sets/PRS1/cards/023-embryonic-beast.png',
-        json: '/sets/PRS1/cards/023-embryonic-beast.json',
       },
       {
         id: '024-eyearmor',
@@ -255,7 +229,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/024-eyearmor.webp',
         full: '/sets/PRS1/cards/024-eyearmor.png',
-        json: '/sets/PRS1/cards/024-eyearmor.json',
       },
       {
         id: '025-fiends-hand',
@@ -264,7 +237,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/025-fiends-hand.webp',
         full: '/sets/PRS1/cards/025-fiends-hand.png',
-        json: '/sets/PRS1/cards/025-fiends-hand.json',
       },
       {
         id: '026-mushroom-man',
@@ -273,7 +245,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/026-mushroom-man.webp',
         full: '/sets/PRS1/cards/026-mushroom-man.png',
-        json: '/sets/PRS1/cards/026-mushroom-man.json',
       },
       {
         id: '027-goblin-calligrapher',
@@ -282,7 +253,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/027-goblin-calligrapher.webp',
         full: '/sets/PRS1/cards/027-goblin-calligrapher.png',
-        json: '/sets/PRS1/cards/027-goblin-calligrapher.json',
       },
       {
         id: '028-goblin-fan',
@@ -291,7 +261,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/028-goblin-fan.webp',
         full: '/sets/PRS1/cards/028-goblin-fan.png',
-        json: '/sets/PRS1/cards/028-goblin-fan.json',
       },
       {
         id: '029-hitodenchak',
@@ -300,7 +269,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/029-hitodenchak.webp',
         full: '/sets/PRS1/cards/029-hitodenchak.png',
-        json: '/sets/PRS1/cards/029-hitodenchak.json',
       },
       {
         id: '030-house-of-adhesive-tape',
@@ -309,7 +277,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/030-house-of-adhesive-tape.webp',
         full: '/sets/PRS1/cards/030-house-of-adhesive-tape.png',
-        json: '/sets/PRS1/cards/030-house-of-adhesive-tape.json',
       },
       {
         id: '031-hurricail',
@@ -318,7 +285,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/031-hurricail.webp',
         full: '/sets/PRS1/cards/031-hurricail.png',
-        json: '/sets/PRS1/cards/031-hurricail.json',
       },
       {
         id: '032-kagemusha-of-the-blue-flame',
@@ -327,7 +293,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/032-kagemusha-of-the-blue-flame.webp',
         full: '/sets/PRS1/cards/032-kagemusha-of-the-blue-flame.png',
-        json: '/sets/PRS1/cards/032-kagemusha-of-the-blue-flame.json',
       },
       {
         id: '033-kageningen',
@@ -336,7 +301,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/033-kageningen.webp',
         full: '/sets/PRS1/cards/033-kageningen.png',
-        json: '/sets/PRS1/cards/033-kageningen.json',
       },
       {
         id: '034-legendary-sword',
@@ -345,7 +309,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/034-legendary-sword.webp',
         full: '/sets/PRS1/cards/034-legendary-sword.png',
-        json: '/sets/PRS1/cards/034-legendary-sword.json',
       },
       {
         id: '035-lucky-trinket',
@@ -354,7 +317,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/035-lucky-trinket.webp',
         full: '/sets/PRS1/cards/035-lucky-trinket.png',
-        json: '/sets/PRS1/cards/035-lucky-trinket.json',
       },
       {
         id: '036-man-eater',
@@ -363,7 +325,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/036-man-eater.webp',
         full: '/sets/PRS1/cards/036-man-eater.png',
-        json: '/sets/PRS1/cards/036-man-eater.json',
       },
       {
         id: '037-masked-clown',
@@ -372,7 +333,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/037-masked-clown.webp',
         full: '/sets/PRS1/cards/037-masked-clown.png',
-        json: '/sets/PRS1/cards/037-masked-clown.json',
       },
       {
         id: '038-mech-mole-zombie',
@@ -381,7 +341,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/038-mech-mole-zombie.webp',
         full: '/sets/PRS1/cards/038-mech-mole-zombie.png',
-        json: '/sets/PRS1/cards/038-mech-mole-zombie.json',
       },
       {
         id: '039-meda-bat',
@@ -390,7 +349,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/039-meda-bat.webp',
         full: '/sets/PRS1/cards/039-meda-bat.png',
-        json: '/sets/PRS1/cards/039-meda-bat.json',
       },
       {
         id: '040-mesmeric-control',
@@ -399,7 +357,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/040-mesmeric-control.webp',
         full: '/sets/PRS1/cards/040-mesmeric-control.png',
-        json: '/sets/PRS1/cards/040-mesmeric-control.json',
       },
       {
         id: '041-mystery-hand',
@@ -408,7 +365,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/041-mystery-hand.webp',
         full: '/sets/PRS1/cards/041-mystery-hand.png',
-        json: '/sets/PRS1/cards/041-mystery-hand.json',
       },
       {
         id: '042-phantom-dewan',
@@ -417,7 +373,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/042-phantom-dewan.webp',
         full: '/sets/PRS1/cards/042-phantom-dewan.png',
-        json: '/sets/PRS1/cards/042-phantom-dewan.json',
       },
       {
         id: '043-phantom-ghost',
@@ -426,7 +381,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/043-phantom-ghost.webp',
         full: '/sets/PRS1/cards/043-phantom-ghost.png',
-        json: '/sets/PRS1/cards/043-phantom-ghost.json',
       },
       {
         id: '044-power-of-kaishin',
@@ -435,7 +389,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/044-power-of-kaishin.webp',
         full: '/sets/PRS1/cards/044-power-of-kaishin.png',
-        json: '/sets/PRS1/cards/044-power-of-kaishin.json',
       },
       {
         id: '045-psychic-kappa',
@@ -444,7 +397,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/045-psychic-kappa.webp',
         full: '/sets/PRS1/cards/045-psychic-kappa.png',
-        json: '/sets/PRS1/cards/045-psychic-kappa.json',
       },
       {
         id: '046-raimei',
@@ -453,7 +405,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/046-raimei.webp',
         full: '/sets/PRS1/cards/046-raimei.png',
-        json: '/sets/PRS1/cards/046-raimei.json',
       },
       {
         id: '047-red-medicine',
@@ -462,7 +413,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/047-red-medicine.webp',
         full: '/sets/PRS1/cards/047-red-medicine.png',
-        json: '/sets/PRS1/cards/047-red-medicine.json',
       },
       {
         id: '048-rod-of-the-minds-eye',
@@ -471,7 +421,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/048-rod-of-the-minds-eye.webp',
         full: '/sets/PRS1/cards/048-rod-of-the-minds-eye.png',
-        json: '/sets/PRS1/cards/048-rod-of-the-minds-eye.json',
       },
       {
         id: '049-sectarian-of-secrets',
@@ -480,7 +429,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/049-sectarian-of-secrets.webp',
         full: '/sets/PRS1/cards/049-sectarian-of-secrets.png',
-        json: '/sets/PRS1/cards/049-sectarian-of-secrets.json',
       },
       {
         id: '050-sparks',
@@ -489,7 +437,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/050-sparks.webp',
         full: '/sets/PRS1/cards/050-sparks.png',
-        json: '/sets/PRS1/cards/050-sparks.json',
       },
       {
         id: '051-the-melting-red-shadow',
@@ -498,7 +445,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/051-the-melting-red-shadow.webp',
         full: '/sets/PRS1/cards/051-the-melting-red-shadow.png',
-        json: '/sets/PRS1/cards/051-the-melting-red-shadow.json',
       },
       {
         id: '052-the-wandering-doomed',
@@ -507,7 +453,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/052-the-wandering-doomed.webp',
         full: '/sets/PRS1/cards/052-the-wandering-doomed.png',
-        json: '/sets/PRS1/cards/052-the-wandering-doomed.json',
       },
       {
         id: '053-thunder-crash',
@@ -516,7 +461,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/053-thunder-crash.webp',
         full: '/sets/PRS1/cards/053-thunder-crash.png',
-        json: '/sets/PRS1/cards/053-thunder-crash.json',
       },
       {
         id: '054-vile-germs',
@@ -525,7 +469,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/054-vile-germs.webp',
         full: '/sets/PRS1/cards/054-vile-germs.png',
-        json: '/sets/PRS1/cards/054-vile-germs.json',
       },
       {
         id: '055-violet-crystal',
@@ -534,7 +477,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/055-violet-crystal.webp',
         full: '/sets/PRS1/cards/055-violet-crystal.png',
-        json: '/sets/PRS1/cards/055-violet-crystal.json',
       },
       {
         id: '056-curtain-of-the-dark-ones',
@@ -543,7 +485,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/056-curtain-of-the-dark-ones.webp',
         full: '/sets/PRS1/cards/056-curtain-of-the-dark-ones.png',
-        json: '/sets/PRS1/cards/056-curtain-of-the-dark-ones.json',
       },
       {
         id: '057-wretched-ghost-of-the-attic',
@@ -552,7 +493,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/057-wretched-ghost-of-the-attic.webp',
         full: '/sets/PRS1/cards/057-wretched-ghost-of-the-attic.png',
-        json: '/sets/PRS1/cards/057-wretched-ghost-of-the-attic.json',
       },
       {
         id: '058-yashinoki',
@@ -561,7 +501,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/058-yashinoki.webp',
         full: '/sets/PRS1/cards/058-yashinoki.png',
-        json: '/sets/PRS1/cards/058-yashinoki.json',
       },
       {
         id: '059-zarigun',
@@ -570,7 +509,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/059-zarigun.webp',
         full: '/sets/PRS1/cards/059-zarigun.png',
-        json: '/sets/PRS1/cards/059-zarigun.json',
       },
       {
         id: '060-hidden-spellbook',
@@ -579,7 +517,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/060-hidden-spellbook.webp',
         full: '/sets/PRS1/cards/060-hidden-spellbook.png',
-        json: '/sets/PRS1/cards/060-hidden-spellbook.json',
       },
       {
         id: '061-arsenal-robber',
@@ -588,7 +525,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/061-arsenal-robber.webp',
         full: '/sets/PRS1/cards/061-arsenal-robber.png',
-        json: '/sets/PRS1/cards/061-arsenal-robber.json',
       },
       {
         id: '062-assault-spirits',
@@ -597,7 +533,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/062-assault-spirits.webp',
         full: '/sets/PRS1/cards/062-assault-spirits.png',
-        json: '/sets/PRS1/cards/062-assault-spirits.json',
       },
       {
         id: '063-darkness-approaches',
@@ -606,7 +541,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/063-darkness-approaches.webp',
         full: '/sets/PRS1/cards/063-darkness-approaches.png',
-        json: '/sets/PRS1/cards/063-darkness-approaches.json',
       },
       {
         id: '064-final-destiny',
@@ -615,7 +549,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/064-final-destiny.webp',
         full: '/sets/PRS1/cards/064-final-destiny.png',
-        json: '/sets/PRS1/cards/064-final-destiny.json',
       },
       {
         id: '065-germ-infection',
@@ -624,7 +557,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/065-germ-infection.webp',
         full: '/sets/PRS1/cards/065-germ-infection.png',
-        json: '/sets/PRS1/cards/065-germ-infection.json',
       },
       {
         id: '066-flame-dancer',
@@ -633,7 +565,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/066-flame-dancer.webp',
         full: '/sets/PRS1/cards/066-flame-dancer.png',
-        json: '/sets/PRS1/cards/066-flame-dancer.json',
       },
       {
         id: '067-atomic-firefly',
@@ -642,7 +573,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/067-atomic-firefly.webp',
         full: '/sets/PRS1/cards/067-atomic-firefly.png',
-        json: '/sets/PRS1/cards/067-atomic-firefly.json',
       },
       {
         id: '068-kinka-byo',
@@ -651,7 +581,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/068-kinka-byo.webp',
         full: '/sets/PRS1/cards/068-kinka-byo.png',
-        json: '/sets/PRS1/cards/068-kinka-byo.json',
       },
       {
         id: '069-mystic-piper',
@@ -660,7 +589,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/069-mystic-piper.webp',
         full: '/sets/PRS1/cards/069-mystic-piper.png',
-        json: '/sets/PRS1/cards/069-mystic-piper.json',
       },
       {
         id: '070-dharma-cannon',
@@ -669,7 +597,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/070-dharma-cannon.webp',
         full: '/sets/PRS1/cards/070-dharma-cannon.png',
-        json: '/sets/PRS1/cards/070-dharma-cannon.json',
       },
       {
         id: '071-white-dolphin',
@@ -678,7 +605,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/071-white-dolphin.webp',
         full: '/sets/PRS1/cards/071-white-dolphin.png',
-        json: '/sets/PRS1/cards/071-white-dolphin.json',
       },
       {
         id: '072-pot-the-trick',
@@ -687,7 +613,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/072-pot-the-trick.webp',
         full: '/sets/PRS1/cards/072-pot-the-trick.png',
-        json: '/sets/PRS1/cards/072-pot-the-trick.json',
       },
       {
         id: '073-eatgaboon',
@@ -696,7 +621,6 @@ const sets: CardSet[] = [
         quantity: 1,
         thumb: '/sets/PRS1/thumb/073-eatgaboon.webp',
         full: '/sets/PRS1/cards/073-eatgaboon.png',
-        json: '/sets/PRS1/cards/073-eatgaboon.json',
       },
     ],
   },

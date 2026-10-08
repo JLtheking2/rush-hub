@@ -1,7 +1,6 @@
 import { useIsCardDirty, useRushCardStore } from '@cardEditor/card';
 import { NoteAdd } from '@mui/icons-material';
 import { Button } from '@mui/material';
-import sets from '@utils/sets';
 import { FC, useCallback, useState } from 'react';
 import { NewSource, incrementCardNumber, listFolderCards } from '../../utils';
 import UnsavedChangesDialog from '../UnsavedChangesDialog';
@@ -11,7 +10,7 @@ interface Props {
   newSource: NewSource | null;
 }
 
-// The highest Set ID in the current set, or undefined when there's no set
+// The highest Set ID in the current folder, or undefined when there's no folder
 // (or it holds no numbered cards). Read fresh on every New, so an unsaved
 // new card doesn't count and pressing New twice gives the same Set ID.
 const findLastSetId = async (
@@ -21,12 +20,6 @@ const findLastSetId = async (
     const cards = await listFolderCards(source.parent);
     // Sorted by Set ID, with cards lacking one at the end
     return cards.filter(c => c.card.setId).pop()?.card.setId;
-  }
-  if (source?.kind === 'set') {
-    return sets
-      .find(set => set.id === source.setId)
-      ?.cards.filter(c => c.number)
-      .pop()?.number;
   }
   return undefined;
 };

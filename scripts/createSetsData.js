@@ -6,9 +6,10 @@ const SETS_PUBLIC_FOLDER = './public/sets';
 const WRITE_PATH = './src/utils/setsData.ts';
 
 const COVER_FILENAME = 'cover.png';
-/** Card .png and .json live side by side here, so it works as a creator working directory */
 const CARDS_DIRNAME = 'cards';
 const THUMB_DIRNAME = 'thumb';
+/** Per-set `{ [slug]: { number, name, quantity } }`, so the card .json (and its base64 art) isn't published */
+const MANIFEST_FILENAME = 'manifest.json';
 
 /**
  * `--no-import` skips phase A, so `cards/sets` staging is never published. The
@@ -42,8 +43,8 @@ try {
  * Turns a card filename stem (`RD-SMP-EN001 - Sample Normal`) into an ASCII,
  * URL-safe slug (`rd-smp-en001-sample-normal`). Saved filenames contain spaces
  * and possibly typographic characters that are awkward in URLs. The real name
- * and Set ID are read back out of the card's own `.json` in phase B, so nothing
- * is lost by slugging the filename.
+ * and Set ID are taken from the card's own `.json` (stored in the manifest), so
+ * nothing is lost by slugging the filename.
  * @param {string} stem
  * @returns {string}
  */
@@ -106,6 +107,30 @@ const writeResizedWebp = async (source, destination, width) => {
     .resize({ width, withoutEnlargement: true })
     .webp({ quality: WEBP_QUALITY })
     .toFile(destination);
+};
+
+/**
+ * The bits of a card .json the Set Browser needs. Null when the file is
+ * missing, unreadable or has no name.
+ * @param {string} jsonPath
+ * @returns {Promise<{ number: string, name: string, quantity: number } | null>}
+ */
+const readCardInfo = async jsonPath => {
+  try {
+    const card = JSON.parse(await fs.promises.readFile(jsonPath, 'utf8'));
+    if (!card.name || typeof card.name !== 'string') return null;
+    return {
+      number: typeof card.setId === 'string' ? card.setId : '',
+      name: card.name,
+      // Cards saved before the field existed count as one copy
+      quantity:
+        Number.isInteger(card.quantity) && card.quantity >= 1
+          ? card.quantity
+          : 1,
+    };
+  } catch {
+    return null;
+  }
 };
 
 /** @returns {Promise<boolean>} */
@@ -197,7 +222,9 @@ const importSet = async (setId, pngFiles) => {
     }
     if (seenSlugs.has(slug)) {
       console.warn(
-        `  skipping "${file}" - same slug "${slug}" as "${seenSlugs.get(slug)}"`,
+        `  skipping "${file}" - same slug "${slug}" as "${seenSlugs.get(
+          slug,
+        )}"`,
       );
       return;
     }
@@ -206,18 +233,16 @@ const importSet = async (setId, pngFiles) => {
   });
 
   let copied = 0;
+  const manifest = {};
   // eslint-disable-next-line no-restricted-syntax
   for (const card of cards) {
-    // The .png and the .json land side by side, exactly as a creator Save
-    // writes them - which is what lets `public/sets/<setId>/cards` be used as a
-    // working directory directly. Both are copied verbatim, never
-    // re-serialised, so a promoted file is byte-identical to the staged one.
+    // Only the .png is published. The card's .json carries the whole base64
+    // art, so just its number, name and quantity are kept (in manifest.json).
     const pngSource = path.join(sourceDir, card.file);
     const jsonSource = pngSource.replace(/\.png$/i, '.json');
     const png = path.join(cardsDir, `${card.slug}.png`);
-    const json = path.join(cardsDir, `${card.slug}.json`);
 
-    // `isStale` only copies when *staging* is newer, so a card edited in place
+    // `isStale` only copies when *staging* is newer, so a card re-rendered
     // in public/sets is never clobbered by an older staged copy.
     // eslint-disable-next-line no-await-in-loop
     if (await isStale(pngSource, png)) {
@@ -227,20 +252,20 @@ const importSet = async (setId, pngFiles) => {
     }
 
     // eslint-disable-next-line no-await-in-loop
-    if (!(await exists(jsonSource))) {
+    const info = await readCardInfo(jsonSource);
+    if (info) {
+      manifest[card.slug] = info;
+    } else {
       console.warn(
-        `  no .json alongside "${card.file}" - card will not be editable in the creator`,
+        `  no usable .json alongside "${card.file}" - number and name fall back to the slug`,
       );
-      // eslint-disable-next-line no-continue
-      continue;
-    }
-    // eslint-disable-next-line no-await-in-loop
-    if (await isStale(jsonSource, json)) {
-      // eslint-disable-next-line no-await-in-loop
-      await fs.promises.copyFile(jsonSource, json);
-      copied += 1;
     }
   }
+
+  await fs.promises.writeFile(
+    path.join(publicDir, MANIFEST_FILENAME),
+    `${JSON.stringify(manifest, null, 2)}\n`,
+  );
 
   // Cover art is hand-supplied (not regenerable), and is kept in git via a
   // negation rule in .gitignore.
@@ -254,13 +279,11 @@ const importSet = async (setId, pngFiles) => {
     console.warn(`  no ${COVER_FILENAME} found for set "${setId}"`);
   }
 
-  // One keep-set covering both halves of every card.
-  const keep = new Set();
-  cards.forEach(card => {
-    keep.add(`${card.slug}.png`);
-    keep.add(`${card.slug}.json`);
-  });
-  await pruneDirectory(cardsDir, keep);
+  // Anything else (including .json left by older runs) is pruned.
+  await pruneDirectory(
+    cardsDir,
+    new Set(cards.map(card => `${card.slug}.png`)),
+  );
 
   console.info(
     `  ${setId}: ${cards.length} cards (${copied} file(s) copied/updated)`,
@@ -268,22 +291,21 @@ const importSet = async (setId, pngFiles) => {
 };
 
 /**
- * Last-resort number/name when a card has no `.json` next to its image. The
- * slug is lossy (it can't give back the Set ID or the original punctuation),
- * which is exactly why the card data is the authority everywhere else.
+ * Last-resort number/name when a card has no manifest entry. The slug is lossy
+ * (it can't give back the Set ID or the original punctuation), which is
+ * exactly why the card data is the authority everywhere else.
  * @param {string} slug
  */
 const fallbackCardInfo = slug => ({ number: '', name: slug, quantity: 1 });
 
 /**
  * Phase B - derive everything from the tracked files in
- * `public/sets/<setId>/cards`: refresh stale thumbnails, read each card's real
- * number and name out of its `.json`, and write `src/utils/setsData.ts`.
+ * `public/sets/<setId>`: refresh stale thumbnails, read each card's real
+ * number, name and quantity out of the set's `manifest.json`, and write
+ * `src/utils/setsData.ts`.
  *
- * Always runs, including on a fresh clone where staging is empty and phase A
- * did nothing. Because the card `.json` - not the filename - is what names a
- * card, a card saved in place from the creator is picked up here with no trip
- * back through staging.
+ * Always runs, including on a fresh clone (and in CI) where staging is empty
+ * and phase A did nothing.
  *
  * @returns {Promise<object[]>}
  */
@@ -327,6 +349,21 @@ const readPublicSets = async () => {
       await fs.promises.mkdir(thumbDir, { recursive: true });
     }
 
+    let manifest = {};
+    try {
+      const manifestText =
+        // eslint-disable-next-line no-await-in-loop
+        await fs.promises.readFile(
+          path.join(publicDir, MANIFEST_FILENAME),
+          'utf8',
+        );
+      manifest = JSON.parse(manifestText);
+    } catch {
+      console.warn(
+        `  no readable ${MANIFEST_FILENAME} in public/sets/${setId}`,
+      );
+    }
+
     const cards = [];
     let rendered = 0;
 
@@ -335,11 +372,9 @@ const readPublicSets = async () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const slug of slugs) {
       const png = path.join(cardsDir, `${slug}.png`);
-      const jsonPath = path.join(cardsDir, `${slug}.json`);
       const thumb = path.join(thumbDir, `${slug}.webp`);
 
-      // Regenerated whenever the image is newer, so an in-place creator Save
-      // updates the grid thumbnail on the next run.
+      // Regenerated whenever the image is newer than its thumbnail.
       // eslint-disable-next-line no-await-in-loop
       if (await isStale(png, thumb)) {
         // eslint-disable-next-line no-await-in-loop
@@ -347,27 +382,10 @@ const readPublicSets = async () => {
         rendered += 1;
       }
 
-      let info;
-      try {
-        // eslint-disable-next-line no-await-in-loop
-        const card = JSON.parse(await fs.promises.readFile(jsonPath, 'utf8'));
-        info = {
-          number: typeof card.setId === 'string' ? card.setId : '',
-          name: card.name,
-          // Cards saved before the field existed count as one copy
-          quantity:
-            Number.isInteger(card.quantity) && card.quantity >= 1
-              ? card.quantity
-              : 1,
-        };
-      } catch {
-        info = undefined;
-      }
       // An empty Set ID is fine; a missing name is not.
+      let info = manifest[slug];
       if (!info?.name || typeof info.name !== 'string') {
-        if (info) {
-          console.warn(`  "${slug}.json" has no name - using slug`);
-        }
+        console.warn(`  "${slug}" has no name in the manifest - using slug`);
         info = fallbackCardInfo(slug);
       }
 
@@ -376,10 +394,6 @@ const readPublicSets = async () => {
       // than emitting a path that 404s.
       // eslint-disable-next-line no-await-in-loop
       const hasThumb = await exists(thumb);
-      // Null when the card has no data next to it - the Set Browser hides its
-      // "Edit in Creator" button in that case.
-      // eslint-disable-next-line no-await-in-loop
-      const hasJson = await exists(jsonPath);
 
       cards.push({
         id: slug,
@@ -388,7 +402,6 @@ const readPublicSets = async () => {
         quantity: info.quantity,
         thumb: hasThumb ? `${base}/${THUMB_DIRNAME}/${slug}.webp` : full,
         full,
-        json: hasJson ? `${base}/${CARDS_DIRNAME}/${slug}.json` : null,
       });
     }
 
@@ -464,8 +477,6 @@ export interface SetCard {
   quantity: number;
   thumb: string;
   full: string;
-  /** Saved card data, or null when this card was promoted without a .json */
-  json: string | null;
 }
 
 export interface CardSet {
