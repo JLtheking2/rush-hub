@@ -5,7 +5,7 @@ Read this when working on `/sets`, `/sets/print`, the `cards/sets/` → `public/
 ## Pipeline
 
 ```
-cards/sets/<SetId>/*.png + *.json + cover.png   ← local staging (gitignored, except cover.png)
+cards/sets/<SetId>/*.png + *.json + cover.png   ← local staging (gitignored, except cover.png; cover.png is optional)
         │  npm run create:sets   (manual only - prestart / prebuild run phase B alone via --no-import)
         ▼
 public/sets/<SetId>/cards/<slug>.png                  ← TRACKED source of truth
@@ -18,7 +18,7 @@ src/utils/setsData.ts   ← GENERATED; never hand-edit. Read via src/utils/sets.
 
 `scripts/createSetsData.js` has two phases:
 
-- **A — promote:** for each staging folder that has PNGs, copy the `.png` verbatim into `public/sets/<SetId>/cards/` (only when the staged file is newer), write `manifest.json` from each staged card's `.json` (number = `setId`, `name`, `quantity`), build `cover.webp`, and prune files no longer staged. The card `.json` itself is **not** published — it embeds the base64 art (~1.6 MB each) and would dwarf everything else. A staging folder with **no** PNGs is left alone, so a fresh clone (empty staging) keeps the tracked `public/sets` untouched.
+- **A — promote:** for each staging folder that has PNGs, copy the `.png` verbatim into `public/sets/<SetId>/cards/` (only when the staged file is newer), write `manifest.json` from each staged card's `.json` (number = `setId`, `name`, `quantity`), build `cover.webp` (from `cover.png`, or — when a set has none — from the first staged card by relative path across subfolders; regenerated every run), and prune files no longer staged. The card `.json` itself is **not** published — it embeds the base64 art (~1.6 MB each) and would dwarf everything else. A staging folder with **no** PNGs is left alone, so a fresh clone (empty staging) keeps the tracked `public/sets` untouched.
 - **B — derive:** for every folder in `public/sets`, refresh stale thumbnails, read the set's `manifest.json` for each card's number, name and quantity, and write `setsData.ts`. Phase B is the only thing CI runs, so the manifest — not the gitignored staging — must carry that data.
 
 **Publishing is manual.** Only an explicit `npm run create:sets` runs phase A. The `prestart` (so `npm run dev` / `start-dev.bat`) and `prebuild` hooks call the script with `--no-import`, which skips phase A — starting the dev server or building never publishes work-in-progress staging.

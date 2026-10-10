@@ -267,17 +267,26 @@ const importSet = async (setId, pngFiles) => {
     `${JSON.stringify(manifest, null, 2)}\n`,
   );
 
-  // Cover art is hand-supplied (not regenerable), and is kept in git via a
-  // negation rule in .gitignore.
-  const coverSource = path.join(sourceDir, COVER_FILENAME);
-  const coverDestination = path.join(publicDir, 'cover.webp');
-  if (await exists(coverSource)) {
-    if (await isStale(coverSource, coverDestination)) {
-      await writeResizedWebp(coverSource, coverDestination, COVER_WIDTH);
-    }
-  } else {
-    console.warn(`  no ${COVER_FILENAME} found for set "${setId}"`);
+  // A hand-supplied cover.png wins (kept in git via a negation rule in
+  // .gitignore). Without one, the first staged card - by relative path, across
+  // subfolders - is the cover, so a set never ships without one.
+  let coverSource = path.join(sourceDir, COVER_FILENAME);
+  if (!(await exists(coverSource))) {
+    const [firstCard] = [...pngFiles].sort((a, b) =>
+      a.localeCompare(b, undefined, { numeric: true }),
+    );
+    console.info(
+      `  no ${COVER_FILENAME} for set "${setId}" - using "${firstCard}" as the cover`,
+    );
+    coverSource = path.join(sourceDir, firstCard);
   }
+  // Always regenerated: a newly added cover.png or a different fallback card
+  // can be older than the existing cover.webp, so `isStale` would miss it.
+  await writeResizedWebp(
+    coverSource,
+    path.join(publicDir, 'cover.webp'),
+    COVER_WIDTH,
+  );
 
   // Anything else (including .json left by older runs) is pruned.
   await pruneDirectory(
