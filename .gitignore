@@ -40,7 +40,6 @@ dev-server.log
 # `**` also covers subfolders inside a set (e.g. cards/sets/PRS-02/Main/).
 /cards/sets/**/*.png
 /cards/sets/**/*.json
-!/cards/sets/*/cover.png
 
-# RDM-01 is kept on disk only (not published to git).
-/public/sets/RDM-01/
+# Sets are kept on disk only; they are not published to git / GitHub Pages.
+/public/sets/
