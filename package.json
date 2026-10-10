@@ -15,6 +15,7 @@
     "typecheck": "npx tsc",
     "verify": "node ./scripts/verify-page.js",
     "render:cards": "node ./scripts/renderCards.js",
+    "sort:set": "node ./scripts/sortSet.js",
     "compare:ref": "node ./scripts/compareReference.js"
   },
   "eslintConfig": {

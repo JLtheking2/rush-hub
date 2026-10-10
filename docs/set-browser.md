@@ -5,7 +5,7 @@ Read this when working on `/sets`, `/sets/print`, the `cards/sets/` → `public/
 ## Pipeline
 
 ```
-cards/sets/<SetId>/*.png + *.json + cover.png   ← local staging (gitignored, except cover.png; cover.png is optional)
+cards/sets/<SetId>/*.png + *.json + cover.png   ← local staging (all gitignored; cover.png is optional)
         │  npm run create:sets   (manual only - prestart / prebuild run phase B alone via --no-import)
         ▼
 public/sets/<SetId>/cards/<slug>.png                  ← TRACKED source of truth
@@ -30,9 +30,18 @@ Rules:
 - **`quantity`** (copies of the card in the set) is read from the `.json` into the manifest — an integer ≥ 1, else 1 (so cards saved before the field existed count once; no `.json` = 1). It is shown as ` ×N` after the name in the grid and viewer when > 1, and the set header adds `· N copies` when the total differs from the card count.
 - Sort: number prefix, then the number numerically (so `EN10` after `EN2`), then name.
 - Set display names come from `SET_DISPLAY_NAMES` at the top of the script (default: the folder name). Add an entry for a new set.
-- `.gitignore` keeps `cards/sets/**/*.png` and `*.json` (any depth, so subfolders like `PRS-02/Main/` are covered) out of git but negates the set-level `cover.png`. `cards/sets/<Set>/cover.png` is hand-supplied and must be tracked. Don't remove those rules.
+- `.gitignore` keeps `cards/sets/**/*.png` and `*.json` (any depth, so subfolders like `PRS-02/Main/` are covered) out of git, set-level `cover.png` included, so staging (and any new local-only set) is never committed. PRS0/PRS1's `cover.png` stay tracked only because they were committed before this rule; ignore rules don't affect tracked files. `cards/sets/<Set>/cover.png` is optional and hand-supplied. Don't remove those rules.
 - To change a published card, edit it in `cards/sets/` staging (the `.json` there is the source) and re-run `npm run create:sets`; `public/sets` has no card `.json` to edit in place.
 - Re-runs are idempotent. Without `sharp` the script degrades to full-size images as thumbnails.
+
+## Re-sorting a staged set (`npm run sort:set`)
+
+`npm run sort:set -- cards/sets/<Set>/<Subfolder> [--apply] [--render-all] [--url <url>]` (`scripts/sortSet.js`). Without `--apply` it only **prints the proposed order** (changed rows marked `*`, old ID in brackets) and writes nothing.
+
+- **Order:** Monsters, then Spells, then Traps. Monsters: Normal/Effect (interchangeable), Ritual, Fusion, Synchro, Xyz, Token, each by ascending Level. Spells/Traps by property icon (`none, continuous, counter, equip, field, quickPlay, ritual` — mirrors `spellTrapIconIds` in `card/types.ts`; keep in sync). Ties keep the current Set ID order, so re-runs are stable.
+- **IDs:** the prefix and digit count are inferred from the existing Set IDs (`M-001`, `E-001`, `001`; min 3 digits) and renumbered 1..N. Mixed prefixes abort. Run it per subfolder (`Main`, `Extra`) so each keeps its own prefix.
+- **`--apply`:** edits `setId` by regex on the raw text (the base64 art stays byte-identical), renames each `.json`/`.png` pair via a `_sorting_tmp/` folder (no collisions; an existing one means an interrupted run), then **un-publishes**: deletes `public/sets/<Set>/` if present and regenerates `setsData.ts` with `createSetsData.js --no-import`. Republishing stays the manual `npm run create:sets`. If the set was tracked in git, the deletion shows in `git status`. Finally it re-renders the changed cards through `renderCards.js` (dev server must be running; `--render-all` re-renders everything). If rendering fails the renumbering is kept; run `npm run render:cards -- <folder>`.
+- Un-publishing removes the whole set (every subfolder), since `public/sets/<Set>` is flat.
 
 ## `/sets` page (`src/pages/sets/`)
 

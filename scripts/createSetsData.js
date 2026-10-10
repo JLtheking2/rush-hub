@@ -267,8 +267,7 @@ const importSet = async (setId, pngFiles) => {
     `${JSON.stringify(manifest, null, 2)}\n`,
   );
 
-  // A hand-supplied cover.png wins (kept in git via a negation rule in
-  // .gitignore). Without one, the first staged card - by relative path, across
+  // A hand-supplied cover.png wins. Without one, the first staged card - by relative path, across
   // subfolders - is the cover, so a set never ships without one.
   let coverSource = path.join(sourceDir, COVER_FILENAME);
   if (!(await exists(coverSource))) {

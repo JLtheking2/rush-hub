@@ -36,6 +36,7 @@ npm run dev | build | lint | lint:fix | typecheck
 npm run create:sets   # cards/sets/ -> public/sets/ + regenerate src/utils/setsData.ts (generated, never hand-edit)
 npm run verify -- creator
 npm run render:cards -- <folder-or-json...>   # re-render the .png next to card .json; fails on invalid cards / non-421x614 output
+npm run sort:set -- <staging-folder> [--apply]   # preview/apply re-sort + renumber Set IDs + rename + re-render + un-publish (see docs/set-browser.md)
 npm run compare:ref -- <referenceDir>         # visual diff of the 9 sample cards vs reference renders (dev server running)
 ```
 
@@ -44,6 +45,8 @@ After every code change run `npm run typecheck` and `npm run lint` and fix **all
 ## Git
 
 **Commit locally when asked, but never `git push`** (or trigger deploys). The user pushes and publishes. Single contributor; pushes straight to `master`, no PR workflow.
+
+**`src/utils/setsData.ts` is marked `git update-index --skip-worktree` in the user's clone**, because local-only sets (`public/sets/` is gitignored; only PRS0/PRS1 are tracked) make `create:sets` rewrite it with entries CI doesn't have. So its diff and status are hidden on purpose — don't be surprised that `git status` omits it, never commit it, and don't untrack it (CI typechecks *before* `prebuild` regenerates it, so it must stay in the repo). To commit it deliberately: `git update-index --no-skip-worktree src/utils/setsData.ts`, then re-apply `--skip-worktree` afterwards.
 
 ## Tech stack
 
